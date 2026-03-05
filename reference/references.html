@@ -68,7 +68,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#references" class="md-skip">
+        <a href="#reference" class="md-skip">
           Skip to content
         </a>
       
@@ -238,96 +238,6 @@
   
   
   
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-      
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" >
-      
-      
-      
-      
-        <label class="md-nav__link" for="__nav_3">
-          How-to guides
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <nav class="md-nav" aria-label="How-to guides" data-md-level="1">
-        <label class="md-nav__title" for="__nav_3">
-          <span class="md-nav__icon md-icon"></span>
-          How-to guides
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../how_to/install_this_plugin.html" class="md-nav__link">
-        Install this Plugin
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../how_to/use_this_plugin.html" class="md-nav__link">
-        Use this Plugin
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../how_to/contribute_to_this_plugin.html" class="md-nav__link">
-        Contribute to this plugin
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../how_to/contribute_to_the_documentation.html" class="md-nav__link">
-        Contribute to the documentation
-      </a>
-    </li>
-  
-
-            
-          
-        </ul>
-      </nav>
-    </li>
-  
-
-    
-      
-      
-      
-
-  
-  
-  
     <li class="md-nav__item">
       <a href="../explanation/explanation.html" class="md-nav__link">
         Explanation
@@ -353,9 +263,61 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Reference
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="references.html" class="md-nav__link md-nav__link--active">
         Reference
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#cli" class="md-nav__link">
+    CLI
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#metadata-files" class="md-nav__link">
+    Metadata files
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#canonical-schema-and-mappings" class="md-nav__link">
+    Canonical schema and mappings
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#reusable-github-workflow" class="md-nav__link">
+    Reusable GitHub workflow
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -381,6 +343,42 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#cli" class="md-nav__link">
+    CLI
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#metadata-files" class="md-nav__link">
+    Metadata files
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#canonical-schema-and-mappings" class="md-nav__link">
+    Canonical schema and mappings
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#reusable-github-workflow" class="md-nav__link">
+    Reusable GitHub workflow
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -392,11 +390,59 @@
               
                 
 
-<h1 id="references">References<a class="headerlink" href="#references" title="Permanent link">&para;</a></h1>
-<div class="admonition note">
-<p class="admonition-title">Attention</p>
-<p>TODO</p>
-</div>
+<h1 id="reference">Reference<a class="headerlink" href="#reference" title="Permanent link">&para;</a></h1>
+<h2 id="cli">CLI<a class="headerlink" href="#cli" title="Permanent link">&para;</a></h2>
+<p>Command:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>nomad-plugin-metadata<span class="w"> </span>extract<span class="w"> </span><span class="o">[</span>options<span class="o">]</span>
+</code></pre></div>
+<p>Options:</p>
+<ul>
+<li><code>--repo-path</code> (default: <code>.</code>)</li>
+<li><code>--manual-path</code> (default: <code>nomad_plugin_metadata.yaml</code>)</li>
+<li><code>--generated-path</code> (default: <code>.nomad/plugin-metadata.generated.yaml</code>)</li>
+<li><code>--effective-path</code> (default: <code>.nomad/plugin-metadata.effective.yaml</code>)</li>
+<li><code>--report-path</code> (default: <code>.nomad/plugin-metadata.override-report.yaml</code>)</li>
+</ul>
+<h2 id="metadata-files">Metadata files<a class="headerlink" href="#metadata-files" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Manual override file:</li>
+<li><code>nomad_plugin_metadata.yaml</code></li>
+<li>Generated file:</li>
+<li><code>.nomad/plugin-metadata.generated.yaml</code></li>
+<li>Effective merged file:</li>
+<li><code>.nomad/plugin-metadata.effective.yaml</code></li>
+<li>Override report:</li>
+<li><code>.nomad/plugin-metadata.override-report.yaml</code></li>
+</ul>
+<h2 id="canonical-schema-and-mappings">Canonical schema and mappings<a class="headerlink" href="#canonical-schema-and-mappings" title="Permanent link">&para;</a></h2>
+<ul>
+<li>LinkML schema:</li>
+<li><code>src/nomad_plugins_metadata/schema_packages/nomad_plugin_metadata.yaml</code></li>
+<li>Datatractor mapping:</li>
+<li><code>src/nomad_plugins_metadata/schema_packages/datatractor_mapping.md</code></li>
+<li>NOMAD adapter mapping:</li>
+<li><code>src/nomad_plugins_metadata/adapters/nomad_mapping.md</code></li>
+</ul>
+<h2 id="reusable-github-workflow">Reusable GitHub workflow<a class="headerlink" href="#reusable-github-workflow" title="Permanent link">&para;</a></h2>
+<p>Workflow path:</p>
+<ul>
+<li><code>.github/workflows/extract-plugin-metadata.yml</code></li>
+</ul>
+<p>Caller template:</p>
+<ul>
+<li><code>docs/templates/update-plugin-metadata.yml</code></li>
+</ul>
+<p>Key workflow inputs:</p>
+<ul>
+<li><code>package_spec</code></li>
+<li><code>repo_path</code></li>
+<li><code>manual_path</code></li>
+<li><code>generated_path</code></li>
+<li><code>effective_path</code></li>
+<li><code>report_path</code></li>
+<li><code>auto_commit</code></li>
+<li><code>commit_message</code></li>
+</ul>
 
               
             </article>

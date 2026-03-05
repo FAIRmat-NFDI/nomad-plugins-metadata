@@ -237,96 +237,6 @@
 
   
   
-  
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-      
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" >
-      
-      
-      
-      
-        <label class="md-nav__link" for="__nav_3">
-          How-to guides
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <nav class="md-nav" aria-label="How-to guides" data-md-level="1">
-        <label class="md-nav__title" for="__nav_3">
-          <span class="md-nav__icon md-icon"></span>
-          How-to guides
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../how_to/install_this_plugin.html" class="md-nav__link">
-        Install this Plugin
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../how_to/use_this_plugin.html" class="md-nav__link">
-        Use this Plugin
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../how_to/contribute_to_this_plugin.html" class="md-nav__link">
-        Contribute to this plugin
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../how_to/contribute_to_the_documentation.html" class="md-nav__link">
-        Contribute to the documentation
-      </a>
-    </li>
-  
-
-            
-          
-        </ul>
-      </nav>
-    </li>
-  
-
-    
-      
-      
-      
-
-  
-  
     
   
   
@@ -338,9 +248,81 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Explanation
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="explanation.html" class="md-nav__link md-nav__link--active">
         Explanation
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#design-choices" class="md-nav__link">
+    Design choices
+  </a>
+  
+    <nav class="md-nav" aria-label="Design choices">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-canonical-schema-adapter-split" class="md-nav__link">
+    1. Canonical schema + adapter split
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-plugin-owned-extraction" class="md-nav__link">
+    2. Plugin-owned extraction
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-two-file-merge-model" class="md-nav__link">
+    3. Two-file merge model
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-override-reporting" class="md-nav__link">
+    4. Override reporting
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#migration-strategy" class="md-nav__link">
+    Migration strategy
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -381,6 +363,62 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#design-choices" class="md-nav__link">
+    Design choices
+  </a>
+  
+    <nav class="md-nav" aria-label="Design choices">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-canonical-schema-adapter-split" class="md-nav__link">
+    1. Canonical schema + adapter split
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-plugin-owned-extraction" class="md-nav__link">
+    2. Plugin-owned extraction
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-two-file-merge-model" class="md-nav__link">
+    3. Two-file merge model
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-override-reporting" class="md-nav__link">
+    4. Override reporting
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#migration-strategy" class="md-nav__link">
+    Migration strategy
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -393,10 +431,35 @@
                 
 
 <h1 id="explanation">Explanation<a class="headerlink" href="#explanation" title="Permanent link">&para;</a></h1>
-<div class="admonition note">
-<p class="admonition-title">Attention</p>
-<p>TODO</p>
-</div>
+<h2 id="design-choices">Design choices<a class="headerlink" href="#design-choices" title="Permanent link">&para;</a></h2>
+<h3 id="1-canonical-schema-adapter-split">1. Canonical schema + adapter split<a class="headerlink" href="#1-canonical-schema-adapter-split" title="Permanent link">&para;</a></h3>
+<p>The canonical plugin metadata contract is defined in LinkML.
+NOMAD metainfo classes mirror this model for runtime integration, searchability, and archive persistence.</p>
+<p>This keeps semantic ownership in one canonical schema while preserving compatibility with existing NOMAD infrastructure.</p>
+<h3 id="2-plugin-owned-extraction">2. Plugin-owned extraction<a class="headerlink" href="#2-plugin-owned-extraction" title="Permanent link">&para;</a></h3>
+<p>Metadata extraction is executed in each plugin repository CI rather than centrally in crawler CI.</p>
+<p>Why:</p>
+<ul>
+<li>no need to install every plugin in a central pipeline,</li>
+<li>plugin maintainers can add plugin-specific extraction hooks,</li>
+<li>extraction behavior is versioned with plugin code.</li>
+</ul>
+<h3 id="3-two-file-merge-model">3. Two-file merge model<a class="headerlink" href="#3-two-file-merge-model" title="Permanent link">&para;</a></h3>
+<p>Automation writes a machine-owned generated file and never overwrites the manual metadata file.</p>
+<ul>
+<li>generated: <code>.nomad/plugin-metadata.generated.yaml</code></li>
+<li>manual: <code>nomad_plugin_metadata.yaml</code></li>
+</ul>
+<p>Effective metadata is produced by deterministic deep-merge with manual precedence.</p>
+<h3 id="4-override-reporting">4. Override reporting<a class="headerlink" href="#4-override-reporting" title="Permanent link">&para;</a></h3>
+<p>When manual values override generated values, the pipeline records those blocked/generated conflicts in:</p>
+<ul>
+<li><code>.nomad/plugin-metadata.override-report.yaml</code></li>
+</ul>
+<p>This gives maintainers visibility into stale generated signals without blocking CI by default.</p>
+<h2 id="migration-strategy">Migration strategy<a class="headerlink" href="#migration-strategy" title="Permanent link">&para;</a></h2>
+<p><code>nomad-plugins</code> internal schema is treated as a transitional adapter.
+The target state is canonical metadata-first ingestion and eventual adapter phase-out after compatibility gates are met.</p>
 
               
             </article>
@@ -410,7 +473,7 @@
     <nav class="md-footer__inner md-grid" aria-label="Footer">
       
         
-        <a href="../how_to/contribute_to_the_documentation.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: Contribute to the documentation" rel="prev">
+        <a href="../tutorial/tutorial.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: Tutorial" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
           </div>
@@ -419,7 +482,7 @@
               <span class="md-footer__direction">
                 Previous
               </span>
-              Contribute to the documentation
+              Tutorial
             </div>
           </div>
         </a>

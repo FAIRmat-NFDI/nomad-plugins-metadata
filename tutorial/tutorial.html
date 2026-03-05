@@ -233,100 +233,69 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Tutorial
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="tutorial.html" class="md-nav__link md-nav__link--active">
         Tutorial
       </a>
       
-    </li>
-  
+        
 
-    
-      
-      
-      
-
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
   
   
   
     
-    <li class="md-nav__item md-nav__item--nested">
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
+        <li class="md-nav__item">
+  <a href="#1-add-manual-metadata-file" class="md-nav__link">
+    1. Add manual metadata file
+  </a>
+  
+</li>
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" >
+        <li class="md-nav__item">
+  <a href="#2-run-extractor-locally" class="md-nav__link">
+    2. Run extractor locally
+  </a>
+  
+</li>
       
+        <li class="md-nav__item">
+  <a href="#3-validate-schema-assets-in-this-package" class="md-nav__link">
+    3. Validate schema assets in this package
+  </a>
+  
+</li>
       
+        <li class="md-nav__item">
+  <a href="#4-add-workflow-in-plugin-repository" class="md-nav__link">
+    4. Add workflow in plugin repository
+  </a>
+  
+</li>
       
+        <li class="md-nav__item">
+  <a href="#5-review-overrides" class="md-nav__link">
+    5. Review overrides
+  </a>
+  
+</li>
       
-        <label class="md-nav__link" for="__nav_3">
-          How-to guides
-          <span class="md-nav__icon md-icon"></span>
-        </label>
+    </ul>
+  
+</nav>
       
-      <nav class="md-nav" aria-label="How-to guides" data-md-level="1">
-        <label class="md-nav__title" for="__nav_3">
-          <span class="md-nav__icon md-icon"></span>
-          How-to guides
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../how_to/install_this_plugin.html" class="md-nav__link">
-        Install this Plugin
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../how_to/use_this_plugin.html" class="md-nav__link">
-        Use this Plugin
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../how_to/contribute_to_this_plugin.html" class="md-nav__link">
-        Contribute to this plugin
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../how_to/contribute_to_the_documentation.html" class="md-nav__link">
-        Contribute to the documentation
-      </a>
-    </li>
-  
-
-            
-          
-        </ul>
-      </nav>
     </li>
   
 
@@ -381,6 +350,49 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-add-manual-metadata-file" class="md-nav__link">
+    1. Add manual metadata file
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-run-extractor-locally" class="md-nav__link">
+    2. Run extractor locally
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-validate-schema-assets-in-this-package" class="md-nav__link">
+    3. Validate schema assets in this package
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-add-workflow-in-plugin-repository" class="md-nav__link">
+    4. Add workflow in plugin repository
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-review-overrides" class="md-nav__link">
+    5. Review overrides
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -393,10 +405,42 @@
                 
 
 <h1 id="tutorial">Tutorial<a class="headerlink" href="#tutorial" title="Permanent link">&para;</a></h1>
-<div class="admonition note">
-<p class="admonition-title">Attention</p>
-<p>TODO</p>
-</div>
+<p>This tutorial shows the standard plugin-repo metadata workflow.</p>
+<h2 id="1-add-manual-metadata-file">1. Add manual metadata file<a class="headerlink" href="#1-add-manual-metadata-file" title="Permanent link">&para;</a></h2>
+<p>Create <code>nomad_plugin_metadata.yaml</code> in repository root.</p>
+<p>Minimal example:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">my-plugin</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="nt">metadata_schema_version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1.0.0</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">My Plugin</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="nt">source_repository</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://github.com/example/my-plugin</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="nt">maturity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">alpha</span>
+</code></pre></div>
+<h2 id="2-run-extractor-locally">2. Run extractor locally<a class="headerlink" href="#2-run-extractor-locally" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>nomad-plugin-metadata<span class="w"> </span>extract<span class="w"> </span>--repo-path<span class="w"> </span>.
+</code></pre></div>
+<p>Generated outputs:</p>
+<ul>
+<li><code>.nomad/plugin-metadata.generated.yaml</code></li>
+<li><code>.nomad/plugin-metadata.effective.yaml</code></li>
+<li><code>.nomad/plugin-metadata.override-report.yaml</code></li>
+</ul>
+<h2 id="3-validate-schema-assets-in-this-package">3. Validate schema assets in this package<a class="headerlink" href="#3-validate-schema-assets-in-this-package" title="Permanent link">&para;</a></h2>
+<p>From this repository:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>uv<span class="w"> </span>run<span class="w"> </span>pytest<span class="w"> </span>-q<span class="w"> </span>tests/schema_packages/test_schema_assets.py
+</code></pre></div>
+<h2 id="4-add-workflow-in-plugin-repository">4. Add workflow in plugin repository<a class="headerlink" href="#4-add-workflow-in-plugin-repository" title="Permanent link">&para;</a></h2>
+<p>Copy template:</p>
+<ul>
+<li><code>docs/templates/update-plugin-metadata.yml</code></li>
+</ul>
+<p>Place it in plugin repo as:</p>
+<ul>
+<li><code>.github/workflows/update-plugin-metadata.yml</code></li>
+</ul>
+<p>By default it runs on push to <code>main</code> and can auto-commit generated metadata files.</p>
+<h2 id="5-review-overrides">5. Review overrides<a class="headerlink" href="#5-review-overrides" title="Permanent link">&para;</a></h2>
+<p>Check <code>.nomad/plugin-metadata.override-report.yaml</code> after runs.
+If important fields are consistently overridden manually, consider improving extractor rules for that plugin type.</p>
 
               
             </article>
@@ -426,13 +470,13 @@
       
       
         
-        <a href="../how_to/install_this_plugin.html" class="md-footer__link md-footer__link--next" aria-label="Next: Install this Plugin" rel="next">
+        <a href="../explanation/explanation.html" class="md-footer__link md-footer__link--next" aria-label="Next: Explanation" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              Install this Plugin
+              Explanation
             </div>
           </div>
           <div class="md-footer__button md-icon">
