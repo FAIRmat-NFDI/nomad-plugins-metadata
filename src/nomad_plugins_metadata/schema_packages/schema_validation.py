@@ -18,7 +18,7 @@ def _run(cmd: list[str]) -> None:
     except FileNotFoundError as exc:
         raise RuntimeError(
             f'Missing command: {cmd[0]!r}. Install dev dependencies first '
-            "(e.g. `uv sync --all-extras`)."
+            '(e.g. `uv sync --all-extras`).'
         ) from exc
     if result.returncode != 0:
         raise RuntimeError(
@@ -34,14 +34,14 @@ def validate_schema_assets(run_linkml_validation: bool = True) -> None:
     if not schema_version:
         raise RuntimeError('Schema is missing top-level version.')
 
-    domain_values = set(
-        schema['enums']['DomainCategory']['permissible_values'].keys()
-    )
+    domain_values = set(schema['enums']['DomainCategory']['permissible_values'].keys())
     maturity_values = set(schema['enums']['MaturityLevel']['permissible_values'].keys())
 
     examples = sorted(EXAMPLES_DIR.glob('*.yaml'))
     if not examples:
-        raise RuntimeError('No example files found in src/nomad_plugins_metadata/examples.')
+        raise RuntimeError(
+            'No example files found in src/nomad_plugins_metadata/examples.'
+        )
 
     for example in examples:
         with example.open('r', encoding='utf-8') as f:

@@ -1,0 +1,174 @@
+name: extract-plugin-metadata
+
+on:
+  workflow_call:
+    inputs:
+      python_version:
+        description: Python version to use for extraction.
+        required: false
+        type: string
+        default: '3.12'
+      uv_version:
+        description: uv version to use.
+        required: false
+        type: string
+        default: '0.9'
+      package_spec:
+        description: Package spec to install (pin recommended).
+        required: false
+        type: string
+        default: 'nomad-plugins-metadata'
+      repo_path:
+        description: Repository root path.
+        required: false
+        type: string
+        default: '.'
+      manual_path:
+        description: Manual metadata override file path.
+        required: false
+        type: string
+        default: 'nomad_plugin_metadata.yaml'
+      generated_path:
+        description: Generated metadata file path.
+        required: false
+        type: string
+        default: '.nomad/plugin-metadata.generated.yaml'
+      effective_path:
+        description: Effective merged metadata file path.
+        required: false
+        type: string
+        default: '.nomad/plugin-metadata.effective.yaml'
+      report_path:
+        description: Override report file path.
+        required: false
+        type: string
+        default: '.nomad/plugin-metadata.override-report.yaml'
+      auto_commit:
+        description: Commit and push generated files if changed.
+        required: false
+        type: boolean
+        default: false
+      commit_message:
+        description: Commit message for auto-commit mode.
+        required: false
+        type: string
+        default: 'chore: update generated plugin metadata'
+    secrets:
+      token:
+        required: false
+
+  workflow_dispatch:
+    inputs:
+      python_version:
+        description: Python version to use for extraction.
+        required: false
+        type: string
+        default: '3.12'
+      uv_version:
+        description: uv version to use.
+        required: false
+        type: string
+        default: '0.9'
+      package_spec:
+        description: Package spec to install (pin recommended).
+        required: false
+        type: string
+        default: 'nomad-plugins-metadata'
+      repo_path:
+        description: Repository root path.
+        required: false
+        type: string
+        default: '.'
+      manual_path:
+        description: Manual metadata override file path.
+        required: false
+        type: string
+        default: 'nomad_plugin_metadata.yaml'
+      generated_path:
+        description: Generated metadata file path.
+        required: false
+        type: string
+        default: '.nomad/plugin-metadata.generated.yaml'
+      effective_path:
+        description: Effective merged metadata file path.
+        required: false
+        type: string
+        default: '.nomad/plugin-metadata.effective.yaml'
+      report_path:
+        description: Override report file path.
+        required: false
+        type: string
+        default: '.nomad/plugin-metadata.override-report.yaml'
+      auto_commit:
+        description: Commit and push generated files if changed.
+        required: false
+        type: boolean
+        default: false
+      commit_message:
+        description: Commit message for auto-commit mode.
+        required: false
+        type: string
+        default: 'chore: update generated plugin metadata'
+
+permissions:
+  contents: write
+
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+    env:
+      UV_SYSTEM_PYTHON: true
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.token || github.token }}
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          version: ${{ inputs.uv_version }}
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ inputs.python_version }}
+
+      - name: Install extractor package
+        run: |
+          uv pip install "${{ inputs.package_spec }}"
+
+      - name: Run metadata extraction
+        run: |
+          nomad-plugin-metadata extract \
+            --repo-path "${{ inputs.repo_path }}" \
+            --manual-path "${{ inputs.manual_path }}" \
+            --generated-path "${{ inputs.generated_path }}" \
+            --effective-path "${{ inputs.effective_path }}" \
+            --report-path "${{ inputs.report_path }}"
+
+      - name: Upload metadata artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: plugin-metadata
+          path: |
+            ${{ inputs.generated_path }}
+            ${{ inputs.effective_path }}
+            ${{ inputs.report_path }}
+
+      - name: Commit generated metadata
+        if: ${{ inputs.auto_commit }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add "${{ inputs.generated_path }}" "${{ inputs.effective_path }}" "${{ inputs.report_path }}"
+
+          if git diff --cached --quiet; then
+            echo "No metadata changes to commit."
+            exit 0
+          fi
+
+          git commit -m "${{ inputs.commit_message }}"
+          git push

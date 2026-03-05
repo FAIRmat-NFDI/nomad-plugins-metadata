@@ -1,24 +1,32 @@
 # nomad-plugins-metadata
 
-Canonical metadata schema and tooling foundation for the NOMAD plugin registry ecosystem.
+Canonical schema + tooling package for generating, validating, and merging NOMAD plugin metadata.
 
-## Phase 1 status
+## What this package provides
 
-Phase 1 (schema contract definition) is initialized with the following artifacts:
+- Canonical metadata schema:
+  - `src/nomad_plugins_metadata/schema_packages/nomad_plugin_metadata.yaml`
+- NOMAD metainfo adapter classes:
+  - `src/nomad_plugins_metadata/schema_packages/schema_package.py`
+- Mapping docs:
+  - `src/nomad_plugins_metadata/schema_packages/datatractor_mapping.md`
+  - `src/nomad_plugins_metadata/adapters/nomad_mapping.md`
+- Reusable extractor CLI:
+  - `nomad-plugin-metadata extract ...`
+- Reusable GitHub workflow for plugin repos:
+  - `.github/workflows/extract-plugin-metadata.yml`
 
-- `src/nomad_plugins_metadata/schema_packages/nomad_plugin_metadata.yaml`: canonical LinkML schema (`v1.0.0`).
-- `src/nomad_plugins_metadata/schema_packages/datatractor_mapping.md`: compatibility mapping to datatractor fields.
-- `src/nomad_plugins_metadata/adapters/nomad_mapping.md`: mapping to transitional `nomad-plugins` metainfo adapter.
-- `src/nomad_plugins_metadata/examples/plugin-parser-minimal.yaml`: minimal parser plugin metadata example.
-- `src/nomad_plugins_metadata/examples/plugin-app-minimal.yaml`: minimal app plugin metadata example.
-- `src/nomad_plugins_metadata/examples/plugin-full-override.yaml`: comprehensive override-style example.
+## Typical usage in a plugin repository
 
-Design decisions:
-
-1. Canonical source of truth is LinkML schema in this repository.
-2. NOMAD metainfo classes in `src/nomad_plugins_metadata/schema_packages/schema_package.py` provide runtime integration and mirror the canonical model.
-3. Extraction is owned by each plugin repository CI (not centralized in crawler CI).
-4. `nomad-plugins` internal schema is transitional and should be phased out after migration gates.
+1. Maintain manual metadata in:
+   - `nomad_plugin_metadata.yaml`
+2. Run extractor automation (CLI or reusable workflow).
+3. Automation generates:
+   - `.nomad/plugin-metadata.generated.yaml`
+   - `.nomad/plugin-metadata.effective.yaml`
+   - `.nomad/plugin-metadata.override-report.yaml`
+4. Merge precedence is deterministic:
+   - manual override (`nomad_plugin_metadata.yaml`) > generated metadata
 
 ## Schema validation
 
@@ -26,6 +34,52 @@ Design decisions:
   - `uv run python scripts/validate_schema_assets.py`
 - Changelog for schema evolution:
   - `SCHEMA_CHANGELOG.md`
+
+## Extractor CLI
+
+This package now includes a reusable extractor CLI for plugin repositories:
+
+```sh
+nomad-plugin-metadata extract --repo-path .
+```
+
+Default outputs:
+
+- `.nomad/plugin-metadata.generated.yaml` (machine-generated baseline)
+- `.nomad/plugin-metadata.effective.yaml` (deep-merged effective metadata)
+- `.nomad/plugin-metadata.override-report.yaml` (manual override report/warnings)
+
+Merge precedence is deterministic: `nomad_plugin_metadata.yaml` (manual) > generated.
+
+## Reusable Workflow
+
+This repository provides a reusable workflow that plugin repos can call:
+`.github/workflows/extract-plugin-metadata.yml`.
+
+Ready-to-copy caller template:
+`docs/templates/update-plugin-metadata.yml`
+
+Example caller workflow in a plugin repository:
+
+```yaml
+name: update-plugin-metadata
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  extract:
+    uses: FAIRmat-NFDI/nomad-plugins-metadata/.github/workflows/extract-plugin-metadata.yml@main
+    permissions:
+      contents: write
+    with:
+      package_spec: nomad-plugins-metadata==0.1.0
+      auto_commit: true
+```
+
+If you need plugin-specific enrichment, add a repository-local hook script and run it before/after the reusable extractor job.
 
 This `nomad` plugin was generated with `Cookiecutter` along with `@nomad`'s [`cookiecutter-nomad-plugin`](https://github.com/FAIRmat-NFDI/cookiecutter-nomad-plugin) template.
 

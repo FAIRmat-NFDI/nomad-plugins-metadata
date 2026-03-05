@@ -19,9 +19,7 @@ def _load_linkml_schema():
 
 def test_domain_category_enum_consistency():
     schema = _load_linkml_schema()
-    linkml_values = set(
-        schema['enums']['DomainCategory']['permissible_values'].keys()
-    )
+    linkml_values = set(schema['enums']['DomainCategory']['permissible_values'].keys())
     metainfo_values = set(DOMAIN_CATEGORIES)
     assert metainfo_values == linkml_values
 

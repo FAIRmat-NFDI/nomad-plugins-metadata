@@ -25,7 +25,8 @@ maintainers = [
 ]
 license = { file = "LICENSE" }
 dependencies = [
-    "nomad-lab>=1.4.1"
+    "nomad-lab>=1.4.1",
+    "pyyaml",
 ]
 
 [project.urls]
@@ -133,6 +134,9 @@ where = ["src"]
 [project.entry-points.'nomad.plugin']
 
 schema_package_entry_point = "nomad_plugins_metadata.schema_packages:schema_package_entry_point"
+
+[project.scripts]
+nomad-plugin-metadata = "nomad_plugins_metadata.extractor.cli:main"
 
 
 
