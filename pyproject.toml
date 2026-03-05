@@ -46,11 +46,6 @@ dev = [
     "pytest-asyncio",
 ]
 
-[tool.uv]
-extra-index-url = [
-  "https://gitlab.mpcdf.mpg.de/api/v4/projects/2187/packages/pypi/simple",
-]
-    
 [tool.ruff]
 # Exclude a variety of commonly ignored directories.
 exclude = [
