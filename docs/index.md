@@ -1,48 +1,50 @@
-# Welcome to the `nomad-plugins-metadata` documentation
+# `nomad-plugins-metadata`
 
-About
+Canonical schema and tooling package for generating, validating, and merging NOMAD plugin metadata.
 
-## Introduction
+## What this package is for
 
-!!! note "Attention"
-    TODO
+`nomad-plugins-metadata` is the shared foundation for plugin metadata across:
 
-<div markdown="block" class="home-grid">
-<div markdown="block">
+- plugin repositories (metadata authoring + automated extraction),
+- `nomad-plugins` ingestion (transitional adapter mapping),
+- `nomad-docs` registry rendering and filtering.
 
-### Tutorial
+The package standardizes both metadata structure and automation behavior so plugin metadata is reproducible across repositories.
 
-TODO
+## Core capabilities
 
-- [Tutorial](tutorial/tutorial.md)
+- Canonical LinkML schema definition.
+- NOMAD metainfo adapter classes.
+- Metadata extraction CLI for plugin repositories.
+- Deterministic merge contract: manual metadata overrides generated metadata.
+- Override report generation for fields blocked by manual edits.
+- Reusable GitHub Actions workflow for repository-level automation.
 
-</div>
-<div markdown="block">
+## Main artifacts
 
-### How-to guides
+- Schema: `src/nomad_plugins_metadata/schema_packages/nomad_plugin_metadata.yaml`
+- Metainfo adapter: `src/nomad_plugins_metadata/schema_packages/schema_package.py`
+- Datatractor mapping: `src/nomad_plugins_metadata/schema_packages/datatractor_mapping.md`
+- NOMAD adapter mapping: `src/nomad_plugins_metadata/adapters/nomad_mapping.md`
+- Examples: `src/nomad_plugins_metadata/examples/`
 
-How-to guides provide step-by-step instructions for a wide range of tasks, with the overarching topics:
+## Typical plugin-repo flow
 
-- [Install this plugin](how_to/install_this_plugin.md)
-- [Use this plugin](how_to/use_this_plugin.md)
-- [Contribute to this plugin](how_to/contribute_to_this_plugin.md)
-- [Contribute to the documentation](how_to/contribute_to_the_documentation.md)
+1. Maintainer edits `nomad_plugin_metadata.yaml` (manual override file).
+2. CI runs `nomad-plugin-metadata extract`.
+3. Workflow writes:
+   - `.nomad/plugin-metadata.generated.yaml`
+   - `.nomad/plugin-metadata.effective.yaml`
+   - `.nomad/plugin-metadata.override-report.yaml`
+4. Consumers ingest effective metadata.
 
-</div>
+Merge precedence is always:
 
-<div markdown="block">
+`nomad_plugin_metadata.yaml` > `.nomad/plugin-metadata.generated.yaml`
 
-### Explanation
+## Where to go next
 
-The explanation [section](explanation/explanation.md) provides background knowledge on this plugin.
-
-</div>
-<div markdown="block">
-
-### Reference
-
-The reference [section](reference/references.md) includes all CLI commands and arguments, all configuration options,
-the possible schema annotations and their arguments, and a glossary of used terms.
-
-</div>
-</div>
+- See [Tutorial](tutorial/tutorial.md) for end-to-end usage.
+- See [Explanation](explanation/explanation.md) for architecture rationale.
+- See [Reference](reference/references.md) for commands, files, and workflow inputs.

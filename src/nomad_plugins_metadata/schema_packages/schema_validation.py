@@ -1,15 +1,14 @@
 from __future__ import annotations
 
 import subprocess
-from pathlib import Path
+from importlib.resources import as_file, files
 
 import yaml
 
-REPO_ROOT = Path(__file__).resolve().parents[3]
-SCHEMA_PATH = (
-    REPO_ROOT / 'src/nomad_plugins_metadata/schema_packages/nomad_plugin_metadata.yaml'
+SCHEMA_RESOURCE = files('nomad_plugins_metadata.schema_packages').joinpath(
+    'nomad_plugin_metadata.yaml'
 )
-EXAMPLES_DIR = REPO_ROOT / 'src/nomad_plugins_metadata/examples'
+EXAMPLES_RESOURCE = files('nomad_plugins_metadata').joinpath('examples')
 
 
 def _run(cmd: list[str]) -> None:
@@ -26,9 +25,13 @@ def _run(cmd: list[str]) -> None:
         )
 
 
+def load_schema() -> dict:
+    with SCHEMA_RESOURCE.open('r', encoding='utf-8') as f:
+        return yaml.safe_load(f)
+
+
 def validate_schema_assets(run_linkml_validation: bool = True) -> None:
-    with SCHEMA_PATH.open('r', encoding='utf-8') as f:
-        schema = yaml.safe_load(f)
+    schema = load_schema()
 
     schema_version = schema.get('version')
     if not schema_version:
@@ -37,11 +40,16 @@ def validate_schema_assets(run_linkml_validation: bool = True) -> None:
     domain_values = set(schema['enums']['DomainCategory']['permissible_values'].keys())
     maturity_values = set(schema['enums']['MaturityLevel']['permissible_values'].keys())
 
-    examples = sorted(EXAMPLES_DIR.glob('*.yaml'))
+    examples = sorted(
+        [
+            example
+            for example in EXAMPLES_RESOURCE.iterdir()
+            if example.name.endswith('.yaml')
+        ],
+        key=lambda example: example.name,
+    )
     if not examples:
-        raise RuntimeError(
-            'No example files found in src/nomad_plugins_metadata/examples.'
-        )
+        raise RuntimeError('No example files found in nomad_plugins_metadata/examples.')
 
     for example in examples:
         with example.open('r', encoding='utf-8') as f:
@@ -69,14 +77,16 @@ def validate_schema_assets(run_linkml_validation: bool = True) -> None:
                 )
 
     if run_linkml_validation:
-        for example in examples:
-            _run(
-                [
-                    'linkml-validate',
-                    '-s',
-                    str(SCHEMA_PATH),
-                    str(example),
-                    '-C',
-                    'PluginPackage',
-                ]
-            )
+        with as_file(SCHEMA_RESOURCE) as schema_path:
+            for example in examples:
+                with as_file(example) as example_path:
+                    _run(
+                        [
+                            'linkml-validate',
+                            '-s',
+                            str(schema_path),
+                            str(example_path),
+                            '-C',
+                            'PluginPackage',
+                        ]
+                    )

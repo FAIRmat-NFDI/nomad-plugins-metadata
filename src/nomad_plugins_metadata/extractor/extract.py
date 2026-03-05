@@ -5,7 +5,7 @@ from pathlib import Path
 
 import tomllib
 
-from nomad_plugins_metadata.schema_packages.schema_validation import SCHEMA_PATH
+from nomad_plugins_metadata.schema_packages.schema_validation import load_schema
 
 
 def _read_pyproject(pyproject_path: Path) -> dict:
@@ -16,10 +16,7 @@ def _read_pyproject(pyproject_path: Path) -> dict:
 
 
 def _schema_version() -> str:
-    import yaml
-
-    with SCHEMA_PATH.open('r', encoding='utf-8') as f:
-        schema = yaml.safe_load(f)
+    schema = load_schema()
     return str(schema.get('version', '1.0.0'))
 
 
