@@ -1,0 +1,15 @@
+name: check-plugin-metadata
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  metadata-check:
+    uses: ./.github/workflows/extract-plugin-metadata.yml
+    with:
+      package_spec: .
+      check_only: true
