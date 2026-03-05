@@ -1,0 +1,104 @@
+id: nomad-plugin-domain-example
+metadata_schema_version: 1.0.0
+name: Domain Example Plugin
+description: Full override example showing all major sections.
+plugin_version: 0.1.0
+maturity: alpha
+subject:
+  - example-domain
+  - workflows
+license: Apache-2.0
+source_repository: https://github.com/FAIRmat-NFDI/nomad-domain-example
+documentation: https://example.org/docs
+homepage: https://example.org
+issue_tracker: https://github.com/FAIRmat-NFDI/nomad-domain-example/issues
+maintainers:
+  - name: Maintainer One
+    email: one@example.org
+    affiliation: FAIRmat
+    role: maintainer
+  - name: Maintainer Two
+    email: two@example.org
+    role: contributor
+repository_url: https://github.com/FAIRmat-NFDI/nomad-domain-example
+repository_default_branch: main
+entry_points:
+  - id: parser_entry
+    entry_point_group: nomad.plugin
+    entry_point_name: domain_parser
+    python_object: nomad_domain.parsers:DomainParser
+    capability_type: parser
+  - id: app_entry
+    entry_point_group: nomad.plugin
+    entry_point_name: domain_app
+    python_object: nomad_domain.apps:DomainApp
+    capability_type: app
+supported_filetypes:
+  - domain-raw
+  - domain-processed
+capabilities:
+  - id: capability-parser
+    capability_type: parser
+    title: Domain parser
+    summary: Parses raw instrument files.
+    parser_details:
+      parser_name: DomainParser
+      mainfile_name_re: .*\.raw$
+      mainfile_mime_re: application/octet-stream
+      mainfile_binary_header: '44 4F 4D 41 49 4E'
+      compression_support:
+        - gz
+        - zip
+      auxiliary_file_patterns:
+        - "*.cfg"
+        - "*.meta"
+  - id: capability-app
+    capability_type: app
+    title: Domain app
+    summary: Visual analytics application.
+file_format_support:
+  - id: domain-raw
+    label: Domain raw format
+    extensions:
+      - .raw
+    mime_types:
+      - application/octet-stream
+    standard: VendorX RAW
+    instrument_context: VendorX Instrument Family
+    notes: Binary stream format
+schema_dependencies:
+  - dependency_type: plugin
+    package_name: nomad-base-schema
+    version_range: '>=1.2,<2.0'
+    optional: false
+    purpose: Reuse base quantities
+  - dependency_type: python_package
+    package_name: pydantic
+    version_range: '>=2.0'
+    optional: true
+    purpose: Optional runtime validation layer
+suggested_usages:
+  - id: domain-workflow
+    title: Domain workflow analysis
+    user_intent: Ingest raw files and run standard processing/visualization workflows.
+    domain_category: workflow
+    technique: staged-analysis
+    audience: operators
+    maturity: alpha
+    tags:
+      - pipeline
+      - onboarding
+deployment:
+  on_central: true
+  on_example_oasis: true
+  on_pypi: false
+metadata_provenance:
+  - source: manual_override
+    extraction_method: manual
+    confidence: 1.0
+    generated_at: '2026-03-05T12:00:00Z'
+    generator_version: 0.1.0
+  - source: pyproject
+    extraction_method: deterministic
+    confidence: 0.9
+    generated_at: '2026-03-05T12:00:00Z'

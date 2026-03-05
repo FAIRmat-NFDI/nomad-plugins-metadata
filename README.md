@@ -1,6 +1,31 @@
 # nomad-plugins-metadata
 
-About
+Canonical metadata schema and tooling foundation for the NOMAD plugin registry ecosystem.
+
+## Phase 1 status
+
+Phase 1 (schema contract definition) is initialized with the following artifacts:
+
+- `src/nomad_plugins_metadata/schema_packages/nomad_plugin_metadata.yaml`: canonical LinkML schema (`v1.0.0`).
+- `src/nomad_plugins_metadata/schema_packages/datatractor_mapping.md`: compatibility mapping to datatractor fields.
+- `src/nomad_plugins_metadata/adapters/nomad_mapping.md`: mapping to transitional `nomad-plugins` metainfo adapter.
+- `src/nomad_plugins_metadata/examples/plugin-parser-minimal.yaml`: minimal parser plugin metadata example.
+- `src/nomad_plugins_metadata/examples/plugin-app-minimal.yaml`: minimal app plugin metadata example.
+- `src/nomad_plugins_metadata/examples/plugin-full-override.yaml`: comprehensive override-style example.
+
+Design decisions:
+
+1. Canonical source of truth is LinkML schema in this repository.
+2. NOMAD metainfo classes in `src/nomad_plugins_metadata/schema_packages/schema_package.py` provide runtime integration and mirror the canonical model.
+3. Extraction is owned by each plugin repository CI (not centralized in crawler CI).
+4. `nomad-plugins` internal schema is transitional and should be phased out after migration gates.
+
+## Schema validation
+
+- Validate schema and examples:
+  - `uv run python scripts/validate_schema_assets.py`
+- Changelog for schema evolution:
+  - `SCHEMA_CHANGELOG.md`
 
 This `nomad` plugin was generated with `Cookiecutter` along with `@nomad`'s [`cookiecutter-nomad-plugin`](https://github.com/FAIRmat-NFDI/cookiecutter-nomad-plugin) template.
 

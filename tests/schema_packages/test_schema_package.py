@@ -8,4 +8,7 @@ def test_schema_package():
     entry_archive = parse(test_file)[0]
     normalize_all(entry_archive)
 
-    assert entry_archive.data.message == 'Hello Markus!'
+    assert entry_archive.data.id == 'nomad-plugin-test'
+    assert entry_archive.data.name == 'Test Plugin'
+    assert entry_archive.data.capabilities[0].capability_type == 'parser'
+    assert entry_archive.data.deployment.on_example_oasis is True

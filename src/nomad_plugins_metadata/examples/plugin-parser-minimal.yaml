@@ -1,0 +1,76 @@
+id: nomad-plugin-quantumespresso
+metadata_schema_version: 1.0.0
+name: Quantum ESPRESSO Plugin
+description: Parser and schema plugin for Quantum ESPRESSO workflows.
+plugin_version: 0.4.0
+maturity: stable
+subject:
+  - density-functional-theory
+  - electronic-structure
+license: Apache-2.0
+source_repository: https://github.com/FAIRmat-NFDI/nomad-quantum-espresso-plugin
+documentation: https://fairmat-nfdi.github.io/nomad-quantum-espresso-plugin/
+maintainers:
+  - name: Example Maintainer
+    email: maintainer@example.org
+    affiliation: FAIRmat
+    role: maintainer
+entry_points:
+  - id: qe_parser_entry
+    entry_point_group: nomad.plugin
+    entry_point_name: quantumespresso_parser
+    python_object: nomad_quantum_espresso.parsers:QuantumEspressoParser
+    capability_type: parser
+supported_filetypes:
+  - qe-pw-in
+  - qe-pw-out
+capabilities:
+  - id: parser-qe-main
+    capability_type: parser
+    title: Quantum ESPRESSO parser
+    summary: Detects and parses pw.x input and output files.
+    parser_details:
+      parser_name: QuantumEspressoParser
+      mainfile_name_re: .*\.(in|out)$
+      mainfile_contents_re: (?s).*&CONTROL.*
+      mainfile_mime_re: text/.*
+      compression_support:
+        - gz
+      auxiliary_file_patterns:
+        - "*.UPF"
+file_format_support:
+  - id: qe-pw-in
+    label: Quantum ESPRESSO PW input
+    extensions:
+      - .in
+    mime_types:
+      - text/plain
+    standard: Quantum ESPRESSO
+schema_dependencies:
+  - dependency_type: schema_package
+    package_name: nomad-metainfo
+    version_range: '>=1.0'
+    optional: false
+    purpose: core metainfo definitions
+suggested_usages:
+  - id: qe-dft-bulk
+    title: Bulk DFT workflow parsing
+    user_intent: Parse output of routine bulk crystal QE calculations.
+    domain_category: simulations
+    technique: DFT
+    audience: researchers
+    maturity: stable
+    tags:
+      - qe
+      - dft
+deployment:
+  on_central: true
+  on_example_oasis: true
+  on_pypi: true
+  pypi_package: nomad-quantum-espresso-plugin
+metadata_provenance:
+  - source: static_code_scan
+    extraction_method: deterministic
+    confidence: 0.95
+    generated_at: '2026-03-05T12:00:00Z'
+    generator_version: 0.1.0

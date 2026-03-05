@@ -13,8 +13,8 @@ classifiers = [
     "License :: OSI Approved :: Apache Software License",
 ]
 name = "nomad-plugins-metadata"
-description = "About"
-version = "A schema package defining overarching metadata for nomad plugins"
+description = "Canonical metadata schema and tooling for NOMAD plugins"
+version = "0.1.0"
 readme = "README.md"
 requires-python = ">=3.10"
 authors = [
@@ -35,6 +35,8 @@ Repository = "https://github.com/FAIRmat-NFDI/nomad-plugins-metadata"
 dev = [
     "ruff",
     "pytest",
+    "pyyaml",
+    "linkml",
     "structlog",
     "mkdocs",
     "mkdocs-material==8.1.1",
@@ -123,6 +125,7 @@ line-ending = "auto"
 
 [tool.setuptools]
 package-dir = { "" = "src" }
+include-package-data = true
 
 [tool.setuptools.packages.find]
 where = ["src"]

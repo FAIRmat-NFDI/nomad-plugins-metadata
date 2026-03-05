@@ -1,1 +1,4 @@
 graft src/nomad_plugins_metadata/example_uploads
+graft src/nomad_plugins_metadata/adapters
+graft src/nomad_plugins_metadata/examples
+recursive-include src/nomad_plugins_metadata/schema_packages *.yaml *.md

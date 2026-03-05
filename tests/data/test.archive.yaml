@@ -1,3 +1,34 @@
 data:
-  m_def: nomad_plugins_metadata.schema_packages.schema_package.NewSchemaPackage
-  name: Markus
+  m_def: nomad_plugins_metadata.schema_packages.schema_package.PluginMetadata
+  id: nomad-plugin-test
+  metadata_schema_version: 1.0.0
+  name: Test Plugin
+  description: Minimal archive for schema package test
+  source_repository: https://github.com/example/test-plugin
+  supported_filetypes:
+    - test-format
+  maintainers:
+    - name: Test Maintainer
+      email: maintainer@example.org
+  capabilities:
+    - id: parser-capability
+      capability_type: parser
+      title: Test parser
+      parser_details:
+        parser_name: TestParser
+        mainfile_name_re: ".*\\.test$"
+  deployment:
+    on_central: false
+    on_example_oasis: true
+    on_pypi: false
+  suggested_usages:
+    - id: usage-1
+      title: Test usage
+      user_intent: Parse test files.
+      domain_category: measurements
+      maturity: beta
+  metadata_provenance:
+    - source: manual_override
+      extraction_method: manual
+      confidence: 1.0
+      generated_at: 2026-03-05T12:00:00Z

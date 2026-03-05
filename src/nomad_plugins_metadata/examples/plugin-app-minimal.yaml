@@ -1,0 +1,46 @@
+id: nomad-plugin-electrochem-app
+metadata_schema_version: 1.0.0
+name: Electrochemistry Analysis App
+description: App plugin for electrochemistry data analysis and visualization.
+plugin_version: 0.2.1
+maturity: beta
+subject:
+  - electrochemistry
+license: MIT
+source_repository: https://github.com/FAIRmat-NFDI/nomad-electrochem-app
+documentation: https://fairmat-nfdi.github.io/nomad-electrochem-app/
+maintainers:
+  - name: Example Maintainer
+    email: maintainer@example.org
+entry_points:
+  - id: electrochem_app
+    entry_point_group: nomad.plugin
+    entry_point_name: electrochem_app
+    python_object: nomad_electrochem.apps:ElectrochemApp
+    capability_type: app
+capabilities:
+  - id: app-electrochem-main
+    capability_type: app
+    title: Electrochemistry dashboard
+    summary: Domain-specific analysis pages for battery and cycling data.
+suggested_usages:
+  - id: electrochem-overview
+    title: Electrochem domain landing
+    user_intent: Explore electrochemistry datasets and run interactive analyses.
+    domain_category: measurements
+    technique: cyclic-voltammetry
+    audience: researchers
+    maturity: beta
+    tags:
+      - batteries
+      - cv
+deployment:
+  on_central: false
+  on_example_oasis: true
+  on_pypi: true
+  pypi_package: nomad-electrochem-app
+metadata_provenance:
+  - source: manual_override
+    extraction_method: manual
+    confidence: 1.0
+    generated_at: '2026-03-05T12:00:00Z'
