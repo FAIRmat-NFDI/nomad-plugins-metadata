@@ -58,6 +58,8 @@ This repository provides a reusable workflow that plugin repos can call:
 
 Ready-to-copy caller template:
 `docs/templates/update-plugin-metadata.yml`
+and PR check template:
+`docs/templates/check-plugin-metadata-pr.yml`
 
 This repository also uses the same pattern for self-testing:
 `.github/workflows/update-plugin-metadata.yml`
@@ -81,6 +83,9 @@ jobs:
       package_spec: nomad-plugins-metadata==0.1.0
       auto_commit: true
 ```
+
+For PR check-only enforcement (no auto-commit), use the template at
+`docs/templates/check-plugin-metadata-pr.yml`. If metadata is out of sync, the workflow fails with remediation commands in the job summary.
 
 If you need plugin-specific enrichment, add a repository-local hook script and run it before/after the reusable extractor job.
 

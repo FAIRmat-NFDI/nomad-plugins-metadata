@@ -48,6 +48,11 @@ on:
         required: false
         type: boolean
         default: false
+      check_only:
+        description: Fail if generated/effective/report files differ after extraction.
+        required: false
+        type: boolean
+        default: false
       commit_message:
         description: Commit message for auto-commit mode.
         required: false
@@ -104,6 +109,11 @@ on:
         required: false
         type: boolean
         default: false
+      check_only:
+        description: Fail if generated/effective/report files differ after extraction.
+        required: false
+        type: boolean
+        default: false
       commit_message:
         description: Commit message for auto-commit mode.
         required: false
@@ -157,8 +167,32 @@ jobs:
             ${{ inputs.effective_path }}
             ${{ inputs.report_path }}
 
+      - name: Check metadata sync
+        if: ${{ inputs.check_only }}
+        run: |
+          STATUS="$(git status --porcelain -- "${{ inputs.generated_path }}" "${{ inputs.effective_path }}" "${{ inputs.report_path }}")"
+          if [ -n "$STATUS" ]; then
+            echo "::error title=Plugin metadata out of sync::Run 'nomad-plugin-metadata extract --repo-path .' locally and commit updated .nomad/plugin-metadata files."
+            echo "### Metadata check failed" >> "$GITHUB_STEP_SUMMARY"
+            echo "" >> "$GITHUB_STEP_SUMMARY"
+            echo "Metadata files are out of date for this branch." >> "$GITHUB_STEP_SUMMARY"
+            echo "" >> "$GITHUB_STEP_SUMMARY"
+            echo "Run locally:" >> "$GITHUB_STEP_SUMMARY"
+            echo "\`\`\`bash" >> "$GITHUB_STEP_SUMMARY"
+            echo "nomad-plugin-metadata extract --repo-path ." >> "$GITHUB_STEP_SUMMARY"
+            echo "git add .nomad/plugin-metadata.generated.yaml .nomad/plugin-metadata.effective.yaml .nomad/plugin-metadata.override-report.yaml" >> "$GITHUB_STEP_SUMMARY"
+            echo "git commit -m \"chore: update generated plugin metadata\"" >> "$GITHUB_STEP_SUMMARY"
+            echo "\`\`\`" >> "$GITHUB_STEP_SUMMARY"
+            echo "" >> "$GITHUB_STEP_SUMMARY"
+            echo "Changed files:" >> "$GITHUB_STEP_SUMMARY"
+            echo "\`\`\`" >> "$GITHUB_STEP_SUMMARY"
+            echo "$STATUS" >> "$GITHUB_STEP_SUMMARY"
+            echo "\`\`\`" >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+
       - name: Commit generated metadata
-        if: ${{ inputs.auto_commit }}
+        if: ${{ inputs.auto_commit && !inputs.check_only }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
