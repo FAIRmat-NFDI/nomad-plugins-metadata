@@ -1,0 +1,14 @@
+name: check-plugin-metadata
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  metadata-check:
+    uses: FAIRmat-NFDI/nomad-plugins-metadata/.github/workflows/extract-plugin-metadata.yml@main
+    permissions:
+      contents: read
+    with:
+      package_spec: nomad-plugins-metadata==0.1.0
+      check_only: true
