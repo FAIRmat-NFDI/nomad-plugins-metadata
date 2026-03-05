@@ -48,9 +48,13 @@ def build_parser() -> argparse.ArgumentParser:
     )
     subparsers = parser.add_subparsers(dest='command', required=True)
 
-    extract = subparsers.add_parser('extract', help='Generate metadata files for a repo.')
+    extract = subparsers.add_parser(
+        'extract', help='Generate metadata files for a repo.'
+    )
     extract.add_argument('--repo-path', type=Path, default=Path('.'))
-    extract.add_argument('--manual-path', type=Path, default=Path('nomad_plugin_metadata.yaml'))
+    extract.add_argument(
+        '--manual-path', type=Path, default=Path('nomad_plugin_metadata.yaml')
+    )
     extract.add_argument(
         '--generated-path',
         type=Path,

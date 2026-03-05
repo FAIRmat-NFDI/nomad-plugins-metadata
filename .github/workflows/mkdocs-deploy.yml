@@ -5,6 +5,9 @@ on:
     branches:
       - main  # Triggers deployment on push to the main branch
 
+permissions:
+  contents: write
+
 env:
   REGISTRY: ghcr.io
   UV_VERSION: 0.9
@@ -18,6 +21,9 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+        with:
+          token: ${{ github.token }}
+          fetch-depth: 0
 
       - name: Install uv
         uses: astral-sh/setup-uv@v5

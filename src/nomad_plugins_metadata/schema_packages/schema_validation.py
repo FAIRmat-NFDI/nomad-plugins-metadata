@@ -14,7 +14,7 @@ EXAMPLES_DIR = REPO_ROOT / 'src/nomad_plugins_metadata/examples'
 
 def _run(cmd: list[str]) -> None:
     try:
-        result = subprocess.run(cmd, capture_output=True, text=True)
+        result = subprocess.run(cmd, capture_output=True, text=True, check=False)
     except FileNotFoundError as exc:
         raise RuntimeError(
             f'Missing command: {cmd[0]!r}. Install dev dependencies first '

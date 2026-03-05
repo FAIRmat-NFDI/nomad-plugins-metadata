@@ -29,7 +29,9 @@ def _deep_merge(base: dict, override: dict, path: str, overridden: list[dict]) -
     return merged
 
 
-def merge_generated_and_manual(generated: dict, manual_override: dict) -> tuple[dict, dict]:
+def merge_generated_and_manual(
+    generated: dict, manual_override: dict
+) -> tuple[dict, dict]:
     """Merge plugin metadata with deterministic `manual > generated` precedence."""
     overridden: list[dict] = []
     merged = _deep_merge(generated, manual_override, path='', overridden=overridden)

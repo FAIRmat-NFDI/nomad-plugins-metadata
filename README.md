@@ -59,6 +59,9 @@ This repository provides a reusable workflow that plugin repos can call:
 Ready-to-copy caller template:
 `docs/templates/update-plugin-metadata.yml`
 
+This repository also uses the same pattern for self-testing:
+`.github/workflows/update-plugin-metadata.yml`
+
 Example caller workflow in a plugin repository:
 
 ```yaml
