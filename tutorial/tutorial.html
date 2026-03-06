@@ -407,12 +407,12 @@
 <h1 id="tutorial">Tutorial<a class="headerlink" href="#tutorial" title="Permanent link">&para;</a></h1>
 <p>This tutorial shows the standard plugin-repo metadata workflow.</p>
 <h2 id="1-add-manual-metadata-file">1. Add manual metadata file<a class="headerlink" href="#1-add-manual-metadata-file" title="Permanent link">&para;</a></h2>
-<p>Create <code>nomad_plugin_metadata.yaml</code> in repository root.</p>
+<p>Create <code>nomad_plugin_metadata.manual.yaml</code> in repository root.</p>
 <p>Minimal example:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">my-plugin</span>
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="nt">metadata_schema_version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1.0.0</span>
 <a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">My Plugin</span>
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="nt">source_repository</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://github.com/example/my-plugin</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="nt">upstream_repository</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://github.com/example/my-plugin</span>
 <a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="nt">maturity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">alpha</span>
 </code></pre></div>
 <h2 id="2-run-extractor-locally">2. Run extractor locally<a class="headerlink" href="#2-run-extractor-locally" title="Permanent link">&para;</a></h2>
@@ -420,9 +420,9 @@
 </code></pre></div>
 <p>Generated outputs:</p>
 <ul>
-<li><code>.nomad/plugin-metadata.generated.yaml</code></li>
-<li><code>.nomad/plugin-metadata.effective.yaml</code></li>
-<li><code>.nomad/plugin-metadata.override-report.yaml</code></li>
+<li><code>nomad_plugin_metadata.auto.yaml</code></li>
+<li><code>nomad_plugin_metadata.yaml</code></li>
+<li><code>.metadata/plugin-metadata.override-report.yaml</code></li>
 </ul>
 <p>If the plugin is installed in your environment, extractor output also includes
 technical entry-point metadata (e.g., parser <code>mainfile_*</code> patterns, compression support).</p>
@@ -439,10 +439,10 @@ technical entry-point metadata (e.g., parser <code>mainfile_*</code> patterns, c
 <ul>
 <li><code>.github/workflows/update-plugin-metadata.yml</code></li>
 </ul>
-<p>By default it runs on release publication, updates generated/effective/report files,
-updates <code>nomad_plugin_metadata.yaml</code>, and opens or updates a rolling PR for maintainer review.</p>
+<p>By default it runs on release publication, updates auto/effective/report files,
+creates <code>nomad_plugin_metadata.manual.yaml</code> if missing, and opens or updates a rolling PR for maintainer review.</p>
 <h2 id="5-review-overrides">5. Review overrides<a class="headerlink" href="#5-review-overrides" title="Permanent link">&para;</a></h2>
-<p>Check <code>.nomad/plugin-metadata.override-report.yaml</code> after runs.
+<p>Check <code>.metadata/plugin-metadata.override-report.yaml</code> after runs.
 If important fields are consistently overridden manually, consider improving extractor rules for that plugin type.</p>
 
               
