@@ -1,4 +1,28 @@
 summary:
-  overridden_field_count: 0
+  overridden_field_count: 3
   manual_precedence: true
-overridden_fields: []
+overridden_fields:
+- field: metadata_provenance
+  generated_value:
+  - source: pyproject
+    extraction_method: deterministic
+    confidence: 0.9
+    generated_at: '2026-03-06T10:21:44.122529+00:00'
+    generator_version: 0.1.0
+  - source: static_code_scan
+    extraction_method: heuristic
+    confidence: 0.7
+    generated_at: '2026-03-06T10:21:44.122546+00:00'
+    generator_version: 0.1.0
+  manual_value:
+  - source: pyproject
+    extraction_method: deterministic
+    confidence: 0.9
+    generated_at: '2026-03-06T08:38:46.723915+00:00'
+    generator_version: 0.1.0
+- field: release_context.release_tag
+  generated_value: v0.2.0
+  manual_value: v0.1.0
+- field: release_context.release_commit_sha
+  generated_value: 25abd6e768542055d8a4309ee7402e2f56d62d11
+  manual_value: d8b88064e7a603c7f70c80409c4bf0d23a472304
