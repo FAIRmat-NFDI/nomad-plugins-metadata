@@ -66,7 +66,7 @@ file_format_support:
     instrument_context: VendorX Instrument Family
     notes: Binary stream format
 schema_dependencies:
-  - dependency_type: plugin
+  - dependency_type: nomad_plugin
     package_name: nomad-base-schema
     version_range: '>=1.2,<2.0'
     optional: false

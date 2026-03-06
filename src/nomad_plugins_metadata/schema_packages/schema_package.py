@@ -28,7 +28,7 @@ DOMAIN_CATEGORIES = (
     'infrastructure',
 )
 MATURITY_LEVELS = ('alpha', 'beta', 'stable', 'archived')
-DEPENDENCY_TYPES = ('plugin', 'schema_package', 'python_package')
+DEPENDENCY_TYPES = ('nomad_plugin', 'python_package')
 METADATA_SOURCES = (
     'manual_override',
     'plugin_entry_points',

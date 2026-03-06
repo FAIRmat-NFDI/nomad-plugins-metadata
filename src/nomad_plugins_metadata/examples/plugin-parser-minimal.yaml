@@ -47,7 +47,7 @@ file_format_support:
       - text/plain
     standard: Quantum ESPRESSO
 schema_dependencies:
-  - dependency_type: schema_package
+  - dependency_type: nomad_plugin
     package_name: nomad-metainfo
     version_range: '>=1.0'
     optional: false

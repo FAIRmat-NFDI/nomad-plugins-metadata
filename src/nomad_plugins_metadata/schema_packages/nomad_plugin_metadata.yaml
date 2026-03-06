@@ -425,8 +425,7 @@ enums:
 
   DependencyType:
     permissible_values:
-      plugin: {}
-      schema_package: {}
+      nomad_plugin: {}
       python_package: {}
 
   MetadataSource:
