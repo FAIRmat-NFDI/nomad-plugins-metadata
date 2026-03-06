@@ -28,6 +28,9 @@ Generated outputs:
 - `.nomad/plugin-metadata.effective.yaml`
 - `.nomad/plugin-metadata.override-report.yaml`
 
+If the plugin is installed in your environment, extractor output also includes
+technical entry-point metadata (e.g., parser `mainfile_*` patterns, compression support).
+
 ## 3. Validate schema assets in this package
 
 From this repository:
