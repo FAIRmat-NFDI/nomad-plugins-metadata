@@ -424,6 +424,8 @@
 <li><code>.nomad/plugin-metadata.effective.yaml</code></li>
 <li><code>.nomad/plugin-metadata.override-report.yaml</code></li>
 </ul>
+<p>If the plugin is installed in your environment, extractor output also includes
+technical entry-point metadata (e.g., parser <code>mainfile_*</code> patterns, compression support).</p>
 <h2 id="3-validate-schema-assets-in-this-package">3. Validate schema assets in this package<a class="headerlink" href="#3-validate-schema-assets-in-this-package" title="Permanent link">&para;</a></h2>
 <p>From this repository:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>uv<span class="w"> </span>run<span class="w"> </span>pytest<span class="w"> </span>-q<span class="w"> </span>tests/schema_packages/test_schema_assets.py

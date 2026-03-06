@@ -458,6 +458,9 @@ NOMAD metainfo classes mirror this model for runtime integration, searchability,
 <li>plugin maintainers can add plugin-specific extraction hooks,</li>
 <li>extraction behavior is versioned with plugin code.</li>
 </ul>
+<p>The reusable workflow installs the target plugin repository in editable mode before extraction.
+This allows the extractor to load installed <code>nomad.plugin</code> entry-point objects and harvest
+technical metadata (especially parser matcher details) directly from entry-point configuration.</p>
 <h3 id="3-two-file-merge-model">3. Two-file merge model<a class="headerlink" href="#3-two-file-merge-model" title="Permanent link">&para;</a></h3>
 <p>Automation writes a machine-owned generated file and never overwrites the manual metadata file.</p>
 <ul>
