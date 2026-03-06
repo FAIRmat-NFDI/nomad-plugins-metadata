@@ -48,11 +48,23 @@ This package now includes a reusable extractor CLI for plugin repositories:
 nomad-plugin-metadata extract --repo-path .
 ```
 
+The extractor now reads technical plugin metadata from installed `nomad.plugin`
+entry points when available, including parser matcher fields such as:
+
+- `mainfile_name_re`
+- `mainfile_contents_re`
+- `mainfile_mime_re`
+- `mainfile_binary_header`
+- `supported_compressions` (mapped to `compression_support`)
+
 Default outputs:
 
 - `.nomad/plugin-metadata.generated.yaml` (machine-generated baseline)
 - `.nomad/plugin-metadata.effective.yaml` (deep-merged effective metadata)
 - `.nomad/plugin-metadata.override-report.yaml` (manual override report/warnings)
+
+Quick semantics reference is documented in:
+- `.nomad/README.md`
 
 Merge precedence is deterministic: `nomad_plugin_metadata.yaml` (manual) > generated.
 
@@ -104,6 +116,10 @@ Release PR mode (`create_pr: true`) behavior:
 - overwrites `.nomad/plugin-metadata.override-report.yaml`
 - updates forward-facing `nomad_plugin_metadata.yaml`
 - creates/updates a single rolling PR branch with a standard body including release tag/sha and changed files
+
+By default, the reusable workflow installs the target plugin repository in editable mode
+before extraction (`uv pip install -e <repo_path>`), so entry-point-derived technical
+metadata can be collected in CI.
 
 If you need plugin-specific enrichment, add a repository-local hook script and run it before/after the reusable extractor job.
 

@@ -18,6 +18,16 @@ on:
         required: false
         type: string
         default: 'nomad-plugins-metadata'
+      install_repo_package:
+        description: Install the target plugin repository before extraction.
+        required: false
+        type: boolean
+        default: true
+      install_repo_extras:
+        description: Optional extras selector for editable install (without brackets), e.g. dev.
+        required: false
+        type: string
+        default: ''
       repo_path:
         description: Repository root path.
         required: false
@@ -114,6 +124,16 @@ on:
         required: false
         type: string
         default: 'nomad-plugins-metadata'
+      install_repo_package:
+        description: Install the target plugin repository before extraction.
+        required: false
+        type: boolean
+        default: true
+      install_repo_extras:
+        description: Optional extras selector for editable install (without brackets), e.g. dev.
+        required: false
+        type: string
+        default: ''
       repo_path:
         description: Repository root path.
         required: false
@@ -219,6 +239,15 @@ jobs:
       - name: Install extractor package
         run: |
           uv pip install "${{ inputs.package_spec }}"
+
+      - name: Install target plugin package
+        if: ${{ inputs.install_repo_package }}
+        run: |
+          if [ -n "${{ inputs.install_repo_extras }}" ]; then
+            uv pip install -e "${{ inputs.repo_path }}[${{ inputs.install_repo_extras }}]"
+          else
+            uv pip install -e "${{ inputs.repo_path }}"
+          fi
 
       - name: Run metadata extraction
         run: |

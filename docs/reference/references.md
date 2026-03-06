@@ -19,6 +19,14 @@ Options:
 - `--release-sha` (default: empty)
 - `--update-front-file` (default: unset)
 
+Extractor behavior notes:
+
+- Baseline metadata is read from `pyproject.toml`.
+- Technical metadata is additionally read from installed `nomad.plugin` entry points
+  (for example parser matcher fields and supported compressions).
+- If plugin entry points are not installed/importable, extraction falls back to static
+  `pyproject` entry-point declarations.
+
 ## Metadata files
 
 - Manual override file:
@@ -54,6 +62,8 @@ Caller template:
 Key workflow inputs:
 
 - `package_spec`
+- `install_repo_package`
+- `install_repo_extras`
 - `repo_path`
 - `manual_path`
 - `generated_path`

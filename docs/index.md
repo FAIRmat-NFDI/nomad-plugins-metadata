@@ -40,6 +40,7 @@ The package standardizes both metadata structure and automation behavior so plug
 4. In release PR mode, workflow also updates:
    - `nomad_plugin_metadata.yaml`
 5. Consumers ingest effective metadata.
+6. Artifact semantics are documented in-repo at `.nomad/README.md`.
 
 Merge precedence is always:
 

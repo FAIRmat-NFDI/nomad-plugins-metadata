@@ -19,6 +19,10 @@ Why:
 - plugin maintainers can add plugin-specific extraction hooks,
 - extraction behavior is versioned with plugin code.
 
+The reusable workflow installs the target plugin repository in editable mode before extraction.
+This allows the extractor to load installed `nomad.plugin` entry-point objects and harvest
+technical metadata (especially parser matcher details) directly from entry-point configuration.
+
 ### 3. Two-file merge model
 
 Automation writes a machine-owned generated file and never overwrites the manual metadata file.
