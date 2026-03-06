@@ -14,7 +14,7 @@ Options:
 - `--manual-path` (default: `nomad_plugin_metadata.manual.yaml`)
 - `--auto-path` (default: `nomad_plugin_metadata.auto.yaml`)
 - `--effective-path` (default: `nomad_plugin_metadata.yaml`)
-- `--report-path` (default: `.nomad/plugin-metadata.override-report.yaml`)
+- `--report-path` (default: `.metadata/plugin-metadata.override-report.yaml`)
 - `--release-tag` (default: empty)
 - `--release-sha` (default: empty)
 - `--create-manual-template-if-missing` / `--no-create-manual-template-if-missing`
@@ -36,7 +36,7 @@ Extractor behavior notes:
 - Effective merged/query file:
   - `nomad_plugin_metadata.yaml`
 - Override report:
-  - `.nomad/plugin-metadata.override-report.yaml`
+  - `.metadata/plugin-metadata.override-report.yaml`
 
 ## Canonical schema and mappings
 

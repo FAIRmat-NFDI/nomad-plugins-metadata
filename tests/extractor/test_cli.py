@@ -39,7 +39,7 @@ def test_run_extract_writes_auto_effective_report_and_keeps_manual_file(tmp_path
 
     auto_path = repo / 'nomad_plugin_metadata.auto.yaml'
     effective_path = repo / 'nomad_plugin_metadata.yaml'
-    report_path = repo / '.nomad/plugin-metadata.override-report.yaml'
+    report_path = repo / '.metadata/plugin-metadata.override-report.yaml'
 
     run_extract(
         repo,
@@ -81,7 +81,7 @@ def test_run_extract_creates_manual_template_if_missing(tmp_path: Path):
     manual_path = repo / 'nomad_plugin_metadata.manual.yaml'
     auto_path = repo / 'nomad_plugin_metadata.auto.yaml'
     effective_path = repo / 'nomad_plugin_metadata.yaml'
-    report_path = repo / '.nomad/plugin-metadata.override-report.yaml'
+    report_path = repo / '.metadata/plugin-metadata.override-report.yaml'
 
     run_extract(
         repo,

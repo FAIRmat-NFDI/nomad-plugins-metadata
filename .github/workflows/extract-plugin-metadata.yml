@@ -52,7 +52,7 @@ on:
         description: Override report file path.
         required: false
         type: string
-        default: '.nomad/plugin-metadata.override-report.yaml'
+        default: '.metadata/plugin-metadata.override-report.yaml'
       release_tag:
         description: Release tag to embed in generated/effective metadata.
         required: false
@@ -153,7 +153,7 @@ on:
         description: Override report file path.
         required: false
         type: string
-        default: '.nomad/plugin-metadata.override-report.yaml'
+        default: '.metadata/plugin-metadata.override-report.yaml'
       release_tag:
         description: Release tag to embed in generated/effective metadata.
         required: false
@@ -299,7 +299,7 @@ jobs:
             echo "Run locally:" >> "$GITHUB_STEP_SUMMARY"
             echo "\`\`\`bash" >> "$GITHUB_STEP_SUMMARY"
             echo "nomad-plugin-metadata extract --repo-path ." >> "$GITHUB_STEP_SUMMARY"
-            echo "git add nomad_plugin_metadata.auto.yaml nomad_plugin_metadata.manual.yaml nomad_plugin_metadata.yaml .nomad/plugin-metadata.override-report.yaml" >> "$GITHUB_STEP_SUMMARY"
+            echo "git add nomad_plugin_metadata.auto.yaml nomad_plugin_metadata.manual.yaml nomad_plugin_metadata.yaml .metadata/plugin-metadata.override-report.yaml" >> "$GITHUB_STEP_SUMMARY"
             echo "git commit -m \"chore: update plugin metadata artifacts\"" >> "$GITHUB_STEP_SUMMARY"
             echo "\`\`\`" >> "$GITHUB_STEP_SUMMARY"
             echo "" >> "$GITHUB_STEP_SUMMARY"

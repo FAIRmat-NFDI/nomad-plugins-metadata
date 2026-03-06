@@ -38,7 +38,7 @@ ignoring empty values from the manual template.
 
 When manual values override generated values, the pipeline records those blocked/generated conflicts in:
 
-- `.nomad/plugin-metadata.override-report.yaml`
+- `.metadata/plugin-metadata.override-report.yaml`
 
 This gives maintainers visibility into stale generated signals without blocking CI by default.
 

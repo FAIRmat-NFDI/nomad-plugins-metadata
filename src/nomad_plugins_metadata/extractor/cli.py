@@ -153,7 +153,7 @@ def build_parser() -> argparse.ArgumentParser:
     extract.add_argument(
         '--report-path',
         type=Path,
-        default=Path('.nomad/plugin-metadata.override-report.yaml'),
+        default=Path('.metadata/plugin-metadata.override-report.yaml'),
     )
     extract.add_argument(
         '--release-tag',

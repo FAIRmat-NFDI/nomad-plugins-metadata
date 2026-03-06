@@ -24,7 +24,7 @@ Canonical schema + tooling package for generating, validating, and merging NOMAD
 3. Automation generates:
    - `nomad_plugin_metadata.auto.yaml`
    - `nomad_plugin_metadata.yaml`
-   - `.nomad/plugin-metadata.override-report.yaml`
+   - `.metadata/plugin-metadata.override-report.yaml`
 4. Merge precedence is deterministic:
    - non-empty manual values in `nomad_plugin_metadata.manual.yaml` override auto metadata
 6. Generated/effective metadata include release linkage:
@@ -59,10 +59,10 @@ Default outputs:
 
 - `nomad_plugin_metadata.auto.yaml` (machine-generated baseline)
 - `nomad_plugin_metadata.yaml` (deep-merged effective/query-facing metadata)
-- `.nomad/plugin-metadata.override-report.yaml` (manual override report/warnings)
+- `.metadata/plugin-metadata.override-report.yaml` (manual override report/warnings)
 
 Quick semantics reference is documented in:
-- `.nomad/README.md`
+- `.metadata/README.md`
 
 Merge precedence is deterministic: non-empty values in `nomad_plugin_metadata.manual.yaml` override `nomad_plugin_metadata.auto.yaml`.
 
@@ -111,7 +111,7 @@ Release PR mode (`create_pr: true`) behavior:
 
 - writes `nomad_plugin_metadata.auto.yaml`
 - writes `nomad_plugin_metadata.yaml`
-- overwrites `.nomad/plugin-metadata.override-report.yaml`
+- overwrites `.metadata/plugin-metadata.override-report.yaml`
 - creates `nomad_plugin_metadata.manual.yaml` template if missing (otherwise never edits it)
 - creates/updates a single rolling PR branch with a standard body including release tag/sha and changed files
 

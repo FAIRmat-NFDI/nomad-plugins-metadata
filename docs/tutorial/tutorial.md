@@ -26,7 +26,7 @@ Generated outputs:
 
 - `nomad_plugin_metadata.auto.yaml`
 - `nomad_plugin_metadata.yaml`
-- `.nomad/plugin-metadata.override-report.yaml`
+- `.metadata/plugin-metadata.override-report.yaml`
 
 If the plugin is installed in your environment, extractor output also includes
 technical entry-point metadata (e.g., parser `mainfile_*` patterns, compression support).
@@ -54,5 +54,5 @@ creates `nomad_plugin_metadata.manual.yaml` if missing, and opens or updates a r
 
 ## 5. Review overrides
 
-Check `.nomad/plugin-metadata.override-report.yaml` after runs.
+Check `.metadata/plugin-metadata.override-report.yaml` after runs.
 If important fields are consistently overridden manually, consider improving extractor rules for that plugin type.

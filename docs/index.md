@@ -36,9 +36,9 @@ The package standardizes both metadata structure and automation behavior so plug
 3. Workflow writes:
    - `nomad_plugin_metadata.auto.yaml`
    - `nomad_plugin_metadata.yaml`
-   - `.nomad/plugin-metadata.override-report.yaml`
+   - `.metadata/plugin-metadata.override-report.yaml`
 5. Consumers ingest effective metadata.
-6. Artifact semantics are documented in-repo at `.nomad/README.md`.
+6. Artifact semantics are documented in-repo at `.metadata/README.md`.
 
 Merge precedence is always:
 

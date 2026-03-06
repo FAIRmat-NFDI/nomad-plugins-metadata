@@ -16,7 +16,7 @@
   - `nomad_plugin_metadata.auto.yaml` (machine)
   - `nomad_plugin_metadata.manual.yaml` (maintainer)
   - `nomad_plugin_metadata.yaml` (effective/query)
-  - `.nomad/plugin-metadata.override-report.yaml` (conflict report)
+  - `.metadata/plugin-metadata.override-report.yaml` (conflict report)
 
 ## 1.0.0 - 2026-03-05
 
