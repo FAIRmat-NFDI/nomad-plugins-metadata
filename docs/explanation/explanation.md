@@ -36,6 +36,11 @@ When manual values override generated values, the pipeline records those blocked
 
 This gives maintainers visibility into stale generated signals without blocking CI by default.
 
+### 5. Release-driven PR workflow
+
+On release publication, the reusable workflow can regenerate metadata and open/update a rolling PR.
+This keeps metadata updates reviewable, links metadata snapshots to release tag + commit SHA, and avoids direct writes to `main`.
+
 ## Migration strategy
 
 `nomad-plugins` internal schema is treated as a transitional adapter.

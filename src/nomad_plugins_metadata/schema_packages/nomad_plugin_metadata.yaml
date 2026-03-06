@@ -49,6 +49,7 @@ classes:
       - schema_dependencies
       - suggested_usages
       - deployment
+      - release_context
       - maturity
       - metadata_provenance
 
@@ -128,6 +129,12 @@ classes:
       - on_example_oasis
       - on_pypi
       - pypi_package
+
+  ReleaseContext:
+    description: Release linkage for generated/effective metadata snapshots.
+    slots:
+      - release_tag
+      - release_commit_sha
 
   MetadataProvenance:
     description: How metadata was produced and confidence in it.
@@ -348,6 +355,16 @@ slots:
   deployment:
     required: false
     range: DeploymentInfo
+
+  release_context:
+    required: false
+    range: ReleaseContext
+
+  release_tag:
+    required: false
+
+  release_commit_sha:
+    required: false
 
   on_central:
     required: false

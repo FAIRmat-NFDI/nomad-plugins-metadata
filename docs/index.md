@@ -37,7 +37,9 @@ The package standardizes both metadata structure and automation behavior so plug
    - `.nomad/plugin-metadata.generated.yaml`
    - `.nomad/plugin-metadata.effective.yaml`
    - `.nomad/plugin-metadata.override-report.yaml`
-4. Consumers ingest effective metadata.
+4. In release PR mode, workflow also updates:
+   - `nomad_plugin_metadata.yaml`
+5. Consumers ingest effective metadata.
 
 Merge precedence is always:
 
