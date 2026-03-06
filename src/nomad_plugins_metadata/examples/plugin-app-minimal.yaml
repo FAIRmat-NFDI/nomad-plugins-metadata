@@ -7,7 +7,7 @@ maturity: beta
 subject:
   - electrochemistry
 license: MIT
-source_repository: https://github.com/FAIRmat-NFDI/nomad-electrochem-app
+upstream_repository: https://github.com/FAIRmat-NFDI/nomad-electrochem-app
 documentation: https://fairmat-nfdi.github.io/nomad-electrochem-app/
 maintainers:
   - name: Example Maintainer

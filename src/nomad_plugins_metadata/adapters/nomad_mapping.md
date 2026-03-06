@@ -13,7 +13,7 @@ This document defines how canonical LinkML metadata maps to the transitional `no
 | `id` | `Plugin.id` (or equivalent identifier quantity) | Must be preserved exactly. |
 | `name` | `Plugin.name` | Direct copy. |
 | `description` | `Plugin.description` | Direct copy. |
-| `source_repository` | `Plugin.repository` / repo URL field | Direct copy. |
+| `upstream_repository` | `Plugin.repository` / repo URL field | Direct copy. |
 | `documentation` | `Plugin.plugin_documentation_url` | Direct copy where available. |
 | `deployment.on_central` | `Plugin.on_central` | Direct copy. |
 | `deployment.on_example_oasis` | `Plugin.on_example_oasis` | Direct copy. |
@@ -28,8 +28,8 @@ This document defines how canonical LinkML metadata maps to the transitional `no
 | `metadata_provenance[]` | optional internal audit fields | Keep for traceability/debugging. |
 
 ## Precedence at ingest
-1. Canonical generated metadata (`.nomad/plugin-metadata.generated.json`)
-2. Canonical manual override (`nomad_plugin_metadata.yaml`)
+1. Canonical auto metadata (`nomad_plugin_metadata.auto.yaml`)
+2. Canonical manual override (`nomad_plugin_metadata.manual.yaml`)
 3. Legacy crawler fallback (`pyproject.toml`, repository API)
 
 ## Query compatibility during migration

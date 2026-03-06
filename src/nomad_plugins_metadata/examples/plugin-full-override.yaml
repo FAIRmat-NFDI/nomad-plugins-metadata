@@ -8,7 +8,7 @@ subject:
   - example-domain
   - workflows
 license: Apache-2.0
-source_repository: https://github.com/FAIRmat-NFDI/nomad-domain-example
+upstream_repository: https://github.com/FAIRmat-NFDI/nomad-domain-example
 documentation: https://example.org/docs
 homepage: https://example.org
 issue_tracker: https://github.com/FAIRmat-NFDI/nomad-domain-example/issues
@@ -20,7 +20,6 @@ maintainers:
   - name: Maintainer Two
     email: two@example.org
     role: contributor
-repository_url: https://github.com/FAIRmat-NFDI/nomad-domain-example
 repository_default_branch: main
 entry_points:
   - id: parser_entry

@@ -4,11 +4,19 @@
 
 ### Added
 - `release_context` fields in canonical schema and metainfo adapter (`release_tag`, `release_commit_sha`).
-- Release-aware extractor options: `--release-tag`, `--release-sha`, `--update-front-file`.
+- Release-aware extractor options: `--release-tag`, `--release-sha`.
+- Technical metadata extraction from installed `nomad.plugin` entry points (parser matcher fields, compression support, capability metadata).
 
 ### Changed
 - Reusable extraction workflow supports release-driven rolling PR mode with standard PR body and diff summary.
 - Release caller template now triggers on `release.published` (+ `workflow_dispatch`) and creates/updates a metadata PR.
+- Canonical repository field renamed from `source_repository` to `upstream_repository`.
+- Deprecated keys (`source_repository`, `repository_url`) are automatically removed from effective/front-facing metadata during extraction.
+- Metadata pipeline switched to explicit four-file contract:
+  - `nomad_plugin_metadata.auto.yaml` (machine)
+  - `nomad_plugin_metadata.manual.yaml` (maintainer)
+  - `nomad_plugin_metadata.yaml` (effective/query)
+  - `.nomad/plugin-metadata.override-report.yaml` (conflict report)
 
 ## 1.0.0 - 2026-03-05
 

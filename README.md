@@ -19,16 +19,14 @@ Canonical schema + tooling package for generating, validating, and merging NOMAD
 ## Typical usage in a plugin repository
 
 1. Maintain manual metadata in:
-   - `nomad_plugin_metadata.yaml`
+   - `nomad_plugin_metadata.manual.yaml` (full template, maintainer-owned)
 2. On release publish, run extractor automation via reusable workflow in PR mode.
 3. Automation generates:
-   - `.nomad/plugin-metadata.generated.yaml`
-   - `.nomad/plugin-metadata.effective.yaml`
+   - `nomad_plugin_metadata.auto.yaml`
+   - `nomad_plugin_metadata.yaml`
    - `.nomad/plugin-metadata.override-report.yaml`
-4. In PR mode, workflow also updates:
-   - `nomad_plugin_metadata.yaml` (forward-facing file)
-5. Merge precedence is deterministic:
-   - manual override (`nomad_plugin_metadata.yaml`) > generated metadata
+4. Merge precedence is deterministic:
+   - non-empty manual values in `nomad_plugin_metadata.manual.yaml` override auto metadata
 6. Generated/effective metadata include release linkage:
    - `release_context.release_tag`
    - `release_context.release_commit_sha`
@@ -59,14 +57,14 @@ entry points when available, including parser matcher fields such as:
 
 Default outputs:
 
-- `.nomad/plugin-metadata.generated.yaml` (machine-generated baseline)
-- `.nomad/plugin-metadata.effective.yaml` (deep-merged effective metadata)
+- `nomad_plugin_metadata.auto.yaml` (machine-generated baseline)
+- `nomad_plugin_metadata.yaml` (deep-merged effective/query-facing metadata)
 - `.nomad/plugin-metadata.override-report.yaml` (manual override report/warnings)
 
 Quick semantics reference is documented in:
 - `.nomad/README.md`
 
-Merge precedence is deterministic: `nomad_plugin_metadata.yaml` (manual) > generated.
+Merge precedence is deterministic: non-empty values in `nomad_plugin_metadata.manual.yaml` override `nomad_plugin_metadata.auto.yaml`.
 
 ## Reusable Workflow
 
@@ -111,10 +109,10 @@ For PR check-only enforcement (no auto-commit), use the template at
 
 Release PR mode (`create_pr: true`) behavior:
 
-- writes `.nomad/plugin-metadata.generated.yaml`
-- writes `.nomad/plugin-metadata.effective.yaml`
+- writes `nomad_plugin_metadata.auto.yaml`
+- writes `nomad_plugin_metadata.yaml`
 - overwrites `.nomad/plugin-metadata.override-report.yaml`
-- updates forward-facing `nomad_plugin_metadata.yaml`
+- creates `nomad_plugin_metadata.manual.yaml` template if missing (otherwise never edits it)
 - creates/updates a single rolling PR branch with a standard body including release tag/sha and changed files
 
 By default, the reusable workflow installs the target plugin repository in editable mode

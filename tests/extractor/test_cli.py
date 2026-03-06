@@ -5,7 +5,7 @@ import yaml
 from nomad_plugins_metadata.extractor.cli import ExtractRunConfig, run_extract
 
 
-def test_run_extract_writes_generated_effective_and_report(tmp_path: Path):
+def test_run_extract_writes_auto_effective_report_and_keeps_manual_file(tmp_path: Path):
     repo = tmp_path / 'repo'
     repo.mkdir()
 
@@ -24,70 +24,76 @@ def test_run_extract_writes_generated_effective_and_report(tmp_path: Path):
         encoding='utf-8',
     )
 
-    manual_path = repo / 'nomad_plugin_metadata.yaml'
+    manual_path = repo / 'nomad_plugin_metadata.manual.yaml'
     manual_path.write_text(
-        'name: Manual Name\nmaturity: alpha\n',
+        (
+            'name: Manual Name\n'
+            'maturity: alpha\n'
+            'plugin_version: ""\n'
+            'suggested_usages:\n'
+            '  - id: ""\n'
+            '    title: ""\n'
+        ),
         encoding='utf-8',
     )
 
-    generated = repo / '.nomad/plugin-metadata.generated.yaml'
-    effective = repo / '.nomad/plugin-metadata.effective.yaml'
-    report = repo / '.nomad/plugin-metadata.override-report.yaml'
-    front = repo / 'nomad_plugin_metadata.yaml'
+    auto_path = repo / 'nomad_plugin_metadata.auto.yaml'
+    effective_path = repo / 'nomad_plugin_metadata.yaml'
+    report_path = repo / '.nomad/plugin-metadata.override-report.yaml'
 
     run_extract(
         repo,
         ExtractRunConfig(
             manual_path=manual_path,
-            generated_path=generated,
-            effective_path=effective,
-            report_path=report,
+            auto_path=auto_path,
+            effective_path=effective_path,
+            report_path=report_path,
             release_tag='v0.3.0',
             release_sha='abc123',
-            update_front_file=front,
         ),
     )
 
-    generated_data = yaml.safe_load(generated.read_text(encoding='utf-8'))
-    effective_data = yaml.safe_load(effective.read_text(encoding='utf-8'))
-    report_data = yaml.safe_load(report.read_text(encoding='utf-8'))
-    front_data = yaml.safe_load(front.read_text(encoding='utf-8'))
+    auto_data = yaml.safe_load(auto_path.read_text(encoding='utf-8'))
+    effective_data = yaml.safe_load(effective_path.read_text(encoding='utf-8'))
+    report_data = yaml.safe_load(report_path.read_text(encoding='utf-8'))
+    manual_after = yaml.safe_load(manual_path.read_text(encoding='utf-8'))
 
-    assert generated_data['name'] == 'example-plugin'
+    assert auto_data['name'] == 'example-plugin'
     assert effective_data['name'] == 'Manual Name'
-    assert effective_data['maturity'] == 'alpha'
+    # Empty manual value should not override generated value.
+    assert effective_data['plugin_version'] == '0.3.0'
+    # Empty placeholder list item should be ignored.
+    assert 'suggested_usages' not in effective_data
     assert report_data['summary']['overridden_field_count'] >= 1
-    assert generated_data['release_context']['release_tag'] == 'v0.3.0'
-    assert generated_data['release_context']['release_commit_sha'] == 'abc123'
-    assert effective_data['release_context']['release_tag'] == 'v0.3.0'
-    assert front_data == effective_data
+    assert auto_data['release_context']['release_tag'] == 'v0.3.0'
+    assert auto_data['release_context']['release_commit_sha'] == 'abc123'
+    # Manual file is maintainer-owned and not modified by extractor.
+    assert manual_after['name'] == 'Manual Name'
 
 
-def test_run_extract_overwrites_existing_report(tmp_path: Path):
+def test_run_extract_creates_manual_template_if_missing(tmp_path: Path):
     repo = tmp_path / 'repo'
     repo.mkdir()
     (repo / 'pyproject.toml').write_text(
-        '\n'.join(['[project]', 'name = "overwrite-test"']),
+        '\n'.join(['[project]', 'name = "template-test"']),
         encoding='utf-8',
     )
-    manual_path = repo / 'nomad_plugin_metadata.yaml'
-    manual_path.write_text('name: overwrite-test\\n', encoding='utf-8')
-    generated = repo / '.nomad/plugin-metadata.generated.yaml'
-    effective = repo / '.nomad/plugin-metadata.effective.yaml'
-    report = repo / '.nomad/plugin-metadata.override-report.yaml'
-    report.parent.mkdir(parents=True, exist_ok=True)
-    report.write_text('legacy: should disappear\\n', encoding='utf-8')
+    manual_path = repo / 'nomad_plugin_metadata.manual.yaml'
+    auto_path = repo / 'nomad_plugin_metadata.auto.yaml'
+    effective_path = repo / 'nomad_plugin_metadata.yaml'
+    report_path = repo / '.nomad/plugin-metadata.override-report.yaml'
 
     run_extract(
         repo,
         ExtractRunConfig(
             manual_path=manual_path,
-            generated_path=generated,
-            effective_path=effective,
-            report_path=report,
+            auto_path=auto_path,
+            effective_path=effective_path,
+            report_path=report_path,
         ),
     )
 
-    report_data = yaml.safe_load(report.read_text(encoding='utf-8'))
-    assert 'legacy' not in report_data
-    assert 'summary' in report_data
+    assert manual_path.exists()
+    manual_data = yaml.safe_load(manual_path.read_text(encoding='utf-8'))
+    assert 'name' in manual_data
+    assert 'upstream_repository' in manual_data

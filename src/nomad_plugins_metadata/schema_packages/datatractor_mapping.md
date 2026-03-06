@@ -13,7 +13,7 @@ Preserve compatibility for shared discovery fields while extending metadata for 
 | `description` | `description` | Same semantics. |
 | `subject` | `subject[]` | Same semantics as domain/topic tags. |
 | `license` | `license` | Same semantics. |
-| `source_repository` | `source_repository` | Same semantics. |
+| `upstream_repository` | `upstream_repository` | Same semantics. |
 | `documentation` | `documentation` | Same semantics. |
 | `supported_filetypes` | `supported_filetypes[]` | Preserved as datatractor filetype IDs. |
 

@@ -1,25 +1,15 @@
-# `.nomad/` metadata artifacts
+# `.nomad/` metadata artifact
 
-This directory is workflow-managed output from `nomad-plugin-metadata extract`.
+This directory contains workflow-managed report output from `nomad-plugin-metadata extract`.
 
-## Files and meaning
-
-- `plugin-metadata.generated.yaml`
-  - Raw extractor output from repository introspection.
-  - Machine-owned baseline.
-  - Should not be manually edited.
-
-- `plugin-metadata.effective.yaml`
-  - Deterministic merge result used by downstream consumers.
-  - Merge contract: manual metadata in `nomad_plugin_metadata.yaml` overrides generated metadata.
-  - This is the resolved "what the registry should use" view.
+## File and meaning
 
 - `plugin-metadata.override-report.yaml`
-  - Warning/report file for merge conflicts where manual metadata blocked generated values.
+  - Conflict report between machine-generated `auto` metadata and non-empty maintainer values from `manual`.
+  - Contains only conflicting fields.
   - Rewritten on each extraction run (not appended).
 
 ## Editing rules
 
-- Edit `nomad_plugin_metadata.yaml` for curated/manual metadata.
-- Do not edit files in `.nomad/` manually.
-- Re-run extraction after plugin code or manual metadata changes.
+- Do not edit `.nomad/plugin-metadata.override-report.yaml` manually.
+- Maintainer edits belong in `nomad_plugin_metadata.manual.yaml`.

@@ -34,20 +34,20 @@ on:
         type: string
         default: '.'
       manual_path:
-        description: Manual metadata override file path.
+        description: Manual metadata template/override file path (maintainer-owned).
+        required: false
+        type: string
+        default: 'nomad_plugin_metadata.manual.yaml'
+      auto_path:
+        description: Automation-generated metadata file path.
+        required: false
+        type: string
+        default: 'nomad_plugin_metadata.auto.yaml'
+      effective_path:
+        description: Effective merged metadata file path (query-facing).
         required: false
         type: string
         default: 'nomad_plugin_metadata.yaml'
-      generated_path:
-        description: Generated metadata file path.
-        required: false
-        type: string
-        default: '.nomad/plugin-metadata.generated.yaml'
-      effective_path:
-        description: Effective merged metadata file path.
-        required: false
-        type: string
-        default: '.nomad/plugin-metadata.effective.yaml'
       report_path:
         description: Override report file path.
         required: false
@@ -63,11 +63,6 @@ on:
         required: false
         type: string
         default: ''
-      forward_file_path:
-        description: Forward-facing metadata file to update when create_pr is enabled.
-        required: false
-        type: string
-        default: 'nomad_plugin_metadata.yaml'
       create_pr:
         description: Create/update a rolling PR when metadata changes are detected.
         required: false
@@ -94,7 +89,7 @@ on:
         type: boolean
         default: false
       check_only:
-        description: Fail if generated/effective/report files differ after extraction.
+        description: Fail if auto/manual/effective/report files differ after extraction.
         required: false
         type: boolean
         default: false
@@ -102,7 +97,7 @@ on:
         description: Commit message for auto-commit mode.
         required: false
         type: string
-        default: 'chore: update generated plugin metadata'
+        default: 'chore: update plugin metadata artifacts'
     secrets:
       token:
         required: false
@@ -140,20 +135,20 @@ on:
         type: string
         default: '.'
       manual_path:
-        description: Manual metadata override file path.
+        description: Manual metadata template/override file path (maintainer-owned).
+        required: false
+        type: string
+        default: 'nomad_plugin_metadata.manual.yaml'
+      auto_path:
+        description: Automation-generated metadata file path.
+        required: false
+        type: string
+        default: 'nomad_plugin_metadata.auto.yaml'
+      effective_path:
+        description: Effective merged metadata file path (query-facing).
         required: false
         type: string
         default: 'nomad_plugin_metadata.yaml'
-      generated_path:
-        description: Generated metadata file path.
-        required: false
-        type: string
-        default: '.nomad/plugin-metadata.generated.yaml'
-      effective_path:
-        description: Effective merged metadata file path.
-        required: false
-        type: string
-        default: '.nomad/plugin-metadata.effective.yaml'
       report_path:
         description: Override report file path.
         required: false
@@ -169,11 +164,6 @@ on:
         required: false
         type: string
         default: ''
-      forward_file_path:
-        description: Forward-facing metadata file to update when create_pr is enabled.
-        required: false
-        type: string
-        default: 'nomad_plugin_metadata.yaml'
       create_pr:
         description: Create/update a rolling PR when metadata changes are detected.
         required: false
@@ -200,7 +190,7 @@ on:
         type: boolean
         default: false
       check_only:
-        description: Fail if generated/effective/report files differ after extraction.
+        description: Fail if auto/manual/effective/report files differ after extraction.
         required: false
         type: boolean
         default: false
@@ -208,7 +198,7 @@ on:
         description: Commit message for auto-commit mode.
         required: false
         type: string
-        default: 'chore: update generated plugin metadata'
+        default: 'chore: update plugin metadata artifacts'
 
 permissions:
   contents: write
@@ -254,7 +244,7 @@ jobs:
           CMD=(nomad-plugin-metadata extract \
             --repo-path "${{ inputs.repo_path }}" \
             --manual-path "${{ inputs.manual_path }}" \
-            --generated-path "${{ inputs.generated_path }}" \
+            --auto-path "${{ inputs.auto_path }}" \
             --effective-path "${{ inputs.effective_path }}" \
             --report-path "${{ inputs.report_path }}")
 
@@ -266,10 +256,6 @@ jobs:
             CMD+=(--release-sha "${{ inputs.release_sha }}")
           fi
 
-          if [ "${{ inputs.create_pr }}" = "true" ]; then
-            CMD+=(--update-front-file "${{ inputs.forward_file_path }}")
-          fi
-
           "${CMD[@]}"
 
       - name: Upload metadata artifacts
@@ -277,19 +263,15 @@ jobs:
         with:
           name: plugin-metadata
           path: |
-            ${{ inputs.generated_path }}
+            ${{ inputs.auto_path }}
+            ${{ inputs.manual_path }}
             ${{ inputs.effective_path }}
             ${{ inputs.report_path }}
-            ${{ inputs.forward_file_path }}
 
       - name: Collect metadata diff
         id: diff
         run: |
-          FILES=("${{ inputs.generated_path }}" "${{ inputs.effective_path }}" "${{ inputs.report_path }}")
-
-          if [ "${{ inputs.create_pr }}" = "true" ]; then
-            FILES+=("${{ inputs.forward_file_path }}")
-          fi
+          FILES=("${{ inputs.auto_path }}" "${{ inputs.manual_path }}" "${{ inputs.effective_path }}" "${{ inputs.report_path }}")
 
           STATUS="$(git status --porcelain -- "${FILES[@]}")"
 
@@ -309,7 +291,7 @@ jobs:
         if: ${{ inputs.check_only }}
         run: |
           if [ "${{ steps.diff.outputs.changed }}" = "true" ]; then
-            echo "::error title=Plugin metadata out of sync::Run 'nomad-plugin-metadata extract --repo-path .' locally and commit updated .nomad/plugin-metadata files."
+            echo "::error title=Plugin metadata out of sync::Run 'nomad-plugin-metadata extract --repo-path .' locally and commit updated metadata files."
             echo "### Metadata check failed" >> "$GITHUB_STEP_SUMMARY"
             echo "" >> "$GITHUB_STEP_SUMMARY"
             echo "Metadata files are out of date for this branch." >> "$GITHUB_STEP_SUMMARY"
@@ -317,8 +299,8 @@ jobs:
             echo "Run locally:" >> "$GITHUB_STEP_SUMMARY"
             echo "\`\`\`bash" >> "$GITHUB_STEP_SUMMARY"
             echo "nomad-plugin-metadata extract --repo-path ." >> "$GITHUB_STEP_SUMMARY"
-            echo "git add .nomad/plugin-metadata.generated.yaml .nomad/plugin-metadata.effective.yaml .nomad/plugin-metadata.override-report.yaml" >> "$GITHUB_STEP_SUMMARY"
-            echo "git commit -m \"chore: update generated plugin metadata\"" >> "$GITHUB_STEP_SUMMARY"
+            echo "git add nomad_plugin_metadata.auto.yaml nomad_plugin_metadata.manual.yaml nomad_plugin_metadata.yaml .nomad/plugin-metadata.override-report.yaml" >> "$GITHUB_STEP_SUMMARY"
+            echo "git commit -m \"chore: update plugin metadata artifacts\"" >> "$GITHUB_STEP_SUMMARY"
             echo "\`\`\`" >> "$GITHUB_STEP_SUMMARY"
             echo "" >> "$GITHUB_STEP_SUMMARY"
             echo "Changed files:" >> "$GITHUB_STEP_SUMMARY"
@@ -353,7 +335,7 @@ jobs:
               echo "$EXTRA_BODY"
               echo ""
             fi
-            echo "Maintainers can review, adjust \`nomad_plugin_metadata.yaml\`, and merge."
+            echo "Maintainers can review, adjust \`nomad_plugin_metadata.manual.yaml\`, and merge."
             echo "EOF"
           } >> "$GITHUB_OUTPUT"
 
@@ -369,10 +351,10 @@ jobs:
           commit-message: ${{ inputs.commit_message }}
           delete-branch: false
           add-paths: |
-            ${{ inputs.generated_path }}
+            ${{ inputs.auto_path }}
+            ${{ inputs.manual_path }}
             ${{ inputs.effective_path }}
             ${{ inputs.report_path }}
-            ${{ inputs.forward_file_path }}
 
       - name: No metadata changes
         if: ${{ inputs.create_pr && !inputs.check_only && steps.diff.outputs.changed != 'true' }}
@@ -385,7 +367,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          git add "${{ inputs.generated_path }}" "${{ inputs.effective_path }}" "${{ inputs.report_path }}"
+          git add "${{ inputs.auto_path }}" "${{ inputs.manual_path }}" "${{ inputs.effective_path }}" "${{ inputs.report_path }}"
 
           if git diff --cached --quiet; then
             echo "No metadata changes to commit."
