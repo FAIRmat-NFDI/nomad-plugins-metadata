@@ -8,7 +8,7 @@ subject:
   - density-functional-theory
   - electronic-structure
 license: Apache-2.0
-source_repository: https://github.com/FAIRmat-NFDI/nomad-quantum-espresso-plugin
+upstream_repository: https://github.com/FAIRmat-NFDI/nomad-quantum-espresso-plugin
 documentation: https://fairmat-nfdi.github.io/nomad-quantum-espresso-plugin/
 maintainers:
   - name: Example Maintainer

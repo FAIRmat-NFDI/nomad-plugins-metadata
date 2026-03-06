@@ -11,13 +11,13 @@ nomad-plugin-metadata extract [options]
 Options:
 
 - `--repo-path` (default: `.`)
-- `--manual-path` (default: `nomad_plugin_metadata.yaml`)
-- `--generated-path` (default: `.nomad/plugin-metadata.generated.yaml`)
-- `--effective-path` (default: `.nomad/plugin-metadata.effective.yaml`)
-- `--report-path` (default: `.nomad/plugin-metadata.override-report.yaml`)
+- `--manual-path` (default: `nomad_plugin_metadata.manual.yaml`)
+- `--auto-path` (default: `nomad_plugin_metadata.auto.yaml`)
+- `--effective-path` (default: `nomad_plugin_metadata.yaml`)
+- `--report-path` (default: `.metadata/plugin-metadata.override-report.yaml`)
 - `--release-tag` (default: empty)
 - `--release-sha` (default: empty)
-- `--update-front-file` (default: unset)
+- `--create-manual-template-if-missing` / `--no-create-manual-template-if-missing`
 
 Extractor behavior notes:
 
@@ -29,16 +29,14 @@ Extractor behavior notes:
 
 ## Metadata files
 
-- Manual override file:
+- Manual template/override file:
+  - `nomad_plugin_metadata.manual.yaml`
+- Auto-generated file:
+  - `nomad_plugin_metadata.auto.yaml`
+- Effective merged/query file:
   - `nomad_plugin_metadata.yaml`
-- Generated file:
-  - `.nomad/plugin-metadata.generated.yaml`
-- Effective merged file:
-  - `.nomad/plugin-metadata.effective.yaml`
 - Override report:
-  - `.nomad/plugin-metadata.override-report.yaml`
-- Forward-facing file updated in release PR mode:
-  - `nomad_plugin_metadata.yaml`
+  - `.metadata/plugin-metadata.override-report.yaml`
 
 ## Canonical schema and mappings
 
@@ -66,12 +64,11 @@ Key workflow inputs:
 - `install_repo_extras`
 - `repo_path`
 - `manual_path`
-- `generated_path`
+- `auto_path`
 - `effective_path`
 - `report_path`
 - `release_tag`
 - `release_sha`
-- `forward_file_path`
 - `create_pr`
 - `pr_branch`
 - `pr_title`

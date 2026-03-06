@@ -35,12 +35,11 @@ classes:
       - plugin_version
       - subject
       - license
-      - source_repository
+      - upstream_repository
       - documentation
       - homepage
       - issue_tracker
       - maintainers
-      - repository_url
       - repository_default_branch
       - entry_points
       - supported_filetypes
@@ -178,7 +177,7 @@ slots:
     required: false
     slot_uri: schema_org:license
 
-  source_repository:
+  upstream_repository:
     required: true
     slot_uri: schema_org:codeRepository
 
@@ -206,10 +205,6 @@ slots:
 
   email:
     required: false
-
-  repository_url:
-    required: false
-    description: Canonical repository clone/browse URL.
 
   repository_default_branch:
     required: false

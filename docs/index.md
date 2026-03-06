@@ -31,20 +31,18 @@ The package standardizes both metadata structure and automation behavior so plug
 
 ## Typical plugin-repo flow
 
-1. Maintainer edits `nomad_plugin_metadata.yaml` (manual override file).
+1. Maintainer edits `nomad_plugin_metadata.manual.yaml` (manual template/override file).
 2. CI runs `nomad-plugin-metadata extract`.
 3. Workflow writes:
-   - `.nomad/plugin-metadata.generated.yaml`
-   - `.nomad/plugin-metadata.effective.yaml`
-   - `.nomad/plugin-metadata.override-report.yaml`
-4. In release PR mode, workflow also updates:
+   - `nomad_plugin_metadata.auto.yaml`
    - `nomad_plugin_metadata.yaml`
+   - `.metadata/plugin-metadata.override-report.yaml`
 5. Consumers ingest effective metadata.
-6. Artifact semantics are documented in-repo at `.nomad/README.md`.
+6. Artifact semantics are documented in-repo at `.metadata/README.md`.
 
 Merge precedence is always:
 
-`nomad_plugin_metadata.yaml` > `.nomad/plugin-metadata.generated.yaml`
+non-empty values from `nomad_plugin_metadata.manual.yaml` > `nomad_plugin_metadata.auto.yaml`
 
 ## Where to go next
 

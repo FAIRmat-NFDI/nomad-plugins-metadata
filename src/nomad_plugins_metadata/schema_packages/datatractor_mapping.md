@@ -13,7 +13,7 @@ Preserve compatibility for shared discovery fields while extending metadata for 
 | `description` | `description` | Same semantics. |
 | `subject` | `subject[]` | Same semantics as domain/topic tags. |
 | `license` | `license` | Same semantics. |
-| `source_repository` | `source_repository` | Same semantics. |
+| `upstream_repository` | `upstream_repository` | Same semantics. |
 | `documentation` | `documentation` | Same semantics. |
 | `supported_filetypes` | `supported_filetypes[]` | Preserved as datatractor filetype IDs. |
 
@@ -32,7 +32,7 @@ Preserve compatibility for shared discovery fields while extending metadata for 
 1. Keep datatractor-compatible fields stable and optionality conservative.
 2. Never overload datatractor fields with NOMAD-only semantics.
 3. Put NOMAD-specific additions into dedicated extension fields.
-4. If a field cannot be inferred, leave it missing and use `nomad_plugin_metadata.yaml` override.
+4. If a field cannot be inferred, leave it missing and use `nomad_plugin_metadata.manual.yaml` override.
 
 ## Known gaps (Phase 1)
 1. No strict one-to-one mapping yet for executable `usage` command templates.
