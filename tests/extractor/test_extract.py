@@ -76,6 +76,10 @@ def test_extracts_installed_entry_point_parser_metadata(
         'nomad_plugins_metadata.extractor.extract.metadata.entry_points',
         lambda group=None: fake_eps,
     )
+    monkeypatch.setattr(
+        'nomad_plugins_metadata.extractor.extract._is_github_repo_archived',
+        lambda repository_url: None,
+    )
 
     generated = build_generated_metadata_with_release_context(
         repo_path=repo,
@@ -99,3 +103,33 @@ def test_extracts_installed_entry_point_parser_metadata(
 
     assert generated['release_context']['release_tag'] == 'v1.2.3'
     assert generated['release_context']['release_commit_sha'] == 'deadbeef'
+    assert generated['maturity'] == 'stable'
+
+
+def test_maturity_archived_precedence_over_version(tmp_path: Path, monkeypatch) -> None:
+    repo = tmp_path / 'repo'
+    repo.mkdir()
+    (repo / 'pyproject.toml').write_text(
+        '\n'.join(
+            [
+                '[project]',
+                'name = "example-plugin"',
+                'version = "1.2.3"',
+                '',
+                '[project.urls]',
+                'Repository = "https://github.com/example/repo"',
+            ]
+        ),
+        encoding='utf-8',
+    )
+    monkeypatch.setattr(
+        'nomad_plugins_metadata.extractor.extract._is_github_repo_archived',
+        lambda repository_url: True,
+    )
+
+    generated = build_generated_metadata_with_release_context(
+        repo_path=repo,
+        release_tag=None,
+        release_sha=None,
+    )
+    assert generated['maturity'] == 'archived'

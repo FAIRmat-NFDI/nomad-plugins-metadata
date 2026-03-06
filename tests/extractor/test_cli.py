@@ -18,7 +18,7 @@ def test_run_extract_writes_auto_effective_report_and_keeps_manual_file(tmp_path
                 'description = "Example plugin"',
                 '',
                 '[project.urls]',
-                'Repository = "https://github.com/example/repo"',
+                'Repository = "https://example.org/repo"',
             ]
         ),
         encoding='utf-8',

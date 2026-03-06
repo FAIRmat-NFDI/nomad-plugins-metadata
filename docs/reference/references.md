@@ -26,6 +26,10 @@ Extractor behavior notes:
   (for example parser matcher fields and supported compressions).
 - If plugin entry points are not installed/importable, extraction falls back to static
   `pyproject` entry-point declarations.
+- Maturity heuristic:
+  - `archived` if GitHub repository is archived (best-effort GitHub API lookup)
+  - otherwise `stable` for versions `>=1.0.0`
+  - manual override in `nomad_plugin_metadata.manual.yaml` still takes precedence.
 
 ## Metadata files
 
