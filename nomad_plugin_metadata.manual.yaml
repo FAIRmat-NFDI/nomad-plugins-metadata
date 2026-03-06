@@ -1,0 +1,75 @@
+id: null
+metadata_schema_version: null
+name: null
+description: null
+plugin_version: null
+subject: []
+license: null
+upstream_repository: null
+documentation: null
+homepage: null
+issue_tracker: null
+maintainers:
+- name: null
+  email: null
+  affiliation: null
+  role: null
+repository_default_branch: null
+entry_points:
+- id: null
+  entry_point_group: null
+  entry_point_name: null
+  python_object: null
+  capability_type: null
+supported_filetypes: []
+capabilities:
+- id: null
+  capability_type: null
+  title: null
+  summary: null
+  parser_details:
+    parser_name: null
+    mainfile_name_re: null
+    mainfile_contents_re: null
+    mainfile_mime_re: null
+    mainfile_binary_header: null
+    compression_support: []
+    auxiliary_file_patterns: []
+file_format_support:
+- id: null
+  label: null
+  extensions: []
+  mime_types: []
+  standard: null
+  instrument_context: null
+  notes: null
+schema_dependencies:
+- dependency_type: null
+  package_name: null
+  version_range: null
+  optional: null
+  purpose: null
+suggested_usages:
+- id: null
+  title: null
+  user_intent: null
+  domain_category: null
+  technique: null
+  audience: null
+  maturity: null
+  tags: []
+deployment:
+  on_central: null
+  on_example_oasis: null
+  on_pypi: null
+  pypi_package: null
+release_context:
+  release_tag: null
+  release_commit_sha: null
+maturity: null
+metadata_provenance:
+- source: null
+  extraction_method: null
+  confidence: null
+  generated_at: null
+  generator_version: null
