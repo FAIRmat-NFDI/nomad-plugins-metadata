@@ -17,6 +17,8 @@
   - `nomad_plugin_metadata.manual.yaml` (maintainer)
   - `nomad_plugin_metadata.yaml` (effective/query)
   - `.metadata/plugin-metadata.override-report.yaml` (conflict report)
+- `metadata_provenance` no longer includes `confidence` (removed as non-computed field).
+- Provenance source label `static_code_scan` replaced with `plugin_entry_points` for entry-point-derived metadata.
 
 ## 1.0.0 - 2026-03-05
 

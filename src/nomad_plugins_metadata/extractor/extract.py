@@ -333,14 +333,12 @@ def build_generated_metadata_with_release_context(
             {
                 'source': 'pyproject',
                 'extraction_method': 'deterministic',
-                'confidence': 0.9,
                 'generated_at': datetime.now(timezone.utc).isoformat(),
                 'generator_version': '0.1.0',
             },
             {
-                'source': 'static_code_scan',
-                'extraction_method': 'heuristic',
-                'confidence': 0.7,
+                'source': 'plugin_entry_points',
+                'extraction_method': 'deterministic',
                 'generated_at': datetime.now(timezone.utc).isoformat(),
                 'generator_version': '0.1.0',
             }

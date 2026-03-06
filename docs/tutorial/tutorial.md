@@ -56,3 +56,12 @@ creates `nomad_plugin_metadata.manual.yaml` if missing, and opens or updates a r
 
 Check `.metadata/plugin-metadata.override-report.yaml` after runs.
 If important fields are consistently overridden manually, consider improving extractor rules for that plugin type.
+
+## 6. Reset metadata artifacts (optional)
+
+- Report-only reset:
+  - remove `.metadata/*`
+- Regenerate auto/effective/report:
+  - remove `nomad_plugin_metadata.auto.yaml` and `nomad_plugin_metadata.yaml`, then run extract
+- Full reset (including manual):
+  - also remove `nomad_plugin_metadata.manual.yaml` before running extract

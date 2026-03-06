@@ -69,8 +69,7 @@ deployment:
   on_pypi: true
   pypi_package: nomad-quantum-espresso-plugin
 metadata_provenance:
-  - source: static_code_scan
+  - source: plugin_entry_points
     extraction_method: deterministic
-    confidence: 0.95
     generated_at: '2026-03-05T12:00:00Z'
     generator_version: 0.1.0
