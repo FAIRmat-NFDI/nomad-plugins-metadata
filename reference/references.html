@@ -402,6 +402,9 @@
 <li><code>--generated-path</code> (default: <code>.nomad/plugin-metadata.generated.yaml</code>)</li>
 <li><code>--effective-path</code> (default: <code>.nomad/plugin-metadata.effective.yaml</code>)</li>
 <li><code>--report-path</code> (default: <code>.nomad/plugin-metadata.override-report.yaml</code>)</li>
+<li><code>--release-tag</code> (default: empty)</li>
+<li><code>--release-sha</code> (default: empty)</li>
+<li><code>--update-front-file</code> (default: unset)</li>
 </ul>
 <h2 id="metadata-files">Metadata files<a class="headerlink" href="#metadata-files" title="Permanent link">&para;</a></h2>
 <ul>
@@ -413,6 +416,8 @@
 <li><code>.nomad/plugin-metadata.effective.yaml</code></li>
 <li>Override report:</li>
 <li><code>.nomad/plugin-metadata.override-report.yaml</code></li>
+<li>Forward-facing file updated in release PR mode:</li>
+<li><code>nomad_plugin_metadata.yaml</code></li>
 </ul>
 <h2 id="canonical-schema-and-mappings">Canonical schema and mappings<a class="headerlink" href="#canonical-schema-and-mappings" title="Permanent link">&para;</a></h2>
 <ul>
@@ -440,7 +445,15 @@
 <li><code>generated_path</code></li>
 <li><code>effective_path</code></li>
 <li><code>report_path</code></li>
+<li><code>release_tag</code></li>
+<li><code>release_sha</code></li>
+<li><code>forward_file_path</code></li>
+<li><code>create_pr</code></li>
+<li><code>pr_branch</code></li>
+<li><code>pr_title</code></li>
+<li><code>pr_body</code></li>
 <li><code>auto_commit</code></li>
+<li><code>check_only</code></li>
 <li><code>commit_message</code></li>
 </ul>
 

@@ -308,6 +308,13 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#5-release-driven-pr-workflow" class="md-nav__link">
+    5. Release-driven PR workflow
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -405,6 +412,13 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#5-release-driven-pr-workflow" class="md-nav__link">
+    5. Release-driven PR workflow
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -457,6 +471,9 @@ NOMAD metainfo classes mirror this model for runtime integration, searchability,
 <li><code>.nomad/plugin-metadata.override-report.yaml</code></li>
 </ul>
 <p>This gives maintainers visibility into stale generated signals without blocking CI by default.</p>
+<h3 id="5-release-driven-pr-workflow">5. Release-driven PR workflow<a class="headerlink" href="#5-release-driven-pr-workflow" title="Permanent link">&para;</a></h3>
+<p>On release publication, the reusable workflow can regenerate metadata and open/update a rolling PR.
+This keeps metadata updates reviewable, links metadata snapshots to release tag + commit SHA, and avoids direct writes to <code>main</code>.</p>
 <h2 id="migration-strategy">Migration strategy<a class="headerlink" href="#migration-strategy" title="Permanent link">&para;</a></h2>
 <p><code>nomad-plugins</code> internal schema is treated as a transitional adapter.
 The target state is canonical metadata-first ingestion and eventual adapter phase-out after compatibility gates are met.</p>

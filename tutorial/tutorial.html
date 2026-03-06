@@ -279,8 +279,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#4-add-workflow-in-plugin-repository" class="md-nav__link">
-    4. Add workflow in plugin repository
+  <a href="#4-add-release-workflow-in-plugin-repository" class="md-nav__link">
+    4. Add release workflow in plugin repository
   </a>
   
 </li>
@@ -378,8 +378,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#4-add-workflow-in-plugin-repository" class="md-nav__link">
-    4. Add workflow in plugin repository
+  <a href="#4-add-release-workflow-in-plugin-repository" class="md-nav__link">
+    4. Add release workflow in plugin repository
   </a>
   
 </li>
@@ -428,7 +428,7 @@
 <p>From this repository:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>uv<span class="w"> </span>run<span class="w"> </span>pytest<span class="w"> </span>-q<span class="w"> </span>tests/schema_packages/test_schema_assets.py
 </code></pre></div>
-<h2 id="4-add-workflow-in-plugin-repository">4. Add workflow in plugin repository<a class="headerlink" href="#4-add-workflow-in-plugin-repository" title="Permanent link">&para;</a></h2>
+<h2 id="4-add-release-workflow-in-plugin-repository">4. Add release workflow in plugin repository<a class="headerlink" href="#4-add-release-workflow-in-plugin-repository" title="Permanent link">&para;</a></h2>
 <p>Copy template:</p>
 <ul>
 <li><code>docs/templates/update-plugin-metadata.yml</code></li>
@@ -437,7 +437,8 @@
 <ul>
 <li><code>.github/workflows/update-plugin-metadata.yml</code></li>
 </ul>
-<p>By default it runs on push to <code>main</code> and can auto-commit generated metadata files.</p>
+<p>By default it runs on release publication, updates generated/effective/report files,
+updates <code>nomad_plugin_metadata.yaml</code>, and opens or updates a rolling PR for maintainer review.</p>
 <h2 id="5-review-overrides">5. Review overrides<a class="headerlink" href="#5-review-overrides" title="Permanent link">&para;</a></h2>
 <p>Check <code>.nomad/plugin-metadata.override-report.yaml</code> after runs.
 If important fields are consistently overridden manually, consider improving extractor rules for that plugin type.</p>
