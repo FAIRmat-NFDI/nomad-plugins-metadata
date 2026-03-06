@@ -17,6 +17,13 @@
   - `nomad_plugin_metadata.manual.yaml` (maintainer)
   - `nomad_plugin_metadata.yaml` (effective/query)
   - `.metadata/plugin-metadata.override-report.yaml` (conflict report)
+- `metadata_provenance` no longer includes `confidence` (removed as non-computed field).
+- Provenance source label `static_code_scan` replaced with `plugin_entry_points` for entry-point-derived metadata.
+- `DependencyType` simplified to: `nomad_plugin`, `python_package`.
+- Auto-maturity heuristics in extractor:
+  - `archived` if GitHub repository is archived
+  - else `stable` for plugin versions `>=1.0.0`
+  - manual metadata still overrides auto values.
 
 ## 1.0.0 - 2026-03-05
 

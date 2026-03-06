@@ -47,7 +47,7 @@ file_format_support:
       - text/plain
     standard: Quantum ESPRESSO
 schema_dependencies:
-  - dependency_type: schema_package
+  - dependency_type: nomad_plugin
     package_name: nomad-metainfo
     version_range: '>=1.0'
     optional: false
@@ -69,8 +69,7 @@ deployment:
   on_pypi: true
   pypi_package: nomad-quantum-espresso-plugin
 metadata_provenance:
-  - source: static_code_scan
+  - source: plugin_entry_points
     extraction_method: deterministic
-    confidence: 0.95
     generated_at: '2026-03-05T12:00:00Z'
     generator_version: 0.1.0

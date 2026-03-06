@@ -1,0 +1,25 @@
+subject: []
+maturity: null
+repository_default_branch: null
+deployment:
+  on_central: null
+  on_example_oasis: null
+  on_pypi: null
+  pypi_package: null
+suggested_usages:
+- id: null
+  title: null
+  user_intent: null
+  domain_category: null
+  technique: null
+  audience: null
+  maturity: null
+  tags: []
+file_format_support:
+- id: null
+  label: null
+  extensions: []
+  mime_types: []
+  standard: null
+  instrument_context: null
+  notes: null

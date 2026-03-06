@@ -18,7 +18,7 @@ def test_run_extract_writes_auto_effective_report_and_keeps_manual_file(tmp_path
                 'description = "Example plugin"',
                 '',
                 '[project.urls]',
-                'Repository = "https://github.com/example/repo"',
+                'Repository = "https://example.org/repo"',
             ]
         ),
         encoding='utf-8',
@@ -95,5 +95,8 @@ def test_run_extract_creates_manual_template_if_missing(tmp_path: Path):
 
     assert manual_path.exists()
     manual_data = yaml.safe_load(manual_path.read_text(encoding='utf-8'))
-    assert 'name' in manual_data
-    assert 'upstream_repository' in manual_data
+    assert 'subject' in manual_data
+    assert 'deployment' in manual_data
+    assert 'suggested_usages' in manual_data
+    assert 'file_format_support' in manual_data
+    assert 'name' not in manual_data

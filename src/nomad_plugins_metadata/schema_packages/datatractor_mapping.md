@@ -26,7 +26,7 @@ Preserve compatibility for shared discovery fields while extending metadata for 
 | `schema_dependencies[]` | none | New dependency model for plugin interoperability. |
 | `suggested_usages[]` | usage instructions (conceptual) | Registry-facing guidance and filtering hints. |
 | `deployment.*` | none | NOMAD deployment/publishing state. |
-| `metadata_provenance[]` | none | Extraction traceability and confidence. |
+| `metadata_provenance[]` | none | Extraction traceability. |
 
 ## Compatibility rules
 1. Keep datatractor-compatible fields stable and optionality conservative.

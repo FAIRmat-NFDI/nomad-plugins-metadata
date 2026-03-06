@@ -28,10 +28,10 @@ DOMAIN_CATEGORIES = (
     'infrastructure',
 )
 MATURITY_LEVELS = ('alpha', 'beta', 'stable', 'archived')
-DEPENDENCY_TYPES = ('plugin', 'schema_package', 'python_package')
+DEPENDENCY_TYPES = ('nomad_plugin', 'python_package')
 METADATA_SOURCES = (
     'manual_override',
-    'static_code_scan',
+    'plugin_entry_points',
     'pyproject',
     'repository_api',
     'crawler_fallback',
@@ -117,7 +117,6 @@ class ReleaseContext(ArchiveSection):
 class MetadataProvenance(ArchiveSection):
     source = Quantity(type=MEnum(*METADATA_SOURCES))
     extraction_method = Quantity(type=MEnum(*EXTRACTION_METHODS))
-    confidence = Quantity(type=float)
     generated_at = Quantity(type=Datetime)
     generator_version = Quantity(type=str)
 

@@ -1,11 +1,16 @@
 from __future__ import annotations
 
+import json
 import re
 from datetime import datetime, timezone
 from importlib import metadata
 from pathlib import Path
+from urllib.error import HTTPError, URLError
+from urllib.parse import urlparse
+from urllib.request import Request, urlopen
 
 import tomllib
+from packaging.version import InvalidVersion, Version
 
 from nomad_plugins_metadata.schema_packages.schema_validation import load_schema
 
@@ -134,6 +139,69 @@ def _extract_schema_dependencies(pyproject: dict) -> list[dict]:
             add_dependency(str(dep), optional=True)
 
     return dependencies
+
+
+def _parse_github_owner_repo(repository_url: str) -> tuple[str, str] | None:
+    if not repository_url:
+        return None
+    parsed = urlparse(repository_url)
+    if parsed.netloc.lower() not in ('github.com', 'www.github.com'):
+        return None
+    parts = [part for part in parsed.path.strip('/').split('/') if part]
+    if len(parts) < 2:  # noqa: PLR2004
+        return None
+    owner, repo = parts[0], parts[1]
+    if repo.endswith('.git'):
+        repo = repo[:-4]
+    if not owner or not repo:
+        return None
+    return owner, repo
+
+
+def _is_github_repo_archived(repository_url: str) -> bool | None:
+    owner_repo = _parse_github_owner_repo(repository_url)
+    if owner_repo is None:
+        return None
+    owner, repo = owner_repo
+    api_url = f'https://api.github.com/repos/{owner}/{repo}'
+    request = Request(
+        api_url,
+        headers={
+            'Accept': 'application/vnd.github+json',
+            'User-Agent': 'nomad-plugins-metadata-extractor',
+        },
+    )
+    try:
+        with urlopen(request, timeout=5) as response:  # noqa: S310
+            payload = json.load(response)
+    except (HTTPError, URLError, TimeoutError, json.JSONDecodeError, ValueError):
+        return None
+
+    archived = payload.get('archived')
+    if isinstance(archived, bool):
+        return archived
+    return None
+
+
+def _version_is_at_least_1(version_str: str) -> bool:
+    clean = (version_str or '').strip()
+    if clean.startswith('v'):
+        clean = clean[1:]
+    if not clean:
+        return False
+    try:
+        return Version(clean) >= Version('1.0.0')
+    except InvalidVersion:
+        return False
+
+
+def _infer_maturity(plugin_version: str, upstream_repository: str) -> str | None:
+    archived = _is_github_repo_archived(upstream_repository)
+    if archived is True:
+        return 'archived'
+    if _version_is_at_least_1(plugin_version):
+        return 'stable'
+    return None
 
 
 def _entry_point_type_to_capability(entry_point_type: str | None) -> str:
@@ -303,6 +371,12 @@ def build_generated_metadata_with_release_context(
         )
 
     package_name = project.get('name', repo_path.name)
+    plugin_version = project.get('version', '')
+    upstream_repository = urls.get('Repository', '')
+    inferred_maturity = _infer_maturity(
+        plugin_version=str(plugin_version),
+        upstream_repository=str(upstream_repository),
+    )
     issue_tracker = ''
     for key in urls:
         if key.lower().replace(' ', '').replace('_', '') in (
@@ -317,9 +391,9 @@ def build_generated_metadata_with_release_context(
         'metadata_schema_version': _schema_version(),
         'name': package_name,
         'description': project.get('description', ''),
-        'plugin_version': project.get('version', ''),
+        'plugin_version': plugin_version,
         'license': license_value,
-        'upstream_repository': urls.get('Repository', ''),
+        'upstream_repository': upstream_repository,
         'documentation': urls.get('Documentation', ''),
         'homepage': urls.get('Homepage', ''),
         'issue_tracker': issue_tracker,
@@ -333,14 +407,12 @@ def build_generated_metadata_with_release_context(
             {
                 'source': 'pyproject',
                 'extraction_method': 'deterministic',
-                'confidence': 0.9,
                 'generated_at': datetime.now(timezone.utc).isoformat(),
                 'generator_version': '0.1.0',
             },
             {
-                'source': 'static_code_scan',
-                'extraction_method': 'heuristic',
-                'confidence': 0.7,
+                'source': 'plugin_entry_points',
+                'extraction_method': 'deterministic',
                 'generated_at': datetime.now(timezone.utc).isoformat(),
                 'generator_version': '0.1.0',
             }
@@ -353,6 +425,8 @@ def build_generated_metadata_with_release_context(
             'release_tag': clean_release_tag,
             'release_commit_sha': clean_release_sha,
         }
+    if inferred_maturity:
+        metadata['maturity'] = inferred_maturity
 
     # Drop empty values for cleaner generated files.
     return {k: v for k, v in metadata.items() if v not in ('', [], None)}
