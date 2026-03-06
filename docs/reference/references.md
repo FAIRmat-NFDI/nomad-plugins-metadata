@@ -15,6 +15,9 @@ Options:
 - `--generated-path` (default: `.nomad/plugin-metadata.generated.yaml`)
 - `--effective-path` (default: `.nomad/plugin-metadata.effective.yaml`)
 - `--report-path` (default: `.nomad/plugin-metadata.override-report.yaml`)
+- `--release-tag` (default: empty)
+- `--release-sha` (default: empty)
+- `--update-front-file` (default: unset)
 
 ## Metadata files
 
@@ -26,6 +29,8 @@ Options:
   - `.nomad/plugin-metadata.effective.yaml`
 - Override report:
   - `.nomad/plugin-metadata.override-report.yaml`
+- Forward-facing file updated in release PR mode:
+  - `nomad_plugin_metadata.yaml`
 
 ## Canonical schema and mappings
 
@@ -54,5 +59,13 @@ Key workflow inputs:
 - `generated_path`
 - `effective_path`
 - `report_path`
+- `release_tag`
+- `release_sha`
+- `forward_file_path`
+- `create_pr`
+- `pr_branch`
+- `pr_title`
+- `pr_body`
 - `auto_commit`
+- `check_only`
 - `commit_message`

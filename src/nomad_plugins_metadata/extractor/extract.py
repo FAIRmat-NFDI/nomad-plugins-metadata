@@ -43,6 +43,17 @@ def _owners_to_maintainers(project: dict) -> list[dict]:
 
 def build_generated_metadata(repo_path: Path) -> dict:
     """Generate baseline metadata from repo-local static sources."""
+    return build_generated_metadata_with_release_context(
+        repo_path=repo_path, release_tag=None, release_sha=None
+    )
+
+
+def build_generated_metadata_with_release_context(
+    repo_path: Path,
+    release_tag: str | None,
+    release_sha: str | None,
+) -> dict:
+    """Generate baseline metadata from repo-local static sources."""
     pyproject = _read_pyproject(repo_path / 'pyproject.toml')
     project = pyproject.get('project', {})
     urls = project.get('urls', {}) or {}
@@ -66,6 +77,13 @@ def build_generated_metadata(repo_path: Path) -> dict:
             }
         ],
     }
+    clean_release_tag = (release_tag or '').strip()
+    clean_release_sha = (release_sha or '').strip()
+    if clean_release_tag or clean_release_sha:
+        metadata['release_context'] = {
+            'release_tag': clean_release_tag,
+            'release_commit_sha': clean_release_sha,
+        }
 
     # Drop empty values for cleaner generated files.
     return {k: v for k, v in metadata.items() if v not in ('', [], None)}

@@ -20,13 +20,18 @@ Canonical schema + tooling package for generating, validating, and merging NOMAD
 
 1. Maintain manual metadata in:
    - `nomad_plugin_metadata.yaml`
-2. Run extractor automation (CLI or reusable workflow).
+2. On release publish, run extractor automation via reusable workflow in PR mode.
 3. Automation generates:
    - `.nomad/plugin-metadata.generated.yaml`
    - `.nomad/plugin-metadata.effective.yaml`
    - `.nomad/plugin-metadata.override-report.yaml`
-4. Merge precedence is deterministic:
+4. In PR mode, workflow also updates:
+   - `nomad_plugin_metadata.yaml` (forward-facing file)
+5. Merge precedence is deterministic:
    - manual override (`nomad_plugin_metadata.yaml`) > generated metadata
+6. Generated/effective metadata include release linkage:
+   - `release_context.release_tag`
+   - `release_context.release_commit_sha`
 
 ## Schema validation
 
@@ -70,8 +75,8 @@ Example caller workflow in a plugin repository:
 name: update-plugin-metadata
 
 on:
-  push:
-    branches: [main]
+  release:
+    types: [published]
   workflow_dispatch:
 
 jobs:
@@ -79,13 +84,26 @@ jobs:
     uses: FAIRmat-NFDI/nomad-plugins-metadata/.github/workflows/extract-plugin-metadata.yml@main
     permissions:
       contents: write
+      pull-requests: write
     with:
       package_spec: nomad-plugins-metadata==0.1.0
-      auto_commit: true
+      check_only: false
+      auto_commit: false
+      create_pr: true
+      release_tag: ${{ github.event.release.tag_name || '' }}
+      release_sha: ${{ github.sha }}
 ```
 
 For PR check-only enforcement (no auto-commit), use the template at
 `docs/templates/check-plugin-metadata-pr.yml`. If metadata is out of sync, the workflow fails with remediation commands in the job summary.
+
+Release PR mode (`create_pr: true`) behavior:
+
+- writes `.nomad/plugin-metadata.generated.yaml`
+- writes `.nomad/plugin-metadata.effective.yaml`
+- overwrites `.nomad/plugin-metadata.override-report.yaml`
+- updates forward-facing `nomad_plugin_metadata.yaml`
+- creates/updates a single rolling PR branch with a standard body including release tag/sha and changed files
 
 If you need plugin-specific enrichment, add a repository-local hook script and run it before/after the reusable extractor job.
 

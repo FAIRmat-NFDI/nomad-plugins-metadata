@@ -36,7 +36,7 @@ From this repository:
 uv run pytest -q tests/schema_packages/test_schema_assets.py
 ```
 
-## 4. Add workflow in plugin repository
+## 4. Add release workflow in plugin repository
 
 Copy template:
 
@@ -46,7 +46,8 @@ Place it in plugin repo as:
 
 - `.github/workflows/update-plugin-metadata.yml`
 
-By default it runs on push to `main` and can auto-commit generated metadata files.
+By default it runs on release publication, updates generated/effective/report files,
+updates `nomad_plugin_metadata.yaml`, and opens or updates a rolling PR for maintainer review.
 
 ## 5. Review overrides
 

@@ -1,5 +1,15 @@
 # Schema Changelog
 
+## Unreleased
+
+### Added
+- `release_context` fields in canonical schema and metainfo adapter (`release_tag`, `release_commit_sha`).
+- Release-aware extractor options: `--release-tag`, `--release-sha`, `--update-front-file`.
+
+### Changed
+- Reusable extraction workflow supports release-driven rolling PR mode with standard PR body and diff summary.
+- Release caller template now triggers on `release.published` (+ `workflow_dispatch`) and creates/updates a metadata PR.
+
 ## 1.0.0 - 2026-03-05
 
 Initial baseline for canonical plugin metadata schema and metainfo adapter.

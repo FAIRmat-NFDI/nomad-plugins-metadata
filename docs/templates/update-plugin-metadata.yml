@@ -1,8 +1,8 @@
 name: update-plugin-metadata
 
 on:
-  push:
-    branches: [main]
+  release:
+    types: [published]
   workflow_dispatch:
 
 jobs:
@@ -10,6 +10,11 @@ jobs:
     uses: FAIRmat-NFDI/nomad-plugins-metadata/.github/workflows/extract-plugin-metadata.yml@main
     permissions:
       contents: write
+      pull-requests: write
     with:
       package_spec: nomad-plugins-metadata==0.1.0
-      auto_commit: true
+      check_only: false
+      auto_commit: false
+      create_pr: true
+      release_tag: ${{ github.event.release.tag_name || '' }}
+      release_sha: ${{ github.sha }}

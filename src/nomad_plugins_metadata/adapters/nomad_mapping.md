@@ -24,6 +24,7 @@ This document defines how canonical LinkML metadata maps to the transitional `no
 | `file_format_support[]` | derived UI/search fields | Flatten if adapter cannot hold nested sections. |
 | `schema_dependencies[]` | dependency subsection in adapter | New subsection in transition. |
 | `suggested_usages[]` | UI filter payload fields | Flatten to filter tags as needed. |
+| `release_context.release_tag` / `release_context.release_commit_sha` | release linkage fields | Keep in adapter payload for version traceability. |
 | `metadata_provenance[]` | optional internal audit fields | Keep for traceability/debugging. |
 
 ## Precedence at ingest

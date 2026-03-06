@@ -109,6 +109,11 @@ class DeploymentInfo(ArchiveSection):
     pypi_package = Quantity(type=str)
 
 
+class ReleaseContext(ArchiveSection):
+    release_tag = Quantity(type=str)
+    release_commit_sha = Quantity(type=str)
+
+
 class MetadataProvenance(ArchiveSection):
     source = Quantity(type=MEnum(*METADATA_SOURCES))
     extraction_method = Quantity(type=MEnum(*EXTRACTION_METHODS))
@@ -141,6 +146,7 @@ class PluginMetadata(Schema):
     schema_dependencies = SubSection(section=SchemaDependency, repeats=True)
     suggested_usages = SubSection(section=SuggestedUsage, repeats=True)
     deployment = SubSection(section=DeploymentInfo)
+    release_context = SubSection(section=ReleaseContext)
     metadata_provenance = SubSection(section=MetadataProvenance, repeats=True)
 
     def normalize(self, archive: 'EntryArchive', logger: 'BoundLogger') -> None:

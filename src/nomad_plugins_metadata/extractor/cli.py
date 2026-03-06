@@ -1,12 +1,26 @@
 from __future__ import annotations
 
 import argparse
+from dataclasses import dataclass
 from pathlib import Path
 
 import yaml
 
-from nomad_plugins_metadata.extractor.extract import build_generated_metadata
+from nomad_plugins_metadata.extractor.extract import (
+    build_generated_metadata_with_release_context,
+)
 from nomad_plugins_metadata.extractor.merge import merge_generated_and_manual
+
+
+@dataclass(frozen=True)
+class ExtractRunConfig:
+    manual_path: Path
+    generated_path: Path
+    effective_path: Path
+    report_path: Path
+    release_tag: str | None = None
+    release_sha: str | None = None
+    update_front_file: Path | None = None
 
 
 def _load_yaml(path: Path) -> dict:
@@ -25,20 +39,20 @@ def _write_yaml(path: Path, data: dict) -> None:
         yaml.safe_dump(data, f, sort_keys=False)
 
 
-def run_extract(
-    repo_path: Path,
-    manual_path: Path,
-    generated_path: Path,
-    effective_path: Path,
-    report_path: Path,
-) -> None:
-    generated = build_generated_metadata(repo_path)
-    manual = _load_yaml(manual_path)
+def run_extract(repo_path: Path, config: ExtractRunConfig) -> None:
+    generated = build_generated_metadata_with_release_context(
+        repo_path=repo_path,
+        release_tag=config.release_tag,
+        release_sha=config.release_sha,
+    )
+    manual = _load_yaml(config.manual_path)
     effective, report = merge_generated_and_manual(generated, manual)
 
-    _write_yaml(generated_path, generated)
-    _write_yaml(effective_path, effective)
-    _write_yaml(report_path, report)
+    _write_yaml(config.generated_path, generated)
+    _write_yaml(config.effective_path, effective)
+    _write_yaml(config.report_path, report)
+    if config.update_front_file is not None:
+        _write_yaml(config.update_front_file, effective)
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -70,6 +84,24 @@ def build_parser() -> argparse.ArgumentParser:
         type=Path,
         default=Path('.nomad/plugin-metadata.override-report.yaml'),
     )
+    extract.add_argument(
+        '--release-tag',
+        type=str,
+        default='',
+        help='Release tag to embed in generated/effective metadata.',
+    )
+    extract.add_argument(
+        '--release-sha',
+        type=str,
+        default='',
+        help='Release commit SHA to embed in generated/effective metadata.',
+    )
+    extract.add_argument(
+        '--update-front-file',
+        type=Path,
+        default=None,
+        help='Optional path to overwrite with effective metadata (e.g. nomad_plugin_metadata.yaml).',
+    )
 
     return parser
 
@@ -79,10 +111,15 @@ def main() -> None:
     if args.command == 'extract':
         run_extract(
             repo_path=args.repo_path,
-            manual_path=args.manual_path,
-            generated_path=args.generated_path,
-            effective_path=args.effective_path,
-            report_path=args.report_path,
+            config=ExtractRunConfig(
+                manual_path=args.manual_path,
+                generated_path=args.generated_path,
+                effective_path=args.effective_path,
+                report_path=args.report_path,
+                release_tag=args.release_tag or None,
+                release_sha=args.release_sha or None,
+                update_front_file=args.update_front_file,
+            ),
         )
 
 

@@ -1,16 +1,21 @@
 name: update-plugin-metadata
 
 on:
-  push:
-    branches: [main]
+  release:
+    types: [published]
   workflow_dispatch:
 
 permissions:
   contents: write
+  pull-requests: write
 
 jobs:
   extract:
     uses: ./.github/workflows/extract-plugin-metadata.yml
     with:
       package_spec: .
+      check_only: false
       auto_commit: false
+      create_pr: true
+      release_tag: ${{ github.event.release.tag_name || '' }}
+      release_sha: ${{ github.sha }}
