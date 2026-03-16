@@ -89,10 +89,15 @@ classes:
     description: Structured parser metadata used for parser discoverability.
     slots:
       - parser_name
+      - parser_level
+      - parser_aliases
       - mainfile_name_re
       - mainfile_contents_re
+      - mainfile_contents_dict
       - mainfile_mime_re
       - mainfile_binary_header
+      - mainfile_binary_header_re
+      - mainfile_alternative
       - compression_support
       - auxiliary_file_patterns
 
@@ -281,10 +286,21 @@ slots:
   parser_name:
     required: false
 
+  parser_level:
+    required: false
+    range: integer
+
+  parser_aliases:
+    multivalued: true
+    required: false
+
   mainfile_name_re:
     required: false
 
   mainfile_contents_re:
+    required: false
+
+  mainfile_contents_dict:
     required: false
 
   mainfile_mime_re:
@@ -292,6 +308,13 @@ slots:
 
   mainfile_binary_header:
     required: false
+
+  mainfile_binary_header_re:
+    required: false
+
+  mainfile_alternative:
+    required: false
+    range: boolean
 
   compression_support:
     multivalued: true

@@ -183,6 +183,22 @@ def _extract_extensions_from_name_regex(name_regex: str) -> list[str]:
     return result
 
 
+def _serialize_bytes(value: bytes | str | None) -> str:
+    if value is None:
+        return ''
+    if isinstance(value, bytes):
+        return value.hex()
+    return str(value)
+
+
+def _mime_pattern_is_specific(mime_pattern: str) -> bool:
+    cleaned = (mime_pattern or '').strip()
+    if not cleaned or cleaned in ('.*', 'text/.*', '.*/.*'):
+        return False
+    wildcardy = ('*', '^', '$', '(', ')', '[', ']', '|', '+', '?')
+    return not any(token in cleaned for token in wildcardy)
+
+
 def _extract_auxiliary_patterns_from_table(metadata_dict: dict | None) -> list[str]:
     if not metadata_dict:
         return []
@@ -199,6 +215,30 @@ def _extract_auxiliary_patterns_from_table(metadata_dict: dict | None) -> list[s
         seen.add(value)
         result.append(value)
     return result
+
+
+def _extract_extensions_from_auxiliary_patterns(patterns: list[str]) -> list[str]:
+    extensions: list[str] = []
+    seen: set[str] = set()
+    wildcard_tokens = ('*', '?', '[', ']', '(', ')', '{', '}', '$', '^', '|', '\\')
+    for pattern in patterns:
+        token = (pattern or '').strip()
+        if not token:
+            continue
+        if any(symbol in token for symbol in wildcard_tokens):
+            continue
+        last_segment = token.split('/')[-1]
+        if '.' not in last_segment:
+            continue
+        ext = last_segment.rsplit('.', 1)[-1].strip().lower()
+        if not re.fullmatch(r'[a-z0-9]+', ext):
+            continue
+        value = f'.{ext}'
+        if value in seen:
+            continue
+        seen.add(value)
+        extensions.append(value)
+    return extensions
 
 
 def _extract_schema_dependencies(pyproject: dict) -> list[dict]:
@@ -455,16 +495,26 @@ def _build_entry_points_and_capabilities(
         }
 
         if capability_type == 'parser':
+            contents_dict = getattr(loaded, 'mainfile_contents_dict', None)
             parser_details = {
                 'parser_name': str(getattr(loaded, 'name', ep_name)),
+                'parser_level': getattr(loaded, 'level', None),
+                'parser_aliases': list(getattr(loaded, 'aliases', []) or []),
                 'mainfile_name_re': str(getattr(loaded, 'mainfile_name_re', '') or ''),
                 'mainfile_contents_re': str(
                     getattr(loaded, 'mainfile_contents_re', '') or ''
                 ),
-                'mainfile_mime_re': str(getattr(loaded, 'mainfile_mime_re', '') or ''),
-                'mainfile_binary_header': str(
-                    getattr(loaded, 'mainfile_binary_header', '') or ''
+                'mainfile_contents_dict': (
+                    json.dumps(contents_dict) if contents_dict else ''
                 ),
+                'mainfile_mime_re': str(getattr(loaded, 'mainfile_mime_re', '') or ''),
+                'mainfile_binary_header': _serialize_bytes(
+                    getattr(loaded, 'mainfile_binary_header', None)
+                ),
+                'mainfile_binary_header_re': _serialize_bytes(
+                    getattr(loaded, 'mainfile_binary_header_re', None)
+                ),
+                'mainfile_alternative': getattr(loaded, 'mainfile_alternative', None),
                 'compression_support': list(
                     getattr(loaded, 'supported_compressions', []) or []
                 ),
@@ -483,17 +533,33 @@ def _build_entry_points_and_capabilities(
             extensions = _extract_extensions_from_name_regex(
                 str(getattr(loaded, 'mainfile_name_re', '') or '')
             )
+            aux_patterns = list(parser_details.get('auxiliary_file_patterns', []))
+            extensions.extend(
+                _extract_extensions_from_auxiliary_patterns(aux_patterns)
+            )
+            mime = str(getattr(loaded, 'mainfile_mime_re', '') or '')
             for ext in extensions:
                 if ext in supported_filetypes:
                     continue
                 supported_filetypes.append(ext)
-                mime = str(getattr(loaded, 'mainfile_mime_re', '') or '')
                 file_format_support.append(
                     {
                         'id': ext.lstrip('.'),
                         'label': ext,
                         'extensions': [ext],
                         'mime_types': [mime] if mime else [],
+                    }
+                )
+            # Fallback: if parser has specific mime matcher but no extension regex, emit
+            # at least one file-format support item for discoverability.
+            if not extensions and _mime_pattern_is_specific(mime):
+                format_id = mime.lower().replace('/', '-').replace('+', '-')
+                file_format_support.append(
+                    {
+                        'id': format_id,
+                        'label': mime,
+                        'extensions': [],
+                        'mime_types': [mime],
                     }
                 )
 
