@@ -46,6 +46,7 @@ non-empty values from `.metadata/nomad_plugin_metadata.manual.yaml` > `.metadata
 
 ## Where to go next
 
+- See [How-to](how_to/apply_to_plugin_repo.md) for plugin-repo onboarding.
 - See [Tutorial](tutorial/tutorial.md) for end-to-end usage.
 - See [Explanation](explanation/explanation.md) for architecture rationale.
 - See [Reference](reference/references.md) for commands, files, and workflow inputs.

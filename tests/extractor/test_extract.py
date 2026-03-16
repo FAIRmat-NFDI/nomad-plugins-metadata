@@ -26,10 +26,15 @@ class _FakeParserEntryPoint:
     id = 'parsers/fake-parser'
     name = 'Fake Parser'
     description = 'Parses fake files'
+    level = 2
+    aliases = ['fake', 'fake-parser']
     mainfile_name_re = r'.*\\.(csv|xlsx)$'
     mainfile_contents_re = 'FAKE_HEADER'
+    mainfile_contents_dict = {'__has_all_keys': ['time', 'value']}
     mainfile_mime_re = 'text/csv'
-    mainfile_binary_header = ''
+    mainfile_binary_header = b'CSV'
+    mainfile_binary_header_re = b'CSV.*'
+    mainfile_alternative = False
     supported_compressions = ['gz', 'xz']
     metadata = {
         'tableOfFiles': '\n'.join(
@@ -46,6 +51,7 @@ class _FakeParserEntryPoint:
 def test_extracts_installed_entry_point_parser_metadata(
     tmp_path: Path, monkeypatch
 ) -> None:
+    parser_level = 2
     repo = tmp_path / 'repo'
     repo.mkdir()
     (repo / 'pyproject.toml').write_text(
@@ -95,7 +101,18 @@ def test_extracts_installed_entry_point_parser_metadata(
     parser_details = capability['parser_details']
     assert parser_details['mainfile_name_re'] == r'.*\\.(csv|xlsx)$'
     assert parser_details['compression_support'] == ['gz', 'xz']
+    assert parser_details['parser_level'] == parser_level
+    assert parser_details['parser_aliases'] == ['fake', 'fake-parser']
+    assert parser_details['mainfile_contents_dict'] == '{"__has_all_keys": ["time", "value"]}'
+    assert parser_details['mainfile_binary_header'] == '435356'
+    assert parser_details['mainfile_binary_header_re'] == '4353562e2a'
+    assert parser_details['mainfile_alternative'] is False
     assert 'auxiliary.json' in parser_details['auxiliary_file_patterns']
+    assert '.json' in generated['supported_filetypes']
+    assert any(
+        entry.get('id') == 'json' and '.json' in entry.get('extensions', [])
+        for entry in generated['file_format_support']
+    )
 
     deps = {item['package_name']: item for item in generated['schema_dependencies']}
     assert deps['numpy']['version_range'] == '>=1.26'
@@ -321,3 +338,58 @@ def test_github_telemetry_fields_are_extracted(tmp_path: Path, monkeypatch) -> N
     assert generated['created'] == '2024-01-01T00:00:00Z'
     assert generated['last_updated'] == '2025-01-01T00:00:00Z'
     assert generated['archived'] is False
+
+
+class _FakeMimeOnlyParserEntryPoint:
+    entry_point_type = 'parser'
+    id = 'parsers/mime-only'
+    name = 'MimeOnly Parser'
+    description = 'Parses based on mime'
+    mainfile_name_re = r'.*'
+    mainfile_mime_re = 'application/x-custom'
+    supported_compressions = []
+    metadata = {}
+
+
+def test_file_format_support_falls_back_to_specific_mime(
+    tmp_path: Path, monkeypatch
+) -> None:
+    repo = tmp_path / 'repo'
+    repo.mkdir()
+    (repo / 'pyproject.toml').write_text(
+        '\n'.join(
+            [
+                '[project]',
+                'name = "example-plugin"',
+                '',
+                '[project.entry-points."nomad.plugin"]',
+                'mime_parser = "example.parsers:mime_parser"',
+            ]
+        ),
+        encoding='utf-8',
+    )
+
+    fake_eps = [
+        _FakeEntryPoint(
+            name='mime_parser',
+            value='example.parsers:mime_parser',
+            dist_name='example-plugin',
+            loaded=_FakeMimeOnlyParserEntryPoint(),
+        )
+    ]
+    monkeypatch.setattr(
+        'nomad_plugins_metadata.extractor.extract.metadata.entry_points',
+        lambda group=None: fake_eps,
+    )
+    monkeypatch.setattr(
+        'nomad_plugins_metadata.extractor.extract._fetch_github_repo_metadata',
+        lambda repository_url: None,
+    )
+
+    generated = build_generated_metadata_with_release_context(
+        repo_path=repo,
+        release_tag=None,
+        release_sha=None,
+    )
+    assert generated['file_format_support'][0]['mime_types'] == ['application/x-custom']
+    assert generated['file_format_support'][0]['id'] == 'application-x-custom'

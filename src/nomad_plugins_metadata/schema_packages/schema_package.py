@@ -58,10 +58,15 @@ class EntryPoint(ArchiveSection):
 
 class ParserCapabilityDetails(ArchiveSection):
     parser_name = Quantity(type=str)
+    parser_level = Quantity(type=int)
+    parser_aliases = Quantity(type=str, shape=['*'])
     mainfile_name_re = Quantity(type=str)
     mainfile_contents_re = Quantity(type=str)
+    mainfile_contents_dict = Quantity(type=str)
     mainfile_mime_re = Quantity(type=str)
     mainfile_binary_header = Quantity(type=str)
+    mainfile_binary_header_re = Quantity(type=str)
+    mainfile_alternative = Quantity(type=bool)
     compression_support = Quantity(type=MEnum(*COMPRESSION_TYPES), shape=['*'])
     auxiliary_file_patterns = Quantity(type=str, shape=['*'])
 

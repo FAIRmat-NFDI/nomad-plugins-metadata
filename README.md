@@ -51,9 +51,19 @@ entry points when available, including parser matcher fields such as:
 
 - `mainfile_name_re`
 - `mainfile_contents_re`
+- `mainfile_contents_dict`
 - `mainfile_mime_re`
 - `mainfile_binary_header`
+- `mainfile_binary_header_re`
+- `mainfile_alternative`
+- `parser_level`
+- `parser_aliases`
 - `supported_compressions` (mapped to `compression_support`)
+
+`supported_filetypes` / `file_format_support` are inferred from:
+
+- parser `mainfile_name_re` extensions, and
+- concrete auxiliary file patterns (e.g. `` `auxiliary.json` ``) when available.
 
 People metadata source priority:
 
@@ -113,6 +123,7 @@ nomad-plugin-metadata extract --repo-path .
 ```
 
 This regenerates auto/effective/report files and recreates manual template if missing.
+The generated manual template includes inline comments for expected values, types, and enum options.
 
 ## Reusable Workflow
 
@@ -123,6 +134,11 @@ Ready-to-copy caller template:
 `docs/templates/update-plugin-metadata.yml`
 and PR check template:
 `docs/templates/check-plugin-metadata-pr.yml`
+with template notes:
+`docs/templates/README.md`.
+
+Full plugin-repo onboarding steps:
+`docs/how_to/apply_to_plugin_repo.md`.
 
 This repository also uses the same pattern for self-testing:
 `.github/workflows/update-plugin-metadata.yml`

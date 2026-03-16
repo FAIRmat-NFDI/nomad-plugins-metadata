@@ -44,6 +44,8 @@ uv run pytest -q tests/schema_packages/test_schema_assets.py
 Copy template:
 
 - `docs/templates/update-plugin-metadata.yml`
+- `docs/templates/check-plugin-metadata-pr.yml`
+- `docs/templates/README.md` (usage notes)
 
 Place it in plugin repo as:
 

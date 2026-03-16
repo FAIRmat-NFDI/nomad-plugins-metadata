@@ -7,12 +7,16 @@ on:
 
 jobs:
   extract:
+    # Pin this reusable workflow to a stable tag/commit once available.
     uses: FAIRmat-NFDI/nomad-plugins-metadata/.github/workflows/extract-plugin-metadata.yml@main
     permissions:
       contents: write
       pull-requests: write
     with:
-      package_spec: nomad-plugins-metadata==0.1.0
+      # Before PyPI release:
+      package_spec: git+https://github.com/FAIRmat-NFDI/nomad-plugins-metadata.git@main
+      # After PyPI release, switch to:
+      # package_spec: nomad-plugins-metadata==<PINNED_VERSION>
       check_only: false
       auto_commit: false
       create_pr: true
