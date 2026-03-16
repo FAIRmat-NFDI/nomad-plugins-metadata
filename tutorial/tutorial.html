@@ -292,6 +292,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#6-reset-metadata-artifacts-optional" class="md-nav__link">
+    6. Reset metadata artifacts (optional)
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -391,6 +398,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#6-reset-metadata-artifacts-optional" class="md-nav__link">
+    6. Reset metadata artifacts (optional)
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -444,6 +458,15 @@ creates <code>nomad_plugin_metadata.manual.yaml</code> if missing, and opens or 
 <h2 id="5-review-overrides">5. Review overrides<a class="headerlink" href="#5-review-overrides" title="Permanent link">&para;</a></h2>
 <p>Check <code>.metadata/plugin-metadata.override-report.yaml</code> after runs.
 If important fields are consistently overridden manually, consider improving extractor rules for that plugin type.</p>
+<h2 id="6-reset-metadata-artifacts-optional">6. Reset metadata artifacts (optional)<a class="headerlink" href="#6-reset-metadata-artifacts-optional" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Report-only reset:</li>
+<li>remove <code>.metadata/*</code></li>
+<li>Regenerate auto/effective/report:</li>
+<li>remove <code>nomad_plugin_metadata.auto.yaml</code> and <code>nomad_plugin_metadata.yaml</code>, then run extract</li>
+<li>Full reset (including manual):</li>
+<li>also remove <code>nomad_plugin_metadata.manual.yaml</code> before running extract</li>
+</ul>
 
               
             </article>

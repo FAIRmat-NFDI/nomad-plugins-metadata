@@ -302,6 +302,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#field-source-precedence-quick-view" class="md-nav__link">
+    Field-source precedence (quick view)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#4-override-reporting" class="md-nav__link">
     4. Override reporting
   </a>
@@ -406,6 +413,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#field-source-precedence-quick-view" class="md-nav__link">
+    Field-source precedence (quick view)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#4-override-reporting" class="md-nav__link">
     4. Override reporting
   </a>
@@ -470,6 +484,17 @@ technical metadata (especially parser matcher details) directly from entry-point
 </ul>
 <p>Effective metadata is produced by deterministic deep-merge with manual precedence,
 ignoring empty values from the manual template.</p>
+<h3 id="field-source-precedence-quick-view">Field-source precedence (quick view)<a class="headerlink" href="#field-source-precedence-quick-view" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>maintainers</code>: <code>CITATION.cff</code> authors &gt; <code>pyproject</code> maintainers/authors.</li>
+<li><code>authors</code>: <code>CITATION.cff</code> authors &gt; <code>pyproject</code> authors.</li>
+<li><code>maintainers</code>: <code>pyproject</code> maintainers.</li>
+<li><code>upstream_repository</code>: <code>pyproject.urls.Repository</code> &gt; <code>CITATION.cff</code> <code>repository-code</code>.</li>
+<li><code>documentation</code>: <code>pyproject.urls.Documentation</code> &gt; GitHub Pages probe.</li>
+<li><code>homepage</code>: <code>pyproject.urls.Homepage</code> &gt; <code>CITATION.cff</code> <code>url</code> &gt; resolved repository URL.</li>
+<li><code>stars</code>, <code>owner</code>, <code>owner_type</code>, <code>created</code>, <code>last_updated</code>, <code>archived</code>: GitHub repository API (best-effort).</li>
+<li>Manual metadata still has final precedence in effective output.</li>
+</ul>
 <h3 id="4-override-reporting">4. Override reporting<a class="headerlink" href="#4-override-reporting" title="Permanent link">&para;</a></h3>
 <p>When manual values override generated values, the pipeline records those blocked/generated conflicts in:</p>
 <ul>
