@@ -478,15 +478,14 @@ technical metadata (especially parser matcher details) directly from entry-point
 <h3 id="3-three-file-merge-model">3. Three-file merge model<a class="headerlink" href="#3-three-file-merge-model" title="Permanent link">&para;</a></h3>
 <p>Automation writes machine-owned <code>auto</code> and <code>effective</code> files and never overwrites the manual template file.</p>
 <ul>
-<li>auto: <code>nomad_plugin_metadata.auto.yaml</code></li>
-<li>manual: <code>nomad_plugin_metadata.manual.yaml</code></li>
+<li>auto: <code>.metadata/nomad_plugin_metadata.auto.yaml</code></li>
+<li>manual: <code>.metadata/nomad_plugin_metadata.manual.yaml</code></li>
 <li>effective: <code>nomad_plugin_metadata.yaml</code></li>
 </ul>
 <p>Effective metadata is produced by deterministic deep-merge with manual precedence,
 ignoring empty values from the manual template.</p>
 <h3 id="field-source-precedence-quick-view">Field-source precedence (quick view)<a class="headerlink" href="#field-source-precedence-quick-view" title="Permanent link">&para;</a></h3>
 <ul>
-<li><code>maintainers</code>: <code>CITATION.cff</code> authors &gt; <code>pyproject</code> maintainers/authors.</li>
 <li><code>authors</code>: <code>CITATION.cff</code> authors &gt; <code>pyproject</code> authors.</li>
 <li><code>maintainers</code>: <code>pyproject</code> maintainers.</li>
 <li><code>upstream_repository</code>: <code>pyproject.urls.Repository</code> &gt; <code>CITATION.cff</code> <code>repository-code</code>.</li>

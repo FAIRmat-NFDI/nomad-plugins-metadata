@@ -433,17 +433,17 @@
 </ul>
 <h2 id="typical-plugin-repo-flow">Typical plugin-repo flow<a class="headerlink" href="#typical-plugin-repo-flow" title="Permanent link">&para;</a></h2>
 <ol>
-<li>Maintainer edits <code>nomad_plugin_metadata.manual.yaml</code> (manual template/override file).</li>
+<li>Maintainer edits <code>.metadata/nomad_plugin_metadata.manual.yaml</code> (manual template/override file).</li>
 <li>CI runs <code>nomad-plugin-metadata extract</code>.</li>
 <li>Workflow writes:</li>
-<li><code>nomad_plugin_metadata.auto.yaml</code></li>
+<li><code>.metadata/nomad_plugin_metadata.auto.yaml</code></li>
 <li><code>nomad_plugin_metadata.yaml</code></li>
 <li><code>.metadata/plugin-metadata.override-report.yaml</code></li>
 <li>Consumers ingest effective metadata.</li>
 <li>Artifact semantics are documented in-repo at <code>.metadata/README.md</code>.</li>
 </ol>
 <p>Merge precedence is always:</p>
-<p>non-empty values from <code>nomad_plugin_metadata.manual.yaml</code> &gt; <code>nomad_plugin_metadata.auto.yaml</code></p>
+<p>non-empty values from <code>.metadata/nomad_plugin_metadata.manual.yaml</code> &gt; <code>.metadata/nomad_plugin_metadata.auto.yaml</code></p>
 <h2 id="where-to-go-next">Where to go next<a class="headerlink" href="#where-to-go-next" title="Permanent link">&para;</a></h2>
 <ul>
 <li>See <a href="tutorial/tutorial.html">Tutorial</a> for end-to-end usage.</li>

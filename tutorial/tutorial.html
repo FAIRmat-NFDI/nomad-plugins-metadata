@@ -421,7 +421,7 @@
 <h1 id="tutorial">Tutorial<a class="headerlink" href="#tutorial" title="Permanent link">&para;</a></h1>
 <p>This tutorial shows the standard plugin-repo metadata workflow.</p>
 <h2 id="1-add-manual-metadata-file">1. Add manual metadata file<a class="headerlink" href="#1-add-manual-metadata-file" title="Permanent link">&para;</a></h2>
-<p>Create <code>nomad_plugin_metadata.manual.yaml</code> in repository root.</p>
+<p>Create <code>.metadata/nomad_plugin_metadata.manual.yaml</code> in repository root.</p>
 <p>Minimal example:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">my-plugin</span>
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="nt">metadata_schema_version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1.0.0</span>
@@ -434,7 +434,7 @@
 </code></pre></div>
 <p>Generated outputs:</p>
 <ul>
-<li><code>nomad_plugin_metadata.auto.yaml</code></li>
+<li><code>.metadata/nomad_plugin_metadata.auto.yaml</code></li>
 <li><code>nomad_plugin_metadata.yaml</code></li>
 <li><code>.metadata/plugin-metadata.override-report.yaml</code></li>
 </ul>
@@ -454,18 +454,18 @@ technical entry-point metadata (e.g., parser <code>mainfile_*</code> patterns, c
 <li><code>.github/workflows/update-plugin-metadata.yml</code></li>
 </ul>
 <p>By default it runs on release publication, updates auto/effective/report files,
-creates <code>nomad_plugin_metadata.manual.yaml</code> if missing, and opens or updates a rolling PR for maintainer review.</p>
+creates <code>.metadata/nomad_plugin_metadata.manual.yaml</code> if missing, and opens or updates a rolling PR for maintainer review.</p>
 <h2 id="5-review-overrides">5. Review overrides<a class="headerlink" href="#5-review-overrides" title="Permanent link">&para;</a></h2>
 <p>Check <code>.metadata/plugin-metadata.override-report.yaml</code> after runs.
 If important fields are consistently overridden manually, consider improving extractor rules for that plugin type.</p>
 <h2 id="6-reset-metadata-artifacts-optional">6. Reset metadata artifacts (optional)<a class="headerlink" href="#6-reset-metadata-artifacts-optional" title="Permanent link">&para;</a></h2>
 <ul>
-<li>Report-only reset:</li>
+<li>Reset manual/auto/report artifacts:</li>
 <li>remove <code>.metadata/*</code></li>
 <li>Regenerate auto/effective/report:</li>
-<li>remove <code>nomad_plugin_metadata.auto.yaml</code> and <code>nomad_plugin_metadata.yaml</code>, then run extract</li>
+<li>remove <code>.metadata/nomad_plugin_metadata.auto.yaml</code>, <code>.metadata/plugin-metadata.override-report.yaml</code>, and <code>nomad_plugin_metadata.yaml</code>, then run extract</li>
 <li>Full reset (including manual):</li>
-<li>also remove <code>nomad_plugin_metadata.manual.yaml</code> before running extract</li>
+<li>remove <code>.metadata/*</code> and <code>nomad_plugin_metadata.yaml</code> before running extract</li>
 </ul>
 
               
