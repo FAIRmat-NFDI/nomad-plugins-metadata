@@ -34,17 +34,35 @@ def _schema_version() -> str:
 
 def _owners_to_maintainers(project: dict) -> list[dict]:
     maintainers = []
-    for key in ('maintainers', 'authors'):
-        for item in project.get(key, []) or []:
-            name = item.get('name')
-            email = item.get('email')
-            if not name and not email:
-                continue
-            maintainers.append({'name': name or '', 'email': email or ''})
+    for item in project.get('maintainers', []) or []:
+        name = item.get('name')
+        email = item.get('email')
+        if not name and not email:
+            continue
+        maintainers.append({'name': name or '', 'email': email or ''})
     # preserve order, deduplicate exact dicts
     deduped = []
     seen = set()
     for entry in maintainers:
+        marker = (entry.get('name', ''), entry.get('email', ''))
+        if marker in seen:
+            continue
+        seen.add(marker)
+        deduped.append(entry)
+    return deduped
+
+
+def _pyproject_authors(project: dict) -> list[dict]:
+    authors = []
+    for item in project.get('authors', []) or []:
+        name = item.get('name')
+        email = item.get('email')
+        if not name and not email:
+            continue
+        authors.append({'name': name or '', 'email': email or ''})
+    deduped = []
+    seen = set()
+    for entry in authors:
         marker = (entry.get('name', ''), entry.get('email', ''))
         if marker in seen:
             continue
@@ -252,7 +270,7 @@ def _check_github_pages_exists(repository_url: str) -> str | None:
         return None
 
 
-def _is_github_repo_archived(repository_url: str) -> bool | None:
+def _fetch_github_repo_metadata(repository_url: str) -> dict | None:
     owner_repo = _parse_github_owner_repo(repository_url)
     if owner_repo is None:
         return None
@@ -269,6 +287,15 @@ def _is_github_repo_archived(repository_url: str) -> bool | None:
         with urlopen(request, timeout=5) as response:  # noqa: S310
             payload = json.load(response)
     except (HTTPError, URLError, TimeoutError, json.JSONDecodeError, ValueError):
+        return None
+    if isinstance(payload, dict):
+        return payload
+    return None
+
+
+def _is_github_repo_archived(repository_url: str) -> bool | None:
+    payload = _fetch_github_repo_metadata(repository_url)
+    if payload is None:
         return None
 
     archived = payload.get('archived')
@@ -289,13 +316,39 @@ def _version_is_at_least_1(version_str: str) -> bool:
         return False
 
 
-def _infer_maturity(plugin_version: str, upstream_repository: str) -> str | None:
-    archived = _is_github_repo_archived(upstream_repository)
+def _infer_maturity(plugin_version: str, archived: bool | None) -> str | None:
     if archived is True:
         return 'archived'
     if _version_is_at_least_1(plugin_version):
         return 'stable'
     return None
+
+
+def _github_telemetry(repository_url: str) -> dict:
+    payload = _fetch_github_repo_metadata(repository_url)
+    if payload is None:
+        return {}
+    owner_data = payload.get('owner', {}) if isinstance(payload.get('owner'), dict) else {}
+    telemetry = {
+        'stars': payload.get('stargazers_count'),
+        'owner': owner_data.get('login'),
+        'owner_type': owner_data.get('type'),
+        'created': payload.get('created_at'),
+        'last_updated': payload.get('updated_at'),
+        'archived': payload.get('archived'),
+    }
+    cleaned = {}
+    for key, value in telemetry.items():
+        if key == 'stars' and isinstance(value, int):
+            cleaned[key] = value
+        elif key == 'archived' and isinstance(value, bool):
+            cleaned[key] = value
+        elif key in ('owner', 'owner_type', 'created', 'last_updated') and isinstance(
+            value, str
+        ):
+            if value.strip():
+                cleaned[key] = value.strip()
+    return cleaned
 
 
 def _infer_documentation_url(
@@ -490,9 +543,12 @@ def build_generated_metadata_with_release_context(
     cff_repository = _cff_string(cff, 'repository-code', 'repository_code')
     cff_homepage = _cff_string(cff, 'url')
     upstream_repository = str(urls.get('Repository', '') or cff_repository)
+    github_telemetry = _github_telemetry(str(upstream_repository))
     inferred_maturity = _infer_maturity(
         plugin_version=str(plugin_version),
-        upstream_repository=str(upstream_repository),
+        archived=github_telemetry.get('archived')
+        if isinstance(github_telemetry.get('archived'), bool)
+        else None,
     )
     inferred_documentation = _infer_documentation_url(
         documentation=str(urls.get('Documentation', '') or ''),
@@ -512,7 +568,10 @@ def build_generated_metadata_with_release_context(
             issue_tracker = str(urls[key])
             break
 
-    cff_maintainers = _maintainers_from_cff(cff)
+    cff_authors = _maintainers_from_cff(cff)
+    pyproject_authors = _pyproject_authors(project)
+    maintainers = _owners_to_maintainers(project)
+    authors = cff_authors or pyproject_authors
 
     metadata = {
         'id': package_name,
@@ -525,7 +584,8 @@ def build_generated_metadata_with_release_context(
         'documentation': inferred_documentation or '',
         'homepage': inferred_homepage or '',
         'issue_tracker': issue_tracker,
-        'maintainers': cff_maintainers or _owners_to_maintainers(project),
+        'maintainers': maintainers,
+        'authors': authors,
         'entry_points': entry_points,
         'capabilities': capabilities,
         'supported_filetypes': supported_filetypes,
@@ -546,7 +606,8 @@ def build_generated_metadata_with_release_context(
             },
         ],
     }
-    cff_used = bool(cff_maintainers) or (
+    metadata.update(github_telemetry)
+    cff_used = bool(cff_authors) or (
         (not str(urls.get('Repository', '') or '').strip() and bool(cff_repository))
         or (not str(urls.get('Homepage', '') or '').strip() and bool(cff_homepage))
     )

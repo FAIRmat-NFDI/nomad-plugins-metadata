@@ -39,7 +39,14 @@ classes:
       - documentation
       - homepage
       - issue_tracker
+      - owner
+      - owner_type
+      - stars
+      - created
+      - last_updated
+      - archived
       - maintainers
+      - authors
       - repository_default_branch
       - entry_points
       - supported_filetypes
@@ -195,6 +202,33 @@ slots:
     multivalued: true
     inlined_as_list: true
     range: Maintainer
+
+  authors:
+    multivalued: true
+    inlined_as_list: true
+    range: Maintainer
+
+  owner:
+    required: false
+
+  owner_type:
+    required: false
+
+  stars:
+    required: false
+    range: integer
+
+  created:
+    required: false
+    range: datetime
+
+  last_updated:
+    required: false
+    range: datetime
+
+  archived:
+    required: false
+    range: boolean
 
   affiliation:
     required: false

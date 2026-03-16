@@ -57,8 +57,20 @@ entry points when available, including parser matcher fields such as:
 
 People metadata source priority:
 
-- `CITATION.cff` / `citation.cff` authors (if present)
-- fallback to `pyproject.toml` (`project.maintainers` and `project.authors`)
+- `authors`:
+  - `CITATION.cff` / `citation.cff` authors (if present)
+  - fallback to `pyproject.toml` `project.authors`
+- `maintainers`:
+  - `pyproject.toml` `project.maintainers` (operational contacts)
+
+GitHub telemetry (best-effort from repository API):
+
+- `stars`
+- `owner`
+- `owner_type`
+- `created`
+- `last_updated`
+- `archived`
 
 URL autofill behavior:
 

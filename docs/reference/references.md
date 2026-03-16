@@ -23,9 +23,12 @@ Extractor behavior notes:
 
 - Baseline metadata is read from `pyproject.toml`.
 - People metadata uses `CITATION.cff` / `citation.cff` authors first when present,
-  then falls back to `pyproject.toml` maintainers/authors.
+  then falls back to `pyproject.toml` authors.
+- Maintainers are read from `pyproject.toml` (`project.maintainers`).
 - Technical metadata is additionally read from installed `nomad.plugin` entry points
   (for example parser matcher fields and supported compressions).
+- GitHub repository telemetry is fetched best-effort from repository API:
+  `stars`, `owner`, `owner_type`, `created`, `last_updated`, `archived`.
 - If plugin entry points are not installed/importable, extraction falls back to static
   `pyproject` entry-point declarations.
 - Maturity heuristic:
