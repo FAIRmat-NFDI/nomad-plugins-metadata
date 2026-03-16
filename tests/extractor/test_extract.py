@@ -76,6 +76,10 @@ def test_extracts_installed_entry_point_parser_metadata(
         'nomad_plugins_metadata.extractor.extract.metadata.entry_points',
         lambda group=None: fake_eps,
     )
+    monkeypatch.setattr(
+        'nomad_plugins_metadata.extractor.extract._fetch_github_repo_metadata',
+        lambda repository_url: None,
+    )
 
     generated = build_generated_metadata_with_release_context(
         repo_path=repo,
@@ -99,3 +103,221 @@ def test_extracts_installed_entry_point_parser_metadata(
 
     assert generated['release_context']['release_tag'] == 'v1.2.3'
     assert generated['release_context']['release_commit_sha'] == 'deadbeef'
+    assert generated['maturity'] == 'stable'
+
+
+def test_maturity_archived_precedence_over_version(tmp_path: Path, monkeypatch) -> None:
+    repo = tmp_path / 'repo'
+    repo.mkdir()
+    (repo / 'pyproject.toml').write_text(
+        '\n'.join(
+            [
+                '[project]',
+                'name = "example-plugin"',
+                'version = "1.2.3"',
+                '',
+                '[project.urls]',
+                'Repository = "https://github.com/example/repo"',
+            ]
+        ),
+        encoding='utf-8',
+    )
+    monkeypatch.setattr(
+        'nomad_plugins_metadata.extractor.extract._fetch_github_repo_metadata',
+        lambda repository_url: {'archived': True},
+    )
+
+    generated = build_generated_metadata_with_release_context(
+        repo_path=repo,
+        release_tag=None,
+        release_sha=None,
+    )
+    assert generated['maturity'] == 'archived'
+    assert generated['archived'] is True
+
+
+def test_documentation_and_homepage_fallbacks(tmp_path: Path, monkeypatch) -> None:
+    repo = tmp_path / 'repo'
+    repo.mkdir()
+    (repo / 'pyproject.toml').write_text(
+        '\n'.join(
+            [
+                '[project]',
+                'name = "example-plugin"',
+                'version = "0.4.0"',
+                '',
+                '[project.urls]',
+                'Repository = "https://github.com/example/repo"',
+            ]
+        ),
+        encoding='utf-8',
+    )
+    monkeypatch.setattr(
+        'nomad_plugins_metadata.extractor.extract._fetch_github_repo_metadata',
+        lambda repository_url: None,
+    )
+    monkeypatch.setattr(
+        'nomad_plugins_metadata.extractor.extract._check_github_pages_exists',
+        lambda repository_url: 'https://example.github.io/repo/',
+    )
+
+    generated = build_generated_metadata_with_release_context(
+        repo_path=repo,
+        release_tag=None,
+        release_sha=None,
+    )
+
+    assert generated['documentation'] == 'https://example.github.io/repo/'
+    assert generated['homepage'] == 'https://github.com/example/repo'
+
+
+def test_citation_cff_is_primary_for_authors(tmp_path: Path, monkeypatch) -> None:
+    repo = tmp_path / 'repo'
+    repo.mkdir()
+    (repo / 'pyproject.toml').write_text(
+        '\n'.join(
+            [
+                '[project]',
+                'name = "example-plugin"',
+                'version = "0.4.0"',
+                '',
+                '[[project.maintainers]]',
+                'name = "Pyproject Maintainer"',
+                'email = "maintainer@example.org"',
+                '',
+                '[[project.authors]]',
+                'name = "Pyproject Author"',
+                'email = "pyproject@example.org"',
+            ]
+        ),
+        encoding='utf-8',
+    )
+    (repo / 'CITATION.cff').write_text(
+        '\n'.join(
+            [
+                'cff-version: 1.2.0',
+                'authors:',
+                '  - family-names: Doe',
+                '    given-names: Jane',
+                '    email: jane@example.org',
+                '    affiliation: FAIRmat',
+            ]
+        ),
+        encoding='utf-8',
+    )
+    monkeypatch.setattr(
+        'nomad_plugins_metadata.extractor.extract._fetch_github_repo_metadata',
+        lambda repository_url: None,
+    )
+
+    generated = build_generated_metadata_with_release_context(
+        repo_path=repo,
+        release_tag=None,
+        release_sha=None,
+    )
+
+    assert generated['authors'] == [
+        {
+            'name': 'Jane Doe',
+            'email': 'jane@example.org',
+            'affiliation': 'FAIRmat',
+        }
+    ]
+    assert generated['maintainers'] == [
+        {'name': 'Pyproject Maintainer', 'email': 'maintainer@example.org'}
+    ]
+    assert any(
+        p.get('source') == 'citation_cff'
+        for p in generated.get('metadata_provenance', [])
+    )
+
+
+def test_citation_cff_url_fallbacks_for_repository_and_homepage(
+    tmp_path: Path, monkeypatch
+) -> None:
+    repo = tmp_path / 'repo'
+    repo.mkdir()
+    (repo / 'pyproject.toml').write_text(
+        '\n'.join(
+            [
+                '[project]',
+                'name = "example-plugin"',
+                'version = "0.4.0"',
+            ]
+        ),
+        encoding='utf-8',
+    )
+    (repo / 'CITATION.cff').write_text(
+        '\n'.join(
+            [
+                'cff-version: 1.2.0',
+                "repository-code: 'https://github.com/example/repo'",
+                "url: 'https://example.github.io/repo/'",
+            ]
+        ),
+        encoding='utf-8',
+    )
+    monkeypatch.setattr(
+        'nomad_plugins_metadata.extractor.extract._fetch_github_repo_metadata',
+        lambda repository_url: None,
+    )
+    monkeypatch.setattr(
+        'nomad_plugins_metadata.extractor.extract._check_github_pages_exists',
+        lambda repository_url: None,
+    )
+
+    generated = build_generated_metadata_with_release_context(
+        repo_path=repo,
+        release_tag=None,
+        release_sha=None,
+    )
+
+    assert generated['upstream_repository'] == 'https://github.com/example/repo'
+    assert generated['homepage'] == 'https://example.github.io/repo/'
+    assert 'documentation' not in generated
+    assert any(
+        p.get('source') == 'citation_cff'
+        for p in generated.get('metadata_provenance', [])
+    )
+
+
+def test_github_telemetry_fields_are_extracted(tmp_path: Path, monkeypatch) -> None:
+    stars_count = 42
+    repo = tmp_path / 'repo'
+    repo.mkdir()
+    (repo / 'pyproject.toml').write_text(
+        '\n'.join(
+            [
+                '[project]',
+                'name = "example-plugin"',
+                'version = "0.4.0"',
+                '',
+                '[project.urls]',
+                'Repository = "https://github.com/example/repo"',
+            ]
+        ),
+        encoding='utf-8',
+    )
+    monkeypatch.setattr(
+        'nomad_plugins_metadata.extractor.extract._fetch_github_repo_metadata',
+        lambda repository_url: {
+            'stargazers_count': stars_count,
+            'owner': {'login': 'example', 'type': 'Organization'},
+            'created_at': '2024-01-01T00:00:00Z',
+            'updated_at': '2025-01-01T00:00:00Z',
+            'archived': False,
+        },
+    )
+
+    generated = build_generated_metadata_with_release_context(
+        repo_path=repo,
+        release_tag=None,
+        release_sha=None,
+    )
+
+    assert generated['stars'] == stars_count
+    assert generated['owner'] == 'example'
+    assert generated['owner_type'] == 'Organization'
+    assert generated['created'] == '2024-01-01T00:00:00Z'
+    assert generated['last_updated'] == '2025-01-01T00:00:00Z'
+    assert generated['archived'] is False

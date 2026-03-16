@@ -39,7 +39,14 @@ classes:
       - documentation
       - homepage
       - issue_tracker
+      - owner
+      - owner_type
+      - stars
+      - created
+      - last_updated
+      - archived
       - maintainers
+      - authors
       - repository_default_branch
       - entry_points
       - supported_filetypes
@@ -136,11 +143,10 @@ classes:
       - release_commit_sha
 
   MetadataProvenance:
-    description: How metadata was produced and confidence in it.
+    description: How metadata was produced.
     slots:
       - source
       - extraction_method
-      - confidence
       - generated_at
       - generator_version
 
@@ -196,6 +202,33 @@ slots:
     multivalued: true
     inlined_as_list: true
     range: Maintainer
+
+  authors:
+    multivalued: true
+    inlined_as_list: true
+    range: Maintainer
+
+  owner:
+    required: false
+
+  owner_type:
+    required: false
+
+  stars:
+    required: false
+    range: integer
+
+  created:
+    required: false
+    range: datetime
+
+  last_updated:
+    required: false
+    range: datetime
+
+  archived:
+    required: false
+    range: boolean
 
   affiliation:
     required: false
@@ -389,12 +422,6 @@ slots:
     required: true
     range: ExtractionMethod
 
-  confidence:
-    required: true
-    range: float
-    minimum_value: 0
-    maximum_value: 1
-
   generated_at:
     required: true
     range: datetime
@@ -432,15 +459,15 @@ enums:
 
   DependencyType:
     permissible_values:
-      plugin: {}
-      schema_package: {}
+      nomad_plugin: {}
       python_package: {}
 
   MetadataSource:
     permissible_values:
       manual_override: {}
-      static_code_scan: {}
+      plugin_entry_points: {}
       pyproject: {}
+      citation_cff: {}
       repository_api: {}
       crawler_fallback: {}
 

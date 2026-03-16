@@ -28,11 +28,12 @@ DOMAIN_CATEGORIES = (
     'infrastructure',
 )
 MATURITY_LEVELS = ('alpha', 'beta', 'stable', 'archived')
-DEPENDENCY_TYPES = ('plugin', 'schema_package', 'python_package')
+DEPENDENCY_TYPES = ('nomad_plugin', 'python_package')
 METADATA_SOURCES = (
     'manual_override',
-    'static_code_scan',
+    'plugin_entry_points',
     'pyproject',
+    'citation_cff',
     'repository_api',
     'crawler_fallback',
 )
@@ -117,7 +118,6 @@ class ReleaseContext(ArchiveSection):
 class MetadataProvenance(ArchiveSection):
     source = Quantity(type=MEnum(*METADATA_SOURCES))
     extraction_method = Quantity(type=MEnum(*EXTRACTION_METHODS))
-    confidence = Quantity(type=float)
     generated_at = Quantity(type=Datetime)
     generator_version = Quantity(type=str)
 
@@ -134,11 +134,18 @@ class PluginMetadata(Schema):
     documentation = Quantity(type=str)
     homepage = Quantity(type=str)
     issue_tracker = Quantity(type=str)
+    owner = Quantity(type=str)
+    owner_type = Quantity(type=str)
+    stars = Quantity(type=int)
+    created = Quantity(type=Datetime)
+    last_updated = Quantity(type=Datetime)
+    archived = Quantity(type=bool)
     repository_default_branch = Quantity(type=str)
     supported_filetypes = Quantity(type=str, shape=['*'])
     maturity = Quantity(type=MEnum(*MATURITY_LEVELS))
 
     maintainers = SubSection(section=Maintainer, repeats=True)
+    authors = SubSection(section=Maintainer, repeats=True)
     entry_points = SubSection(section=EntryPoint, repeats=True)
     capabilities = SubSection(section=PluginCapability, repeats=True)
     file_format_support = SubSection(section=FileFormatSupport, repeats=True)

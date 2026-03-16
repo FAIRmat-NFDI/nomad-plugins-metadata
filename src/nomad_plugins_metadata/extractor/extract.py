@@ -1,13 +1,23 @@
 from __future__ import annotations
 
+import json
 import re
 from datetime import datetime, timezone
 from importlib import metadata
 from pathlib import Path
+from urllib.error import HTTPError, URLError
+from urllib.parse import urlparse
+from urllib.request import Request, urlopen
 
 import tomllib
+from packaging.version import InvalidVersion, Version
 
 from nomad_plugins_metadata.schema_packages.schema_validation import load_schema
+
+try:
+    import yaml
+except Exception:  # pragma: no cover - optional dependency fallback
+    yaml = None
 
 
 def _read_pyproject(pyproject_path: Path) -> dict:
@@ -24,13 +34,12 @@ def _schema_version() -> str:
 
 def _owners_to_maintainers(project: dict) -> list[dict]:
     maintainers = []
-    for key in ('maintainers', 'authors'):
-        for item in project.get(key, []) or []:
-            name = item.get('name')
-            email = item.get('email')
-            if not name and not email:
-                continue
-            maintainers.append({'name': name or '', 'email': email or ''})
+    for item in project.get('maintainers', []) or []:
+        name = item.get('name')
+        email = item.get('email')
+        if not name and not email:
+            continue
+        maintainers.append({'name': name or '', 'email': email or ''})
     # preserve order, deduplicate exact dicts
     deduped = []
     seen = set()
@@ -41,6 +50,95 @@ def _owners_to_maintainers(project: dict) -> list[dict]:
         seen.add(marker)
         deduped.append(entry)
     return deduped
+
+
+def _pyproject_authors(project: dict) -> list[dict]:
+    authors = []
+    for item in project.get('authors', []) or []:
+        name = item.get('name')
+        email = item.get('email')
+        if not name and not email:
+            continue
+        authors.append({'name': name or '', 'email': email or ''})
+    deduped = []
+    seen = set()
+    for entry in authors:
+        marker = (entry.get('name', ''), entry.get('email', ''))
+        if marker in seen:
+            continue
+        seen.add(marker)
+        deduped.append(entry)
+    return deduped
+
+
+def _read_citation_cff(repo_path: Path) -> dict:
+    if yaml is None:
+        return {}
+    for filename in ('CITATION.cff', 'citation.cff'):
+        path = repo_path / filename
+        if not path.exists():
+            continue
+        try:
+            with path.open('r', encoding='utf-8') as f:
+                data = yaml.safe_load(f) or {}
+        except Exception:
+            return {}
+        if isinstance(data, dict):
+            return data
+        return {}
+    return {}
+
+
+def _cff_author_to_person(item: dict) -> dict | None:
+    if not isinstance(item, dict):
+        return None
+    given = str(item.get('given-names', '') or '').strip()
+    family = str(item.get('family-names', '') or '').strip()
+    raw_name = str(item.get('name', '') or '').strip()
+    name = raw_name or ' '.join(part for part in (given, family) if part).strip()
+    email = str(item.get('email', '') or '').strip()
+    affiliation = str(item.get('affiliation', '') or '').strip()
+    role = str(item.get('role', '') or '').strip()
+    person = {
+        'name': name,
+        'email': email,
+        'affiliation': affiliation,
+        'role': role,
+    }
+    person = {key: value for key, value in person.items() if value}
+    if not person:
+        return None
+    if 'name' not in person and 'email' not in person:
+        return None
+    return person
+
+
+def _maintainers_from_cff(cff: dict) -> list[dict]:
+    authors = cff.get('authors', [])
+    if not isinstance(authors, list):
+        return []
+    people: list[dict] = []
+    seen: set[tuple[str, str]] = set()
+    for author in authors:
+        person = _cff_author_to_person(author)
+        if person is None:
+            continue
+        marker = (person.get('name', ''), person.get('email', ''))
+        if marker in seen:
+            continue
+        seen.add(marker)
+        people.append(person)
+    return people
+
+
+def _cff_string(cff: dict, *keys: str) -> str:
+    for key in keys:
+        value = cff.get(key)
+        if isinstance(value, str):
+            stripped = value.strip()
+            if stripped:
+                return stripped
+    return ''
 
 
 def _normalize_package_name(name: str) -> str:
@@ -134,6 +232,143 @@ def _extract_schema_dependencies(pyproject: dict) -> list[dict]:
             add_dependency(str(dep), optional=True)
 
     return dependencies
+
+
+def _parse_github_owner_repo(repository_url: str) -> tuple[str, str] | None:
+    if not repository_url:
+        return None
+    parsed = urlparse(repository_url)
+    if parsed.netloc.lower() not in ('github.com', 'www.github.com'):
+        return None
+    parts = [part for part in parsed.path.strip('/').split('/') if part]
+    if len(parts) < 2:  # noqa: PLR2004
+        return None
+    owner, repo = parts[0], parts[1]
+    if repo.endswith('.git'):
+        repo = repo[:-4]
+    if not owner or not repo:
+        return None
+    return owner, repo
+
+
+def _check_github_pages_exists(repository_url: str) -> str | None:
+    owner_repo = _parse_github_owner_repo(repository_url)
+    if owner_repo is None:
+        return None
+    owner, repo = owner_repo
+    docs_url = f'https://{owner.lower()}.github.io/{repo}/'
+    request = Request(
+        docs_url,
+        headers={
+            'User-Agent': 'nomad-plugins-metadata-extractor',
+        },
+    )
+    try:
+        with urlopen(request, timeout=5):  # noqa: S310
+            return docs_url
+    except (HTTPError, URLError, TimeoutError, ValueError):
+        return None
+
+
+def _fetch_github_repo_metadata(repository_url: str) -> dict | None:
+    owner_repo = _parse_github_owner_repo(repository_url)
+    if owner_repo is None:
+        return None
+    owner, repo = owner_repo
+    api_url = f'https://api.github.com/repos/{owner}/{repo}'
+    request = Request(
+        api_url,
+        headers={
+            'Accept': 'application/vnd.github+json',
+            'User-Agent': 'nomad-plugins-metadata-extractor',
+        },
+    )
+    try:
+        with urlopen(request, timeout=5) as response:  # noqa: S310
+            payload = json.load(response)
+    except (HTTPError, URLError, TimeoutError, json.JSONDecodeError, ValueError):
+        return None
+    if isinstance(payload, dict):
+        return payload
+    return None
+
+
+def _is_github_repo_archived(repository_url: str) -> bool | None:
+    payload = _fetch_github_repo_metadata(repository_url)
+    if payload is None:
+        return None
+
+    archived = payload.get('archived')
+    if isinstance(archived, bool):
+        return archived
+    return None
+
+
+def _version_is_at_least_1(version_str: str) -> bool:
+    clean = (version_str or '').strip()
+    if clean.startswith('v'):
+        clean = clean[1:]
+    if not clean:
+        return False
+    try:
+        return Version(clean) >= Version('1.0.0')
+    except InvalidVersion:
+        return False
+
+
+def _infer_maturity(plugin_version: str, archived: bool | None) -> str | None:
+    if archived is True:
+        return 'archived'
+    if _version_is_at_least_1(plugin_version):
+        return 'stable'
+    return None
+
+
+def _github_telemetry(repository_url: str) -> dict:
+    payload = _fetch_github_repo_metadata(repository_url)
+    if payload is None:
+        return {}
+    owner_data = payload.get('owner', {}) if isinstance(payload.get('owner'), dict) else {}
+    telemetry = {
+        'stars': payload.get('stargazers_count'),
+        'owner': owner_data.get('login'),
+        'owner_type': owner_data.get('type'),
+        'created': payload.get('created_at'),
+        'last_updated': payload.get('updated_at'),
+        'archived': payload.get('archived'),
+    }
+    cleaned = {}
+    for key, value in telemetry.items():
+        if key == 'stars' and isinstance(value, int):
+            cleaned[key] = value
+        elif key == 'archived' and isinstance(value, bool):
+            cleaned[key] = value
+        elif key in ('owner', 'owner_type', 'created', 'last_updated') and isinstance(
+            value, str
+        ):
+            if value.strip():
+                cleaned[key] = value.strip()
+    return cleaned
+
+
+def _infer_documentation_url(
+    documentation: str, upstream_repository: str
+) -> str | None:
+    if (documentation or '').strip():
+        return documentation
+    return _check_github_pages_exists(upstream_repository)
+
+
+def _infer_homepage_url(
+    homepage: str, cff_homepage: str, upstream_repository: str
+) -> str | None:
+    if (homepage or '').strip():
+        return homepage
+    if (cff_homepage or '').strip():
+        return cff_homepage
+    if (upstream_repository or '').strip():
+        return upstream_repository
+    return None
 
 
 def _entry_point_type_to_capability(entry_point_type: str | None) -> str:
@@ -284,6 +519,7 @@ def build_generated_metadata_with_release_context(
 ) -> dict:
     """Generate baseline metadata from repo-local static sources."""
     pyproject = _read_pyproject(repo_path / 'pyproject.toml')
+    cff = _read_citation_cff(repo_path)
     project = pyproject.get('project', {})
     urls = project.get('urls', {}) or {}
     entry_points, capabilities, supported_filetypes, file_format_support = (
@@ -303,6 +539,26 @@ def build_generated_metadata_with_release_context(
         )
 
     package_name = project.get('name', repo_path.name)
+    plugin_version = project.get('version', '')
+    cff_repository = _cff_string(cff, 'repository-code', 'repository_code')
+    cff_homepage = _cff_string(cff, 'url')
+    upstream_repository = str(urls.get('Repository', '') or cff_repository)
+    github_telemetry = _github_telemetry(str(upstream_repository))
+    inferred_maturity = _infer_maturity(
+        plugin_version=str(plugin_version),
+        archived=github_telemetry.get('archived')
+        if isinstance(github_telemetry.get('archived'), bool)
+        else None,
+    )
+    inferred_documentation = _infer_documentation_url(
+        documentation=str(urls.get('Documentation', '') or ''),
+        upstream_repository=str(upstream_repository),
+    )
+    inferred_homepage = _infer_homepage_url(
+        homepage=str(urls.get('Homepage', '') or ''),
+        cff_homepage=cff_homepage,
+        upstream_repository=str(upstream_repository),
+    )
     issue_tracker = ''
     for key in urls:
         if key.lower().replace(' ', '').replace('_', '') in (
@@ -312,18 +568,24 @@ def build_generated_metadata_with_release_context(
             issue_tracker = str(urls[key])
             break
 
+    cff_authors = _maintainers_from_cff(cff)
+    pyproject_authors = _pyproject_authors(project)
+    maintainers = _owners_to_maintainers(project)
+    authors = cff_authors or pyproject_authors
+
     metadata = {
         'id': package_name,
         'metadata_schema_version': _schema_version(),
         'name': package_name,
         'description': project.get('description', ''),
-        'plugin_version': project.get('version', ''),
+        'plugin_version': plugin_version,
         'license': license_value,
-        'upstream_repository': urls.get('Repository', ''),
-        'documentation': urls.get('Documentation', ''),
-        'homepage': urls.get('Homepage', ''),
+        'upstream_repository': upstream_repository,
+        'documentation': inferred_documentation or '',
+        'homepage': inferred_homepage or '',
         'issue_tracker': issue_tracker,
-        'maintainers': _owners_to_maintainers(project),
+        'maintainers': maintainers,
+        'authors': authors,
         'entry_points': entry_points,
         'capabilities': capabilities,
         'supported_filetypes': supported_filetypes,
@@ -333,19 +595,31 @@ def build_generated_metadata_with_release_context(
             {
                 'source': 'pyproject',
                 'extraction_method': 'deterministic',
-                'confidence': 0.9,
                 'generated_at': datetime.now(timezone.utc).isoformat(),
                 'generator_version': '0.1.0',
             },
             {
-                'source': 'static_code_scan',
-                'extraction_method': 'heuristic',
-                'confidence': 0.7,
+                'source': 'plugin_entry_points',
+                'extraction_method': 'deterministic',
+                'generated_at': datetime.now(timezone.utc).isoformat(),
+                'generator_version': '0.1.0',
+            },
+        ],
+    }
+    metadata.update(github_telemetry)
+    cff_used = bool(cff_authors) or (
+        (not str(urls.get('Repository', '') or '').strip() and bool(cff_repository))
+        or (not str(urls.get('Homepage', '') or '').strip() and bool(cff_homepage))
+    )
+    if cff_used:
+        metadata['metadata_provenance'].append(
+            {
+                'source': 'citation_cff',
+                'extraction_method': 'deterministic',
                 'generated_at': datetime.now(timezone.utc).isoformat(),
                 'generator_version': '0.1.0',
             }
-        ],
-    }
+        )
     clean_release_tag = (release_tag or '').strip()
     clean_release_sha = (release_sha or '').strip()
     if clean_release_tag or clean_release_sha:
@@ -353,6 +627,8 @@ def build_generated_metadata_with_release_context(
             'release_tag': clean_release_tag,
             'release_commit_sha': clean_release_sha,
         }
+    if inferred_maturity:
+        metadata['maturity'] = inferred_maturity
 
     # Drop empty values for cleaner generated files.
     return {k: v for k, v in metadata.items() if v not in ('', [], None)}

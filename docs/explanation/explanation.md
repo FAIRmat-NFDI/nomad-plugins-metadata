@@ -34,6 +34,17 @@ Automation writes machine-owned `auto` and `effective` files and never overwrite
 Effective metadata is produced by deterministic deep-merge with manual precedence,
 ignoring empty values from the manual template.
 
+### Field-source precedence (quick view)
+
+- `maintainers`: `CITATION.cff` authors > `pyproject` maintainers/authors.
+- `authors`: `CITATION.cff` authors > `pyproject` authors.
+- `maintainers`: `pyproject` maintainers.
+- `upstream_repository`: `pyproject.urls.Repository` > `CITATION.cff` `repository-code`.
+- `documentation`: `pyproject.urls.Documentation` > GitHub Pages probe.
+- `homepage`: `pyproject.urls.Homepage` > `CITATION.cff` `url` > resolved repository URL.
+- `stars`, `owner`, `owner_type`, `created`, `last_updated`, `archived`: GitHub repository API (best-effort).
+- Manual metadata still has final precedence in effective output.
+
 ### 4. Override reporting
 
 When manual values override generated values, the pipeline records those blocked/generated conflicts in:
