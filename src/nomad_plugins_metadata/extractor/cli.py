@@ -141,12 +141,14 @@ def build_parser() -> argparse.ArgumentParser:
     )
     extract.add_argument('--repo-path', type=Path, default=Path('.'))
     extract.add_argument(
-        '--manual-path', type=Path, default=Path('nomad_plugin_metadata.manual.yaml')
+        '--manual-path',
+        type=Path,
+        default=Path('.metadata/nomad_plugin_metadata.manual.yaml'),
     )
     extract.add_argument(
         '--auto-path',
         type=Path,
-        default=Path('nomad_plugin_metadata.auto.yaml'),
+        default=Path('.metadata/nomad_plugin_metadata.auto.yaml'),
     )
     extract.add_argument(
         '--effective-path',
@@ -174,7 +176,7 @@ def build_parser() -> argparse.ArgumentParser:
         '--create-manual-template-if-missing',
         action=argparse.BooleanOptionalAction,
         default=True,
-        help='Create nomad_plugin_metadata.manual.yaml template when manual file is missing.',
+        help='Create .metadata/nomad_plugin_metadata.manual.yaml template when manual file is missing.',
     )
 
     return parser

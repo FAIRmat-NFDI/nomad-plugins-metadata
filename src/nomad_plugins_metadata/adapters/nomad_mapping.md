@@ -28,8 +28,8 @@ This document defines how canonical LinkML metadata maps to the transitional `no
 | `metadata_provenance[]` | optional internal audit fields | Keep for traceability/debugging. |
 
 ## Precedence at ingest
-1. Canonical auto metadata (`nomad_plugin_metadata.auto.yaml`)
-2. Canonical manual override (`nomad_plugin_metadata.manual.yaml`)
+1. Canonical auto metadata (`.metadata/nomad_plugin_metadata.auto.yaml`)
+2. Canonical manual override (`.metadata/nomad_plugin_metadata.manual.yaml`)
 3. Legacy crawler fallback (`pyproject.toml`, repository API)
 
 ## Query compatibility during migration

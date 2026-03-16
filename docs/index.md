@@ -31,10 +31,10 @@ The package standardizes both metadata structure and automation behavior so plug
 
 ## Typical plugin-repo flow
 
-1. Maintainer edits `nomad_plugin_metadata.manual.yaml` (manual template/override file).
+1. Maintainer edits `.metadata/nomad_plugin_metadata.manual.yaml` (manual template/override file).
 2. CI runs `nomad-plugin-metadata extract`.
 3. Workflow writes:
-   - `nomad_plugin_metadata.auto.yaml`
+   - `.metadata/nomad_plugin_metadata.auto.yaml`
    - `nomad_plugin_metadata.yaml`
    - `.metadata/plugin-metadata.override-report.yaml`
 5. Consumers ingest effective metadata.
@@ -42,7 +42,7 @@ The package standardizes both metadata structure and automation behavior so plug
 
 Merge precedence is always:
 
-non-empty values from `nomad_plugin_metadata.manual.yaml` > `nomad_plugin_metadata.auto.yaml`
+non-empty values from `.metadata/nomad_plugin_metadata.manual.yaml` > `.metadata/nomad_plugin_metadata.auto.yaml`
 
 ## Where to go next
 

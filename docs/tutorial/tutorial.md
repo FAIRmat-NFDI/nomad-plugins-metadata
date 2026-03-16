@@ -4,7 +4,7 @@ This tutorial shows the standard plugin-repo metadata workflow.
 
 ## 1. Add manual metadata file
 
-Create `nomad_plugin_metadata.manual.yaml` in repository root.
+Create `.metadata/nomad_plugin_metadata.manual.yaml` in repository root.
 
 Minimal example:
 
@@ -24,7 +24,7 @@ nomad-plugin-metadata extract --repo-path .
 
 Generated outputs:
 
-- `nomad_plugin_metadata.auto.yaml`
+- `.metadata/nomad_plugin_metadata.auto.yaml`
 - `nomad_plugin_metadata.yaml`
 - `.metadata/plugin-metadata.override-report.yaml`
 
@@ -50,7 +50,7 @@ Place it in plugin repo as:
 - `.github/workflows/update-plugin-metadata.yml`
 
 By default it runs on release publication, updates auto/effective/report files,
-creates `nomad_plugin_metadata.manual.yaml` if missing, and opens or updates a rolling PR for maintainer review.
+creates `.metadata/nomad_plugin_metadata.manual.yaml` if missing, and opens or updates a rolling PR for maintainer review.
 
 ## 5. Review overrides
 
@@ -59,9 +59,9 @@ If important fields are consistently overridden manually, consider improving ext
 
 ## 6. Reset metadata artifacts (optional)
 
-- Report-only reset:
+- Reset manual/auto/report artifacts:
   - remove `.metadata/*`
 - Regenerate auto/effective/report:
-  - remove `nomad_plugin_metadata.auto.yaml` and `nomad_plugin_metadata.yaml`, then run extract
+  - remove `.metadata/nomad_plugin_metadata.auto.yaml`, `.metadata/plugin-metadata.override-report.yaml`, and `nomad_plugin_metadata.yaml`, then run extract
 - Full reset (including manual):
-  - also remove `nomad_plugin_metadata.manual.yaml` before running extract
+  - remove `.metadata/*` and `nomad_plugin_metadata.yaml` before running extract

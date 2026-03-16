@@ -1,9 +1,14 @@
 # `.metadata/` metadata artifact
 
-This directory contains workflow-managed report output from `nomad-plugin-metadata extract`.
+This directory contains workflow-managed metadata artifacts from `nomad-plugin-metadata extract`.
 
 ## File and meaning
 
+- `nomad_plugin_metadata.manual.yaml`
+  - Maintainer-owned override/template file.
+  - Created automatically if missing.
+- `nomad_plugin_metadata.auto.yaml`
+  - Machine-generated baseline metadata.
 - `plugin-metadata.override-report.yaml`
   - Conflict report between machine-generated `auto` metadata and non-empty maintainer values from `manual`.
   - Contains only conflicting fields.
@@ -12,9 +17,9 @@ This directory contains workflow-managed report output from `nomad-plugin-metada
 ## Editing rules
 
 - Do not edit `.metadata/plugin-metadata.override-report.yaml` manually.
-- Maintainer edits belong in `nomad_plugin_metadata.manual.yaml`.
+- Maintainer edits belong in `.metadata/nomad_plugin_metadata.manual.yaml`.
 
 ## Reset note
 
-- Removing files under `.metadata/` resets only report artifacts.
-- It does not reset `auto`, `manual`, or effective metadata files in repository root.
+- Removing files under `.metadata/` resets manual/auto/report artifacts.
+- Effective metadata remains at repository root: `nomad_plugin_metadata.yaml`.

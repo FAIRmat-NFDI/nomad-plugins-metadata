@@ -27,8 +27,8 @@ technical metadata (especially parser matcher details) directly from entry-point
 
 Automation writes machine-owned `auto` and `effective` files and never overwrites the manual template file.
 
-- auto: `nomad_plugin_metadata.auto.yaml`
-- manual: `nomad_plugin_metadata.manual.yaml`
+- auto: `.metadata/nomad_plugin_metadata.auto.yaml`
+- manual: `.metadata/nomad_plugin_metadata.manual.yaml`
 - effective: `nomad_plugin_metadata.yaml`
 
 Effective metadata is produced by deterministic deep-merge with manual precedence,
@@ -36,7 +36,6 @@ ignoring empty values from the manual template.
 
 ### Field-source precedence (quick view)
 
-- `maintainers`: `CITATION.cff` authors > `pyproject` maintainers/authors.
 - `authors`: `CITATION.cff` authors > `pyproject` authors.
 - `maintainers`: `pyproject` maintainers.
 - `upstream_repository`: `pyproject.urls.Repository` > `CITATION.cff` `repository-code`.
