@@ -5,6 +5,7 @@ description: Canonical metadata schema and tooling for NOMAD plugins
 plugin_version: 0.1.0
 license: LICENSE
 upstream_repository: https://github.com/FAIRmat-NFDI/nomad-plugins-metadata
+documentation: https://fairmat-nfdi.github.io/nomad-plugins-metadata/
 homepage: https://github.com/FAIRmat-NFDI/nomad-plugins-metadata
 maintainers:
 - name: Joseph Rudzinski
@@ -87,9 +88,18 @@ schema_dependencies:
 metadata_provenance:
 - source: pyproject
   extraction_method: deterministic
-  generated_at: '2026-03-16T13:01:15.936151+00:00'
+  generated_at: '2026-03-16T13:16:59.729855+00:00'
   generator_version: 0.1.0
 - source: plugin_entry_points
   extraction_method: deterministic
-  generated_at: '2026-03-16T13:01:15.936190+00:00'
+  generated_at: '2026-03-16T13:16:59.729874+00:00'
   generator_version: 0.1.0
+stars: 0
+owner: FAIRmat-NFDI
+owner_type: Organization
+created: '2026-03-05T11:39:28Z'
+last_updated: '2026-03-16T13:11:19Z'
+archived: false
+release_context:
+  release_tag: v0.5.0
+  release_commit_sha: 723717102c17897584f7f037eb9f9df18f152d22
