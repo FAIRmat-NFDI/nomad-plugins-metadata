@@ -55,6 +55,25 @@ entry points when available, including parser matcher fields such as:
 - `mainfile_binary_header`
 - `supported_compressions` (mapped to `compression_support`)
 
+People metadata source priority:
+
+- `CITATION.cff` / `citation.cff` authors (if present)
+- fallback to `pyproject.toml` (`project.maintainers` and `project.authors`)
+
+URL autofill behavior:
+
+- `upstream_repository`:
+  - use `project.urls.Repository` if set
+  - otherwise fallback to `CITATION.cff` `repository-code`
+- `documentation`:
+  - use `project.urls.Documentation` if set
+  - otherwise best-effort fallback to GitHub Pages (`https://<owner>.github.io/<repo>/`) when reachable
+  - `CITATION.cff` `url` is intentionally not used for documentation
+- `homepage`:
+  - use `project.urls.Homepage` if set
+  - otherwise fallback to `CITATION.cff` `url`
+  - otherwise fallback to resolved `upstream_repository`
+
 Default outputs:
 
 - `nomad_plugin_metadata.auto.yaml` (machine-generated baseline)

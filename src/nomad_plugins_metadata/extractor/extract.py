@@ -14,6 +14,11 @@ from packaging.version import InvalidVersion, Version
 
 from nomad_plugins_metadata.schema_packages.schema_validation import load_schema
 
+try:
+    import yaml
+except Exception:  # pragma: no cover - optional dependency fallback
+    yaml = None
+
 
 def _read_pyproject(pyproject_path: Path) -> dict:
     if not pyproject_path.exists():
@@ -46,6 +51,76 @@ def _owners_to_maintainers(project: dict) -> list[dict]:
         seen.add(marker)
         deduped.append(entry)
     return deduped
+
+
+def _read_citation_cff(repo_path: Path) -> dict:
+    if yaml is None:
+        return {}
+    for filename in ('CITATION.cff', 'citation.cff'):
+        path = repo_path / filename
+        if not path.exists():
+            continue
+        try:
+            with path.open('r', encoding='utf-8') as f:
+                data = yaml.safe_load(f) or {}
+        except Exception:
+            return {}
+        if isinstance(data, dict):
+            return data
+        return {}
+    return {}
+
+
+def _cff_author_to_person(item: dict) -> dict | None:
+    if not isinstance(item, dict):
+        return None
+    given = str(item.get('given-names', '') or '').strip()
+    family = str(item.get('family-names', '') or '').strip()
+    raw_name = str(item.get('name', '') or '').strip()
+    name = raw_name or ' '.join(part for part in (given, family) if part).strip()
+    email = str(item.get('email', '') or '').strip()
+    affiliation = str(item.get('affiliation', '') or '').strip()
+    role = str(item.get('role', '') or '').strip()
+    person = {
+        'name': name,
+        'email': email,
+        'affiliation': affiliation,
+        'role': role,
+    }
+    person = {key: value for key, value in person.items() if value}
+    if not person:
+        return None
+    if 'name' not in person and 'email' not in person:
+        return None
+    return person
+
+
+def _maintainers_from_cff(cff: dict) -> list[dict]:
+    authors = cff.get('authors', [])
+    if not isinstance(authors, list):
+        return []
+    people: list[dict] = []
+    seen: set[tuple[str, str]] = set()
+    for author in authors:
+        person = _cff_author_to_person(author)
+        if person is None:
+            continue
+        marker = (person.get('name', ''), person.get('email', ''))
+        if marker in seen:
+            continue
+        seen.add(marker)
+        people.append(person)
+    return people
+
+
+def _cff_string(cff: dict, *keys: str) -> str:
+    for key in keys:
+        value = cff.get(key)
+        if isinstance(value, str):
+            stripped = value.strip()
+            if stripped:
+                return stripped
+    return ''
 
 
 def _normalize_package_name(name: str) -> str:
@@ -158,6 +233,25 @@ def _parse_github_owner_repo(repository_url: str) -> tuple[str, str] | None:
     return owner, repo
 
 
+def _check_github_pages_exists(repository_url: str) -> str | None:
+    owner_repo = _parse_github_owner_repo(repository_url)
+    if owner_repo is None:
+        return None
+    owner, repo = owner_repo
+    docs_url = f'https://{owner.lower()}.github.io/{repo}/'
+    request = Request(
+        docs_url,
+        headers={
+            'User-Agent': 'nomad-plugins-metadata-extractor',
+        },
+    )
+    try:
+        with urlopen(request, timeout=5):  # noqa: S310
+            return docs_url
+    except (HTTPError, URLError, TimeoutError, ValueError):
+        return None
+
+
 def _is_github_repo_archived(repository_url: str) -> bool | None:
     owner_repo = _parse_github_owner_repo(repository_url)
     if owner_repo is None:
@@ -201,6 +295,26 @@ def _infer_maturity(plugin_version: str, upstream_repository: str) -> str | None
         return 'archived'
     if _version_is_at_least_1(plugin_version):
         return 'stable'
+    return None
+
+
+def _infer_documentation_url(
+    documentation: str, upstream_repository: str
+) -> str | None:
+    if (documentation or '').strip():
+        return documentation
+    return _check_github_pages_exists(upstream_repository)
+
+
+def _infer_homepage_url(
+    homepage: str, cff_homepage: str, upstream_repository: str
+) -> str | None:
+    if (homepage or '').strip():
+        return homepage
+    if (cff_homepage or '').strip():
+        return cff_homepage
+    if (upstream_repository or '').strip():
+        return upstream_repository
     return None
 
 
@@ -352,6 +466,7 @@ def build_generated_metadata_with_release_context(
 ) -> dict:
     """Generate baseline metadata from repo-local static sources."""
     pyproject = _read_pyproject(repo_path / 'pyproject.toml')
+    cff = _read_citation_cff(repo_path)
     project = pyproject.get('project', {})
     urls = project.get('urls', {}) or {}
     entry_points, capabilities, supported_filetypes, file_format_support = (
@@ -372,9 +487,20 @@ def build_generated_metadata_with_release_context(
 
     package_name = project.get('name', repo_path.name)
     plugin_version = project.get('version', '')
-    upstream_repository = urls.get('Repository', '')
+    cff_repository = _cff_string(cff, 'repository-code', 'repository_code')
+    cff_homepage = _cff_string(cff, 'url')
+    upstream_repository = str(urls.get('Repository', '') or cff_repository)
     inferred_maturity = _infer_maturity(
         plugin_version=str(plugin_version),
+        upstream_repository=str(upstream_repository),
+    )
+    inferred_documentation = _infer_documentation_url(
+        documentation=str(urls.get('Documentation', '') or ''),
+        upstream_repository=str(upstream_repository),
+    )
+    inferred_homepage = _infer_homepage_url(
+        homepage=str(urls.get('Homepage', '') or ''),
+        cff_homepage=cff_homepage,
         upstream_repository=str(upstream_repository),
     )
     issue_tracker = ''
@@ -386,6 +512,8 @@ def build_generated_metadata_with_release_context(
             issue_tracker = str(urls[key])
             break
 
+    cff_maintainers = _maintainers_from_cff(cff)
+
     metadata = {
         'id': package_name,
         'metadata_schema_version': _schema_version(),
@@ -394,10 +522,10 @@ def build_generated_metadata_with_release_context(
         'plugin_version': plugin_version,
         'license': license_value,
         'upstream_repository': upstream_repository,
-        'documentation': urls.get('Documentation', ''),
-        'homepage': urls.get('Homepage', ''),
+        'documentation': inferred_documentation or '',
+        'homepage': inferred_homepage or '',
         'issue_tracker': issue_tracker,
-        'maintainers': _owners_to_maintainers(project),
+        'maintainers': cff_maintainers or _owners_to_maintainers(project),
         'entry_points': entry_points,
         'capabilities': capabilities,
         'supported_filetypes': supported_filetypes,
@@ -415,9 +543,22 @@ def build_generated_metadata_with_release_context(
                 'extraction_method': 'deterministic',
                 'generated_at': datetime.now(timezone.utc).isoformat(),
                 'generator_version': '0.1.0',
-            }
+            },
         ],
     }
+    cff_used = bool(cff_maintainers) or (
+        (not str(urls.get('Repository', '') or '').strip() and bool(cff_repository))
+        or (not str(urls.get('Homepage', '') or '').strip() and bool(cff_homepage))
+    )
+    if cff_used:
+        metadata['metadata_provenance'].append(
+            {
+                'source': 'citation_cff',
+                'extraction_method': 'deterministic',
+                'generated_at': datetime.now(timezone.utc).isoformat(),
+                'generator_version': '0.1.0',
+            }
+        )
     clean_release_tag = (release_tag or '').strip()
     clean_release_sha = (release_sha or '').strip()
     if clean_release_tag or clean_release_sha:

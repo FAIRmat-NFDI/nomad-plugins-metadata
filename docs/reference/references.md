@@ -22,6 +22,8 @@ Options:
 Extractor behavior notes:
 
 - Baseline metadata is read from `pyproject.toml`.
+- People metadata uses `CITATION.cff` / `citation.cff` authors first when present,
+  then falls back to `pyproject.toml` maintainers/authors.
 - Technical metadata is additionally read from installed `nomad.plugin` entry points
   (for example parser matcher fields and supported compressions).
 - If plugin entry points are not installed/importable, extraction falls back to static
@@ -30,6 +32,14 @@ Extractor behavior notes:
   - `archived` if GitHub repository is archived (best-effort GitHub API lookup)
   - otherwise `stable` for versions `>=1.0.0`
   - manual override in `nomad_plugin_metadata.manual.yaml` still takes precedence.
+- URL inference:
+  - `upstream_repository`: `project.urls.Repository` first, otherwise
+    `CITATION.cff` `repository-code`.
+  - `documentation`: `project.urls.Documentation` first, otherwise best-effort
+    GitHub Pages URL (`https://<owner>.github.io/<repo>/`) if reachable.
+    `CITATION.cff` `url` is intentionally not used here.
+  - `homepage`: `project.urls.Homepage` first, otherwise `CITATION.cff` `url`,
+    otherwise resolved `upstream_repository`.
 
 ## Metadata files
 

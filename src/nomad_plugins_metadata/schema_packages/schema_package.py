@@ -33,6 +33,7 @@ METADATA_SOURCES = (
     'manual_override',
     'plugin_entry_points',
     'pyproject',
+    'citation_cff',
     'repository_api',
     'crawler_fallback',
 )
