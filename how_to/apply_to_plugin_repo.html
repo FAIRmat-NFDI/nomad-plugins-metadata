@@ -17,7 +17,7 @@
     
     
       
-        <title>How to Use This Plugin - nomad-plugins-metadata</title>
+        <title>Apply To Plugin Repo - nomad-plugins-metadata</title>
       
     
     
@@ -68,7 +68,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#how-to-use-this-plugin" class="md-skip">
+        <a href="#apply-to-a-plugin-repo" class="md-skip">
           Skip to content
         </a>
       
@@ -100,7 +100,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              How to Use This Plugin
+              Apply To Plugin Repo
             
           </span>
         </div>
@@ -222,12 +222,14 @@
 
   
   
+    
+  
   
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" checked>
       
       
       
@@ -248,11 +250,101 @@
               
   
   
+    
   
-    <li class="md-nav__item">
-      <a href="apply_to_plugin_repo.html" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Apply To Plugin Repo
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="apply_to_plugin_repo.html" class="md-nav__link md-nav__link--active">
         Apply To Plugin Repo
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-copy-workflow-templates" class="md-nav__link">
+    1. Copy workflow templates
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-verify-workflow-package-source" class="md-nav__link">
+    2. Verify workflow package source
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-create-feature-branch-in-plugin-repo" class="md-nav__link">
+    3. Create feature branch in plugin repo
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-local-dry-run-in-plugin-repo" class="md-nav__link">
+    4. Local dry run in plugin repo
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-one-time-migration-from-legacy-root-files-if-needed" class="md-nav__link">
+    5. One-time migration from legacy root files (if needed)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-maintainer-edit-cycle" class="md-nav__link">
+    6. Maintainer edit cycle
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-commit-and-open-pr" class="md-nav__link">
+    7. Commit and open PR
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-ci-behavior-after-merge" class="md-nav__link">
+    8. CI behavior after merge
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -336,8 +428,57 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#add-this-plugin-to-your-nomad-installation" class="md-nav__link">
-    Add This Plugin to Your NOMAD installation
+  <a href="#1-copy-workflow-templates" class="md-nav__link">
+    1. Copy workflow templates
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-verify-workflow-package-source" class="md-nav__link">
+    2. Verify workflow package source
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-create-feature-branch-in-plugin-repo" class="md-nav__link">
+    3. Create feature branch in plugin repo
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-local-dry-run-in-plugin-repo" class="md-nav__link">
+    4. Local dry run in plugin repo
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-one-time-migration-from-legacy-root-files-if-needed" class="md-nav__link">
+    5. One-time migration from legacy root files (if needed)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-maintainer-edit-cycle" class="md-nav__link">
+    6. Maintainer edit cycle
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-commit-and-open-pr" class="md-nav__link">
+    7. Commit and open PR
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-ci-behavior-after-merge" class="md-nav__link">
+    8. CI behavior after merge
   </a>
   
 </li>
@@ -355,14 +496,82 @@
               
                 
 
-<h1 id="how-to-use-this-plugin">How to Use This Plugin<a class="headerlink" href="#how-to-use-this-plugin" title="Permanent link">&para;</a></h1>
-<p>This plugin can be used in a NOMAD Oasis installation.</p>
-<h2 id="add-this-plugin-to-your-nomad-installation">Add This Plugin to Your NOMAD installation<a class="headerlink" href="#add-this-plugin-to-your-nomad-installation" title="Permanent link">&para;</a></h2>
-<p>Read the <a href="https://nomad-lab.eu/prod/v1/staging/docs/plugins/plugins.html#add-a-plugin-to-your-nomad">NOMAD plugin documentation</a> for all details on how to deploy the plugin on your NOMAD instance.</p>
-<div class="admonition note">
-<p class="admonition-title">Attention</p>
-<p>TODO</p>
-</div>
+<h1 id="apply-to-a-plugin-repo">Apply to a Plugin Repo<a class="headerlink" href="#apply-to-a-plugin-repo" title="Permanent link">&para;</a></h1>
+<p>Use this guide to onboard any NOMAD plugin repository to the metadata pipeline.</p>
+<h2 id="1-copy-workflow-templates">1. Copy workflow templates<a class="headerlink" href="#1-copy-workflow-templates" title="Permanent link">&para;</a></h2>
+<p>Copy these files from this repository:</p>
+<ul>
+<li><code>docs/templates/update-plugin-metadata.yml</code></li>
+<li><code>docs/templates/check-plugin-metadata-pr.yml</code></li>
+</ul>
+<p>Into the target plugin repository:</p>
+<ul>
+<li><code>.github/workflows/update-plugin-metadata.yml</code></li>
+<li><code>.github/workflows/check-plugin-metadata-pr.yml</code></li>
+</ul>
+<h2 id="2-verify-workflow-package-source">2. Verify workflow package source<a class="headerlink" href="#2-verify-workflow-package-source" title="Permanent link">&para;</a></h2>
+<p>Templates currently default to Git installation of this package:</p>
+<ul>
+<li><code>package_spec: git+https://github.com/FAIRmat-NFDI/nomad-plugins-metadata.git@main</code></li>
+</ul>
+<p>When a PyPI release is available, switch to a pinned PyPI version:</p>
+<ul>
+<li><code>package_spec: nomad-plugins-metadata==&lt;PINNED_VERSION&gt;</code></li>
+</ul>
+<h2 id="3-create-feature-branch-in-plugin-repo">3. Create feature branch in plugin repo<a class="headerlink" href="#3-create-feature-branch-in-plugin-repo" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>git<span class="w"> </span>checkout<span class="w"> </span>-b<span class="w"> </span>test/metadata-pipeline
+</code></pre></div>
+<h2 id="4-local-dry-run-in-plugin-repo">4. Local dry run in plugin repo<a class="headerlink" href="#4-local-dry-run-in-plugin-repo" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>python<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>.venv
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="nb">source</span><span class="w"> </span>.venv/bin/activate
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>pip<span class="w"> </span>install<span class="w"> </span>-U<span class="w"> </span>pip
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;git+https://github.com/FAIRmat-NFDI/nomad-plugins-metadata.git@main&quot;</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>nomad-plugin-metadata<span class="w"> </span>extract<span class="w"> </span>--repo-path<span class="w"> </span>.
+</code></pre></div>
+<p>Expected outputs:</p>
+<ul>
+<li><code>.metadata/nomad_plugin_metadata.manual.yaml</code></li>
+<li><code>.metadata/nomad_plugin_metadata.auto.yaml</code></li>
+<li><code>.metadata/plugin-metadata.override-report.yaml</code></li>
+<li><code>nomad_plugin_metadata.yaml</code></li>
+</ul>
+<h2 id="5-one-time-migration-from-legacy-root-files-if-needed">5. One-time migration from legacy root files (if needed)<a class="headerlink" href="#5-one-time-migration-from-legacy-root-files-if-needed" title="Permanent link">&para;</a></h2>
+<p>If the plugin repo still has old root-level files:</p>
+<ul>
+<li><code>nomad_plugin_metadata.manual.yaml</code></li>
+<li><code>nomad_plugin_metadata.auto.yaml</code></li>
+</ul>
+<p>Migrate with:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>mkdir<span class="w"> </span>-p<span class="w"> </span>.metadata
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="o">[</span><span class="w"> </span>-f<span class="w"> </span>nomad_plugin_metadata.manual.yaml<span class="w"> </span><span class="o">]</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>mv<span class="w"> </span>nomad_plugin_metadata.manual.yaml<span class="w"> </span>.metadata/
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="o">[</span><span class="w"> </span>-f<span class="w"> </span>nomad_plugin_metadata.auto.yaml<span class="w"> </span><span class="o">]</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>mv<span class="w"> </span>nomad_plugin_metadata.auto.yaml<span class="w"> </span>.metadata/
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>nomad-plugin-metadata<span class="w"> </span>extract<span class="w"> </span>--repo-path<span class="w"> </span>.
+</code></pre></div>
+<h2 id="6-maintainer-edit-cycle">6. Maintainer edit cycle<a class="headerlink" href="#6-maintainer-edit-cycle" title="Permanent link">&para;</a></h2>
+<ol>
+<li>Edit <code>.metadata/nomad_plugin_metadata.manual.yaml</code> only.</li>
+<li>Re-run <code>nomad-plugin-metadata extract --repo-path .</code>.</li>
+<li>Check <code>.metadata/plugin-metadata.override-report.yaml</code> for conflicts.</li>
+</ol>
+<h2 id="7-commit-and-open-pr">7. Commit and open PR<a class="headerlink" href="#7-commit-and-open-pr" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>git<span class="w"> </span>add<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">  </span>.github/workflows/update-plugin-metadata.yml<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">  </span>.github/workflows/check-plugin-metadata-pr.yml<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">  </span>.metadata/nomad_plugin_metadata.manual.yaml<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">  </span>.metadata/nomad_plugin_metadata.auto.yaml<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">  </span>.metadata/plugin-metadata.override-report.yaml<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="w">  </span>.metadata/README.md<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="w">  </span>nomad_plugin_metadata.yaml
+<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;chore: enable plugin metadata pipeline&quot;</span>
+<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>git<span class="w"> </span>push<span class="w"> </span>-u<span class="w"> </span>origin<span class="w"> </span>test/metadata-pipeline
+</code></pre></div>
+<p>Then open a PR to <code>main</code> for maintainer review.</p>
+<h2 id="8-ci-behavior-after-merge">8. CI behavior after merge<a class="headerlink" href="#8-ci-behavior-after-merge" title="Permanent link">&para;</a></h2>
+<ul>
+<li>On release publish, workflow updates metadata artifacts and opens/updates a rolling PR.</li>
+<li>On normal PRs, check-only workflow enforces that metadata artifacts are in sync.</li>
+</ul>
 
               
             </article>
@@ -372,6 +581,41 @@
       </main>
       
         <footer class="md-footer">
+  
+    <nav class="md-footer__inner md-grid" aria-label="Footer">
+      
+        
+        <a href="../index.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: Home" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              Home
+            </div>
+          </div>
+        </a>
+      
+      
+        
+        <a href="../tutorial/tutorial.html" class="md-footer__link md-footer__link--next" aria-label="Next: Tutorial" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              Tutorial
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
   
   <div class="md-footer-meta md-typeset">
     <div class="md-footer-meta__inner md-grid">
