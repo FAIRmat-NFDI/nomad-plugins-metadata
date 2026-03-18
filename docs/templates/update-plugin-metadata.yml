@@ -13,9 +13,9 @@ jobs:
       contents: write
       pull-requests: write
     with:
-      # Before PyPI release:
-      package_spec: git+https://github.com/FAIRmat-NFDI/nomad-plugins-metadata.git@main
-      # After PyPI release, switch to:
+      # Recommended: pin a stable Git tag/commit (example tag shown).
+      package_spec: git+https://github.com/FAIRmat-NFDI/nomad-plugins-metadata.git@v1.0.0
+      # TODO: switch to pinned PyPI package once published.
       # package_spec: nomad-plugins-metadata==<PINNED_VERSION>
       check_only: false
       auto_commit: false

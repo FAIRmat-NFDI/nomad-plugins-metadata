@@ -1,8 +1,16 @@
 # Apply to a Plugin Repo
 
-Use this guide to onboard any NOMAD plugin repository to the metadata pipeline.
+Use this guide to set up and operate release-driven metadata automation for a
+plugin repository.
+For local/manual editing flow, use `how_to/use_this_plugin.md`.
 
-## 1. Copy workflow templates
+## 1. Create a feature branch in target plugin repo
+
+```bash
+git checkout -b test/metadata-pipeline
+```
+
+## 2. Copy workflow templates
 
 Copy these files from this repository:
 
@@ -14,29 +22,19 @@ Into the target plugin repository:
 - `.github/workflows/update-plugin-metadata.yml`
 - `.github/workflows/check-plugin-metadata-pr.yml`
 
-## 2. Verify workflow package source
+## 3. Verify workflow package source
 
-Templates currently default to Git installation of this package:
+Use a pinned Git ref for reproducible workflow behavior (example tag):
 
-- `package_spec: git+https://github.com/FAIRmat-NFDI/nomad-plugins-metadata.git@main`
+- `package_spec: git+https://github.com/FAIRmat-NFDI/nomad-plugins-metadata.git@v1.0.0`
 
-When a PyPI release is available, switch to a pinned PyPI version:
-
-- `package_spec: nomad-plugins-metadata==<PINNED_VERSION>`
-
-## 3. Create feature branch in plugin repo
-
-```bash
-git checkout -b test/metadata-pipeline
-```
-
-## 4. Local dry run in plugin repo
+## 4. Run a local dry run once
 
 ```bash
 python -m venv .venv
 source .venv/bin/activate
 pip install -U pip
-pip install "git+https://github.com/FAIRmat-NFDI/nomad-plugins-metadata.git@main"
+pip install "git+https://github.com/FAIRmat-NFDI/nomad-plugins-metadata.git@v1.0.0"
 pip install -e .
 nomad-plugin-metadata extract --repo-path .
 ```
@@ -64,13 +62,7 @@ mkdir -p .metadata
 nomad-plugin-metadata extract --repo-path .
 ```
 
-## 6. Maintainer edit cycle
-
-1. Edit `.metadata/nomad_plugin_metadata.manual.yaml` only.
-2. Re-run `nomad-plugin-metadata extract --repo-path .`.
-3. Check `.metadata/plugin-metadata.override-report.yaml` for conflicts.
-
-## 7. Commit and open PR
+## 6. Commit setup and open onboarding PR
 
 ```bash
 git add \
@@ -87,7 +79,25 @@ git push -u origin test/metadata-pipeline
 
 Then open a PR to `main` for maintainer review.
 
-## 8. CI behavior after merge
+## 7. Operational behavior after merge
 
 - On release publish, workflow updates metadata artifacts and opens/updates a rolling PR.
 - On normal PRs, check-only workflow enforces that metadata artifacts are in sync.
+
+## 8. Maintainer handling of release-generated metadata PRs
+
+When a release creates or updates a metadata PR (typically `chore: update plugin metadata`):
+
+1. Inspect generated changes in the PR.
+2. If manual edits are needed, check out the PR branch locally.
+3. Follow local flow from `how_to/use_this_plugin.md`:
+   - run extract
+   - edit `.metadata/nomad_plugin_metadata.manual.yaml`
+   - run extract again
+4. Commit and push to the same PR branch.
+5. Re-review and merge.
+
+## TODO
+
+Replace pinned Git `package_spec` with pinned PyPI version once package is
+published on PyPI.

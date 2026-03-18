@@ -8,15 +8,17 @@ edit_uri: ""
 nav:
   - Home: index.md
   - How-to:
+      - Install This Plugin: how_to/install_this_plugin.md
+      - Use This Plugin: how_to/use_this_plugin.md
       - Apply To Plugin Repo: how_to/apply_to_plugin_repo.md
-  - Tutorial: tutorial/tutorial.md
-  # - How-to guides:
-  #     - Install this Plugin: how_to/install_this_plugin.md
-  #     - Use this Plugin: how_to/use_this_plugin.md
+  # Tutorial intentionally removed from main nav; content was consolidated into How-to pages.
+  # - Additional how-to guides:
   #     - Contribute to this plugin: how_to/contribute_to_this_plugin.md
   #     - Contribute to the documentation: how_to/contribute_to_the_documentation.md
   - Explanation: explanation/explanation.md
-  - Reference: reference/references.md
+  - Reference:
+      - CLI and API: reference/cli_reference.md
+      - Schema: reference/schema_reference.md
 plugins:
   - search
 theme:

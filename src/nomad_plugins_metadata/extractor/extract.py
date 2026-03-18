@@ -583,7 +583,14 @@ def build_generated_metadata_with_release_context(
     release_tag: str | None,
     release_sha: str | None,
 ) -> dict:
-    """Generate baseline metadata from repo-local static sources."""
+    """Generate baseline metadata from repo-local and discoverable plugin sources.
+
+    Sources include:
+    - `pyproject.toml` project metadata and entry-point declarations
+    - installed `nomad.plugin` entry points from the target package
+    - optional `CITATION.cff` / `citation.cff`
+    - best-effort repository API lookups (GitHub)
+    """
     pyproject = _read_pyproject(repo_path / 'pyproject.toml')
     cff = _read_citation_cff(repo_path)
     project = pyproject.get('project', {})

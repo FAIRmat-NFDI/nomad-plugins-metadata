@@ -13,6 +13,7 @@ env:
   UV_VERSION: 0.9
   PYTHON_VERSION: 3.12
   UV_SYSTEM_PYTHON: true
+  PYTHONWARNINGS: "ignore:invalid escape sequence '\\\\s':DeprecationWarning:jinja2\\.lexer"
 
 jobs:
   deploy:

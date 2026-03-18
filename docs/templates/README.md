@@ -18,10 +18,8 @@ These templates are ready to copy into a plugin repository.
 
 ## `package_spec` note
 
-Templates currently default to Git installation:
+Templates are written for pinned, reproducible Git installs:
 
-- `git+https://github.com/FAIRmat-NFDI/nomad-plugins-metadata.git@main`
+- `git+https://github.com/FAIRmat-NFDI/nomad-plugins-metadata.git@v1.0.0`
 
-When a PyPI release is available, switch to a pinned version:
-
-- `nomad-plugins-metadata==<PINNED_VERSION>`
+TODO: switch templates to pinned PyPI package versions after first stable PyPI publication.
