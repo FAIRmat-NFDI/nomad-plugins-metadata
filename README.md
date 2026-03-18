@@ -38,6 +38,18 @@ Canonical schema + tooling package for generating, validating, and merging NOMAD
 - Changelog for schema evolution:
   - `SCHEMA_CHANGELOG.md`
 
+## Generate Reference Docs
+
+Reference pages are generated from source-of-truth code and LinkML schema.
+
+- Generate/update reference docs:
+  - `uv run python scripts/generate_reference_docs.py`
+
+This updates:
+
+- `docs/reference/cli_reference.md`
+- `docs/reference/schema_reference.md`
+
 ## Extractor CLI
 
 This package now includes a reusable extractor CLI for plugin repositories:

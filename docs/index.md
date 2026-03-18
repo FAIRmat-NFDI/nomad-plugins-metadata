@@ -12,6 +12,17 @@ Canonical schema and tooling package for generating, validating, and merging NOM
 
 The package standardizes both metadata structure and automation behavior so plugin metadata is reproducible across repositories.
 
+## Metadata model at a glance
+
+- Manual metadata: `.metadata/nomad_plugin_metadata.manual.yaml`
+- Auto metadata: `.metadata/nomad_plugin_metadata.auto.yaml`
+- Effective metadata (consumer-facing): `nomad_plugin_metadata.yaml`
+- Override report: `.metadata/plugin-metadata.override-report.yaml`
+
+Merge precedence is deterministic:
+
+non-empty values from `.metadata/nomad_plugin_metadata.manual.yaml` > `.metadata/nomad_plugin_metadata.auto.yaml`
+
 ## Core capabilities
 
 - Canonical LinkML schema definition.
@@ -21,7 +32,7 @@ The package standardizes both metadata structure and automation behavior so plug
 - Override report generation for fields blocked by manual edits.
 - Reusable GitHub Actions workflow for repository-level automation.
 
-## Main artifacts
+## Tooling artifacts
 
 - Schema: `src/nomad_plugins_metadata/schema_packages/nomad_plugin_metadata.yaml`
 - Metainfo adapter: `src/nomad_plugins_metadata/schema_packages/schema_package.py`
@@ -29,24 +40,11 @@ The package standardizes both metadata structure and automation behavior so plug
 - NOMAD adapter mapping: `src/nomad_plugins_metadata/adapters/nomad_mapping.md`
 - Examples: `src/nomad_plugins_metadata/examples/`
 
-## Typical plugin-repo flow
-
-1. Maintainer edits `.metadata/nomad_plugin_metadata.manual.yaml` (manual template/override file).
-2. CI runs `nomad-plugin-metadata extract`.
-3. Workflow writes:
-   - `.metadata/nomad_plugin_metadata.auto.yaml`
-   - `nomad_plugin_metadata.yaml`
-   - `.metadata/plugin-metadata.override-report.yaml`
-5. Consumers ingest effective metadata.
-6. Artifact semantics are documented in-repo at `.metadata/README.md`.
-
-Merge precedence is always:
-
-non-empty values from `.metadata/nomad_plugin_metadata.manual.yaml` > `.metadata/nomad_plugin_metadata.auto.yaml`
-
 ## Where to go next
 
-- See [How-to](how_to/apply_to_plugin_repo.md) for plugin-repo onboarding.
-- See [Tutorial](tutorial/tutorial.md) for end-to-end usage.
+- See [How-to: Install This Plugin](how_to/install_this_plugin.md).
+- See [How-to: Use This Plugin](how_to/use_this_plugin.md).
+- See [How-to: Apply To Plugin Repo](how_to/apply_to_plugin_repo.md).
 - See [Explanation](explanation/explanation.md) for architecture rationale.
-- See [Reference](reference/references.md) for commands, files, and workflow inputs.
+- See [Reference: CLI and API](reference/cli_reference.md).
+- See [Reference: Schema](reference/schema_reference.md).

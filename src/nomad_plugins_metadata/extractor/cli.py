@@ -14,6 +14,8 @@ from nomad_plugins_metadata.extractor.merge import merge_generated_and_manual
 
 @dataclass(frozen=True)
 class ExtractRunConfig:
+    """Runtime configuration for one extraction run."""
+
     manual_path: Path
     auto_path: Path
     effective_path: Path
@@ -139,6 +141,11 @@ def _write_manual_template(path: Path) -> None:
 
 
 def run_extract(repo_path: Path, config: ExtractRunConfig) -> None:
+    """Generate auto metadata and materialize merged/report artifacts.
+
+    The resulting precedence is deterministic:
+    non-empty manual values override generated values.
+    """
     auto = build_generated_metadata_with_release_context(
         repo_path=repo_path,
         release_tag=config.release_tag,
@@ -157,6 +164,7 @@ def run_extract(repo_path: Path, config: ExtractRunConfig) -> None:
 
 
 def build_parser() -> argparse.ArgumentParser:
+    """Build the CLI argument parser for `nomad-plugin-metadata`."""
     parser = argparse.ArgumentParser(
         prog='nomad-plugin-metadata',
         description='Generate and merge NOMAD plugin metadata files.',
@@ -210,6 +218,7 @@ def build_parser() -> argparse.ArgumentParser:
 
 
 def main() -> None:
+    """CLI entrypoint."""
     args = build_parser().parse_args()
     if args.command == 'extract':
         run_extract(
