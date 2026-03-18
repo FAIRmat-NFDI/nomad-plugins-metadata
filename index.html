@@ -250,6 +250,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#metadata-model-at-a-glance" class="md-nav__link">
+    Metadata model at a glance
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#core-capabilities" class="md-nav__link">
     Core capabilities
   </a>
@@ -257,15 +264,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#main-artifacts" class="md-nav__link">
-    Main artifacts
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#typical-plugin-repo-flow" class="md-nav__link">
-    Typical plugin-repo flow
+  <a href="#tooling-artifacts" class="md-nav__link">
+    Tooling artifacts
   </a>
   
 </li>
@@ -319,6 +319,34 @@
   
   
     <li class="md-nav__item">
+      <a href="how_to/install_this_plugin.html" class="md-nav__link">
+        Install This Plugin
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="how_to/use_this_plugin.html" class="md-nav__link">
+        Use This Plugin
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="how_to/apply_to_plugin_repo.html" class="md-nav__link">
         Apply To Plugin Repo
       </a>
@@ -329,21 +357,6 @@
           
         </ul>
       </nav>
-    </li>
-  
-
-    
-      
-      
-      
-
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="tutorial/tutorial.html" class="md-nav__link">
-        Tutorial
-      </a>
     </li>
   
 
@@ -370,10 +383,57 @@
   
   
   
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_4">
+          Reference
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Reference" data-md-level="1">
+        <label class="md-nav__title" for="__nav_4">
+          <span class="md-nav__icon md-icon"></span>
+          Reference
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
     <li class="md-nav__item">
-      <a href="reference/references.html" class="md-nav__link">
-        Reference
+      <a href="reference/cli_reference.html" class="md-nav__link">
+        CLI and API
       </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="reference/schema_reference.html" class="md-nav__link">
+        Schema
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
     </li>
   
 
@@ -412,6 +472,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#metadata-model-at-a-glance" class="md-nav__link">
+    Metadata model at a glance
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#core-capabilities" class="md-nav__link">
     Core capabilities
   </a>
@@ -419,15 +486,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#main-artifacts" class="md-nav__link">
-    Main artifacts
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#typical-plugin-repo-flow" class="md-nav__link">
-    Typical plugin-repo flow
+  <a href="#tooling-artifacts" class="md-nav__link">
+    Tooling artifacts
   </a>
   
 </li>
@@ -462,6 +522,15 @@
 <li><code>nomad-docs</code> registry rendering and filtering.</li>
 </ul>
 <p>The package standardizes both metadata structure and automation behavior so plugin metadata is reproducible across repositories.</p>
+<h2 id="metadata-model-at-a-glance">Metadata model at a glance<a class="headerlink" href="#metadata-model-at-a-glance" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Manual metadata: <code>.metadata/nomad_plugin_metadata.manual.yaml</code></li>
+<li>Auto metadata: <code>.metadata/nomad_plugin_metadata.auto.yaml</code></li>
+<li>Effective metadata (consumer-facing): <code>nomad_plugin_metadata.yaml</code></li>
+<li>Override report: <code>.metadata/plugin-metadata.override-report.yaml</code></li>
+</ul>
+<p>Merge precedence is deterministic:</p>
+<p>non-empty values from <code>.metadata/nomad_plugin_metadata.manual.yaml</code> &gt; <code>.metadata/nomad_plugin_metadata.auto.yaml</code></p>
 <h2 id="core-capabilities">Core capabilities<a class="headerlink" href="#core-capabilities" title="Permanent link">&para;</a></h2>
 <ul>
 <li>Canonical LinkML schema definition.</li>
@@ -471,7 +540,7 @@
 <li>Override report generation for fields blocked by manual edits.</li>
 <li>Reusable GitHub Actions workflow for repository-level automation.</li>
 </ul>
-<h2 id="main-artifacts">Main artifacts<a class="headerlink" href="#main-artifacts" title="Permanent link">&para;</a></h2>
+<h2 id="tooling-artifacts">Tooling artifacts<a class="headerlink" href="#tooling-artifacts" title="Permanent link">&para;</a></h2>
 <ul>
 <li>Schema: <code>src/nomad_plugins_metadata/schema_packages/nomad_plugin_metadata.yaml</code></li>
 <li>Metainfo adapter: <code>src/nomad_plugins_metadata/schema_packages/schema_package.py</code></li>
@@ -479,25 +548,14 @@
 <li>NOMAD adapter mapping: <code>src/nomad_plugins_metadata/adapters/nomad_mapping.md</code></li>
 <li>Examples: <code>src/nomad_plugins_metadata/examples/</code></li>
 </ul>
-<h2 id="typical-plugin-repo-flow">Typical plugin-repo flow<a class="headerlink" href="#typical-plugin-repo-flow" title="Permanent link">&para;</a></h2>
-<ol>
-<li>Maintainer edits <code>.metadata/nomad_plugin_metadata.manual.yaml</code> (manual template/override file).</li>
-<li>CI runs <code>nomad-plugin-metadata extract</code>.</li>
-<li>Workflow writes:</li>
-<li><code>.metadata/nomad_plugin_metadata.auto.yaml</code></li>
-<li><code>nomad_plugin_metadata.yaml</code></li>
-<li><code>.metadata/plugin-metadata.override-report.yaml</code></li>
-<li>Consumers ingest effective metadata.</li>
-<li>Artifact semantics are documented in-repo at <code>.metadata/README.md</code>.</li>
-</ol>
-<p>Merge precedence is always:</p>
-<p>non-empty values from <code>.metadata/nomad_plugin_metadata.manual.yaml</code> &gt; <code>.metadata/nomad_plugin_metadata.auto.yaml</code></p>
 <h2 id="where-to-go-next">Where to go next<a class="headerlink" href="#where-to-go-next" title="Permanent link">&para;</a></h2>
 <ul>
-<li>See <a href="how_to/apply_to_plugin_repo.html">How-to</a> for plugin-repo onboarding.</li>
-<li>See <a href="tutorial/tutorial.html">Tutorial</a> for end-to-end usage.</li>
+<li>See <a href="how_to/install_this_plugin.html">How-to: Install This Plugin</a>.</li>
+<li>See <a href="how_to/use_this_plugin.html">How-to: Use This Plugin</a>.</li>
+<li>See <a href="how_to/apply_to_plugin_repo.html">How-to: Apply To Plugin Repo</a>.</li>
 <li>See <a href="explanation/explanation.html">Explanation</a> for architecture rationale.</li>
-<li>See <a href="reference/references.html">Reference</a> for commands, files, and workflow inputs.</li>
+<li>See <a href="reference/cli_reference.html">Reference: CLI and API</a>.</li>
+<li>See <a href="reference/schema_reference.html">Reference: Schema</a>.</li>
 </ul>
 
               
@@ -513,13 +571,13 @@
       
       
         
-        <a href="how_to/apply_to_plugin_repo.html" class="md-footer__link md-footer__link--next" aria-label="Next: Apply To Plugin Repo" rel="next">
+        <a href="how_to/install_this_plugin.html" class="md-footer__link md-footer__link--next" aria-label="Next: Install This Plugin" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              Apply To Plugin Repo
+              Install This Plugin
             </div>
           </div>
           <div class="md-footer__button md-icon">
