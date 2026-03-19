@@ -106,6 +106,8 @@ classes:
     slots:
       - id
       - label
+      - capability_id
+      - producer
       - extensions
       - mime_types
       - standard
@@ -341,6 +343,14 @@ slots:
   extensions:
     multivalued: true
     required: false
+
+  capability_id:
+    required: false
+    description: Capability identifier that provides this format support.
+
+  producer:
+    required: false
+    description: General producer/code family for ambiguous formats (e.g. .out).
 
   mime_types:
     multivalued: true

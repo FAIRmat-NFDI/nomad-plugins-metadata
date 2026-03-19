@@ -82,6 +82,8 @@ class PluginCapability(ArchiveSection):
 class FileFormatSupport(ArchiveSection):
     id = Quantity(type=str)
     label = Quantity(type=str)
+    capability_id = Quantity(type=str)
+    producer = Quantity(type=str)
     extensions = Quantity(type=str, shape=['*'])
     mime_types = Quantity(type=str, shape=['*'])
     standard = Quantity(type=str)

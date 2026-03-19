@@ -161,6 +161,33 @@ def _guess_capability_type(entry_point_name: str, python_object: str) -> str:
     return 'tool'
 
 
+def _derive_producer(
+    entry_point_name: str, python_object: str, loaded: object | None
+) -> str:
+    def _normalize(value: str) -> str:
+        return re.sub(r'[^a-z0-9]+', '-', value.strip().lower()).strip('-')
+
+    parser_name = str(getattr(loaded, 'name', '') or '').strip().lower()
+    if parser_name:
+        if '/' in parser_name:
+            return _normalize(parser_name.rsplit('/', 1)[-1])
+        return _normalize(parser_name)
+
+    normalized_ep = (entry_point_name or '').strip().lower()
+    if normalized_ep:
+        for suffix in ('_parser', '_schema_package', '_schema'):
+            if normalized_ep.endswith(suffix):
+                return _normalize(normalized_ep[: -len(suffix)])
+        return _normalize(normalized_ep)
+
+    object_name = python_object.rsplit(':', maxsplit=1)[-1]
+    object_name = object_name.strip().lower()
+    for suffix in ('_parser', '_schema_package', '_schema'):
+        if object_name.endswith(suffix):
+            return _normalize(object_name[: -len(suffix)])
+    return _normalize(object_name)
+
+
 def _extract_extensions_from_name_regex(name_regex: str) -> list[str]:
     if not name_regex:
         return []
@@ -476,6 +503,7 @@ def _build_entry_points_and_capabilities(
         capability_type = _entry_point_type_to_capability(entry_point_type)
         if entry_point_type is None or capability_type == entry_point_type:
             capability_type = _guess_capability_type(ep_name, str(python_object))
+        producer = _derive_producer(ep_name, str(python_object), loaded)
 
         entry_points.append(
             {
@@ -487,10 +515,11 @@ def _build_entry_points_and_capabilities(
             }
         )
 
+        capability_id = str(getattr(loaded, 'id', None) or ep_name)
         capability = {
-            'id': str(getattr(loaded, 'id', ep_name)),
+            'id': capability_id,
             'capability_type': capability_type,
-            'title': str(getattr(loaded, 'name', ep_name)),
+            'title': str(getattr(loaded, 'name', None) or ep_name),
             'summary': str(getattr(loaded, 'description', '') or ''),
         }
 
@@ -546,6 +575,8 @@ def _build_entry_points_and_capabilities(
                     {
                         'id': ext.lstrip('.'),
                         'label': ext,
+                        'capability_id': capability_id,
+                        'producer': producer,
                         'extensions': [ext],
                         'mime_types': [mime] if mime else [],
                     }
@@ -558,6 +589,8 @@ def _build_entry_points_and_capabilities(
                     {
                         'id': format_id,
                         'label': mime,
+                        'capability_id': capability_id,
+                        'producer': producer,
                         'extensions': [],
                         'mime_types': [mime],
                     }
