@@ -5,7 +5,6 @@ description: Canonical metadata schema and tooling for NOMAD plugins
 plugin_version: 0.1.0
 license: LICENSE
 upstream_repository: https://github.com/FAIRmat-NFDI/nomad-plugins-metadata
-documentation: https://fairmat-nfdi.github.io/nomad-plugins-metadata/
 homepage: https://github.com/FAIRmat-NFDI/nomad-plugins-metadata
 maintainers:
 - name: Joseph Rudzinski
@@ -88,18 +87,31 @@ schema_dependencies:
 metadata_provenance:
 - source: pyproject
   extraction_method: deterministic
-  generated_at: '2026-03-19T08:55:34.385994+00:00'
+  generated_at: '2026-03-19T10:03:26.189814+00:00'
   generator_version: 0.1.0
 - source: plugin_entry_points
   extraction_method: deterministic
-  generated_at: '2026-03-19T08:55:34.386012+00:00'
+  generated_at: '2026-03-19T10:03:26.189854+00:00'
   generator_version: 0.1.0
-stars: 0
-owner: FAIRmat-NFDI
-owner_type: Organization
-created: '2026-03-05T11:39:28Z'
-last_updated: '2026-03-19T08:54:34Z'
-archived: false
-release_context:
-  release_tag: v0.6.1
-  release_commit_sha: 8f7ae02ae326627bf05d426316c735d1aada372e
+subject:
+- metadata
+- plugin-registry
+- tooling
+- infrastructure
+maturity: beta
+repository_default_branch: main
+suggested_usages:
+- id: generate-and-maintain-plugin-metadata
+  title: Generate and Maintain NOMAD Plugin Metadata
+  user_intent: Generate, review, and update metadata artifacts for a NOMAD plugin
+    repository.
+  domain_category: infrastructure
+  technique: metadata extraction and schema-guided curation
+  audience: plugin maintainers
+  maturity: beta
+  tags:
+  - metadata
+  - registry
+  - automation
+  - ci
+  - plugin-maintenance
