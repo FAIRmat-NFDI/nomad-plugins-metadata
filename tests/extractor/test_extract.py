@@ -351,6 +351,16 @@ class _FakeMimeOnlyParserEntryPoint:
     metadata = {}
 
 
+class _FakeParserWithoutEntryPointType:
+    id = 'parsers/fallback'
+    name = 'Fallback Parser'
+    description = 'Parser without explicit entry_point_type'
+    mainfile_name_re = r'.*\\.dat$'
+    mainfile_mime_re = 'application/octet-stream'
+    supported_compressions = ['gz']
+    metadata = {}
+
+
 def test_file_format_support_falls_back_to_specific_mime(
     tmp_path: Path, monkeypatch
 ) -> None:
@@ -393,3 +403,49 @@ def test_file_format_support_falls_back_to_specific_mime(
     )
     assert generated['file_format_support'][0]['mime_types'] == ['application/x-custom']
     assert generated['file_format_support'][0]['id'] == 'application-x-custom'
+
+
+def test_parser_detection_fallback_without_entry_point_type(
+    tmp_path: Path, monkeypatch
+) -> None:
+    repo = tmp_path / 'repo'
+    repo.mkdir()
+    (repo / 'pyproject.toml').write_text(
+        '\n'.join(
+            [
+                '[project]',
+                'name = "example-plugin"',
+                '',
+                '[project.entry-points."nomad.plugin"]',
+                'fallback_parser = "example.parsers:fallback_parser"',
+            ]
+        ),
+        encoding='utf-8',
+    )
+
+    fake_eps = [
+        _FakeEntryPoint(
+            name='fallback_parser',
+            value='example.parsers:fallback_parser',
+            dist_name='example-plugin',
+            loaded=_FakeParserWithoutEntryPointType(),
+        )
+    ]
+    monkeypatch.setattr(
+        'nomad_plugins_metadata.extractor.extract.metadata.entry_points',
+        lambda group=None: fake_eps,
+    )
+    monkeypatch.setattr(
+        'nomad_plugins_metadata.extractor.extract._fetch_github_repo_metadata',
+        lambda repository_url: None,
+    )
+
+    generated = build_generated_metadata_with_release_context(
+        repo_path=repo,
+        release_tag=None,
+        release_sha=None,
+    )
+
+    assert generated['entry_points'][0]['capability_type'] == 'parser'
+    assert generated['capabilities'][0]['capability_type'] == 'parser'
+    assert generated['supported_filetypes'] == ['.dat']
