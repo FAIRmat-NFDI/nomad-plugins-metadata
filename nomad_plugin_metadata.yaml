@@ -88,18 +88,18 @@ schema_dependencies:
 metadata_provenance:
 - source: pyproject
   extraction_method: deterministic
-  generated_at: '2026-03-16T15:50:49.146963+00:00'
+  generated_at: '2026-03-19T08:55:34.385994+00:00'
   generator_version: 0.1.0
 - source: plugin_entry_points
   extraction_method: deterministic
-  generated_at: '2026-03-16T15:50:49.146984+00:00'
+  generated_at: '2026-03-19T08:55:34.386012+00:00'
   generator_version: 0.1.0
 stars: 0
 owner: FAIRmat-NFDI
 owner_type: Organization
 created: '2026-03-05T11:39:28Z'
-last_updated: '2026-03-16T15:49:54Z'
+last_updated: '2026-03-19T08:54:34Z'
 archived: false
 release_context:
-  release_tag: v0.6.0
-  release_commit_sha: 8600faaf0c49e14288ed13ebee2ff0f9a46dba18
+  release_tag: v0.6.1
+  release_commit_sha: 8f7ae02ae326627bf05d426316c735d1aada372e
