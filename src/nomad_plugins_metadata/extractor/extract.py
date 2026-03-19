@@ -474,7 +474,7 @@ def _build_entry_points_and_capabilities(
         loaded = installed_entry_points.get(ep_name)
         entry_point_type = getattr(loaded, 'entry_point_type', None)
         capability_type = _entry_point_type_to_capability(entry_point_type)
-        if capability_type == entry_point_type:
+        if entry_point_type is None or capability_type == entry_point_type:
             capability_type = _guess_capability_type(ep_name, str(python_object))
 
         entry_points.append(
