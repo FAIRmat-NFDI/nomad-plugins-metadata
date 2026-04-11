@@ -155,6 +155,81 @@ def _render_slot(
     return slot
 
 
+def _record_slot_tracking(
+    *,
+    slot_name: str,
+    linkml_class_name: str,
+    required_in_class: bool,
+    slot_to_classes: dict[str, set[str]],
+    slot_required_by_class: dict[str, set[str]],
+) -> None:
+    slot_to_classes.setdefault(slot_name, set()).add(linkml_class_name)
+    if required_in_class:
+        slot_required_by_class.setdefault(slot_name, set()).add(linkml_class_name)
+
+
+def _build_quantity_slot(
+    *,
+    class_name: str,
+    attr_name: str,
+    attr_value: Quantity,
+) -> tuple[dict, bool]:
+    required_in_class = attr_name in REQUIRED_SLOTS_BY_CLASS.get(class_name, set())
+    slot = _render_slot(
+        attr_name,
+        range_name=_range_from_quantity(attr_name, attr_value),
+        required=required_in_class,
+        multivalued=_is_list_quantity(attr_value),
+    )
+    return slot, required_in_class
+
+
+def _build_subsection_slot(
+    *,
+    class_name: str,
+    attr_name: str,
+    attr_value: SubSection,
+) -> tuple[dict, bool]:
+    section_cls = getattr(attr_value, 'section', None)
+    section_name = (
+        getattr(section_cls, '__name__', None)
+        or getattr(section_cls, 'name', None)
+        or 'string'
+    )
+    repeats = bool(getattr(attr_value, 'repeats', False))
+    required_in_class = attr_name in REQUIRED_SLOTS_BY_CLASS.get(class_name, set())
+    slot = _render_slot(
+        attr_name,
+        range_name=_linkml_class_name(section_name),
+        required=required_in_class,
+        multivalued=repeats,
+    )
+    if repeats:
+        slot['inlined_as_list'] = True
+    return slot, required_in_class
+
+
+def _finalize_requiredness(
+    *,
+    classes: dict,
+    slots: dict,
+    slot_to_classes: dict[str, set[str]],
+    slot_required_by_class: dict[str, set[str]],
+) -> None:
+    # Avoid over-constraining shared slots globally; put class-specific requiredness
+    # into slot_usage when a slot is required only in a subset of classes.
+    for slot_name, owner_classes in slot_to_classes.items():
+        required_classes = slot_required_by_class.get(slot_name, set())
+        globally_required = required_classes == owner_classes and bool(owner_classes)
+        slots[slot_name]['required'] = globally_required
+        if globally_required:
+            continue
+        for class_name in sorted(required_classes):
+            class_payload = classes[class_name]
+            slot_usage = class_payload.setdefault('slot_usage', {})
+            slot_usage[slot_name] = {'required': True}
+
+
 def generate_linkml_schema() -> dict:
     classes: dict = {}
     slots: dict = {}
@@ -178,60 +253,46 @@ def generate_linkml_schema() -> dict:
 
             if isinstance(attr_value, Quantity):
                 class_slots.append(attr_name)
-                range_name = _range_from_quantity(attr_name, attr_value)
-                required_in_class = attr_name in REQUIRED_SLOTS_BY_CLASS.get(class_name, set())
-                slots[attr_name] = _render_slot(
-                    attr_name,
-                    range_name=range_name,
-                    required=required_in_class,
-                    multivalued=_is_list_quantity(attr_value),
+                slot, required_in_class = _build_quantity_slot(
+                    class_name=class_name,
+                    attr_name=attr_name,
+                    attr_value=attr_value,
                 )
-                slot_to_classes.setdefault(attr_name, set()).add(linkml_class_name)
-                if required_in_class:
-                    slot_required_by_class.setdefault(attr_name, set()).add(
-                        linkml_class_name
-                    )
+                slots[attr_name] = slot
+                _record_slot_tracking(
+                    slot_name=attr_name,
+                    linkml_class_name=linkml_class_name,
+                    required_in_class=required_in_class,
+                    slot_to_classes=slot_to_classes,
+                    slot_required_by_class=slot_required_by_class,
+                )
                 continue
 
             if isinstance(attr_value, SubSection):
                 class_slots.append(attr_name)
-                section_cls = getattr(attr_value, 'section', None)
-                section_name = (
-                    getattr(section_cls, '__name__', None)
-                    or getattr(section_cls, 'name', None)
-                    or 'string'
+                slot, required_in_class = _build_subsection_slot(
+                    class_name=class_name,
+                    attr_name=attr_name,
+                    attr_value=attr_value,
                 )
-                repeats = bool(getattr(attr_value, 'repeats', False))
-                required_in_class = attr_name in REQUIRED_SLOTS_BY_CLASS.get(class_name, set())
-                slots[attr_name] = _render_slot(
-                    attr_name,
-                    range_name=_linkml_class_name(section_name),
-                    required=required_in_class,
-                    multivalued=repeats,
+                slots[attr_name] = slot
+                _record_slot_tracking(
+                    slot_name=attr_name,
+                    linkml_class_name=linkml_class_name,
+                    required_in_class=required_in_class,
+                    slot_to_classes=slot_to_classes,
+                    slot_required_by_class=slot_required_by_class,
                 )
-                if repeats:
-                    slots[attr_name]['inlined_as_list'] = True
-                slot_to_classes.setdefault(attr_name, set()).add(linkml_class_name)
-                if required_in_class:
-                    slot_required_by_class.setdefault(attr_name, set()).add(
-                        linkml_class_name
-                    )
 
         class_payload['slots'] = class_slots
         classes[linkml_class_name] = class_payload
 
-    # Avoid over-constraining shared slots globally; put class-specific requiredness
-    # into slot_usage when a slot is required only in a subset of classes.
-    for slot_name, owner_classes in slot_to_classes.items():
-        required_classes = slot_required_by_class.get(slot_name, set())
-        globally_required = required_classes == owner_classes and bool(owner_classes)
-        slots[slot_name]['required'] = globally_required
-        if globally_required:
-            continue
-        for class_name in sorted(required_classes):
-            class_payload = classes[class_name]
-            slot_usage = class_payload.setdefault('slot_usage', {})
-            slot_usage[slot_name] = {'required': True}
+    _finalize_requiredness(
+        classes=classes,
+        slots=slots,
+        slot_to_classes=slot_to_classes,
+        slot_required_by_class=slot_required_by_class,
+    )
 
     enums = {
         enum_name: {'permissible_values': {value: {} for value in values}}
