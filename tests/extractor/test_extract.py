@@ -103,7 +103,10 @@ def test_extracts_installed_entry_point_parser_metadata(
     assert parser_details['compression_support'] == ['gz', 'xz']
     assert parser_details['parser_level'] == parser_level
     assert parser_details['parser_aliases'] == ['fake', 'fake-parser']
-    assert parser_details['mainfile_contents_dict'] == '{"__has_all_keys": ["time", "value"]}'
+    assert (
+        parser_details['mainfile_contents_dict']
+        == '{"__has_all_keys": ["time", "value"]}'
+    )
     assert parser_details['mainfile_binary_header'] == '435356'
     assert parser_details['mainfile_binary_header_re'] == '4353562e2a'
     assert parser_details['mainfile_alternative'] is False

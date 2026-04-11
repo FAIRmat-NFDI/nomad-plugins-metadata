@@ -139,7 +139,7 @@ def _render_annotated_yaml_for_class(
         range_name = slot.get('range', 'string')
         multivalued = bool(slot.get('multivalued', False))
 
-        lines.append(f"{prefix}# {_slot_comment(slot_name, slot, enums)}")
+        lines.append(f'{prefix}# {_slot_comment(slot_name, slot, enums)}')
         if range_name in classes:
             if multivalued:
                 lines.append(f'{prefix}{slot_name}:')
@@ -177,10 +177,10 @@ def _render_schema_reference() -> str:
         '# Schema Reference',
         '',
         'Source of truth (runtime schema):',
-        f"- `{(ROOT / 'src/nomad_plugins_metadata/schema_packages/schema_package.py').relative_to(ROOT)}`",
+        f'- `{(ROOT / "src/nomad_plugins_metadata/schema_packages/schema_package.py").relative_to(ROOT)}`',
         '',
         'Generated interoperability export (used below):',
-        f"- `{(ROOT / 'src/nomad_plugins_metadata/schema_packages/nomad_plugin_metadata.yaml').relative_to(ROOT)}`",
+        f'- `{(ROOT / "src/nomad_plugins_metadata/schema_packages/nomad_plugin_metadata.yaml").relative_to(ROOT)}`',
         '',
         '## Root Fields (`PluginPackage`)',
         '',
@@ -198,7 +198,7 @@ def _render_schema_reference() -> str:
             enum_values = ', '.join(enums[range_name]['permissible_values'].keys())
         desc = (slot.get('description', '') or '').replace('\n', ' ').strip()
         lines.append(
-            f"| `{slot_name}` | `{range_name}` | `{required}` | `{multi}` | {enum_values} | {desc} |"
+            f'| `{slot_name}` | `{range_name}` | `{required}` | `{multi}` | {enum_values} | {desc} |'
         )
 
     lines.extend(

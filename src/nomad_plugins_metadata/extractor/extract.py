@@ -9,10 +9,14 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import urlparse
 from urllib.request import Request, urlopen
 
-import tomllib
 from packaging.version import InvalidVersion, Version
 
 from nomad_plugins_metadata.schema_packages.schema_validation import load_schema
+
+try:
+    import tomllib
+except ModuleNotFoundError:  # pragma: no cover - py310 fallback
+    import tomli as tomllib
 
 try:
     import yaml
@@ -395,7 +399,9 @@ def _github_telemetry(repository_url: str) -> dict:
     payload = _fetch_github_repo_metadata(repository_url)
     if payload is None:
         return {}
-    owner_data = payload.get('owner', {}) if isinstance(payload.get('owner'), dict) else {}
+    owner_data = (
+        payload.get('owner', {}) if isinstance(payload.get('owner'), dict) else {}
+    )
     telemetry = {
         'stars': payload.get('stargazers_count'),
         'owner': owner_data.get('login'),
@@ -482,9 +488,9 @@ def _build_entry_points_and_capabilities(
     project: dict,
     repo_path: Path,
 ) -> tuple[list[dict], list[dict], list[str], list[dict]]:
-    pyproject_entry_points = (
-        (project.get('entry-points', {}) or {}).get('nomad.plugin', {}) or {}
-    )
+    pyproject_entry_points = (project.get('entry-points', {}) or {}).get(
+        'nomad.plugin', {}
+    ) or {}
     package_name = str(project.get('name', repo_path.name))
     target_packages = {
         _normalize_package_name(package_name),
@@ -563,9 +569,7 @@ def _build_entry_points_and_capabilities(
                 str(getattr(loaded, 'mainfile_name_re', '') or '')
             )
             aux_patterns = list(parser_details.get('auxiliary_file_patterns', []))
-            extensions.extend(
-                _extract_extensions_from_auxiliary_patterns(aux_patterns)
-            )
+            extensions.extend(_extract_extensions_from_auxiliary_patterns(aux_patterns))
             mime = str(getattr(loaded, 'mainfile_mime_re', '') or '')
             for ext in extensions:
                 if ext in supported_filetypes:
@@ -597,7 +601,9 @@ def _build_entry_points_and_capabilities(
                 )
 
         capability = {
-            key: value for key, value in capability.items() if value not in ('', [], None)
+            key: value
+            for key, value in capability.items()
+            if value not in ('', [], None)
         }
         capabilities.append(capability)
 

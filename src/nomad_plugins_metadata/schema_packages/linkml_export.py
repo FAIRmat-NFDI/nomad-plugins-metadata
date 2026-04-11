@@ -7,9 +7,7 @@ from nomad.metainfo import MEnum, Quantity, SubSection
 
 from nomad_plugins_metadata.schema_packages import schema_package as sp
 
-SCHEMA_PATH = (
-    Path(__file__).resolve().parent / 'nomad_plugin_metadata.yaml'
-)
+SCHEMA_PATH = Path(__file__).resolve().parent / 'nomad_plugin_metadata.yaml'
 
 SCHEMA_VERSION = '1.0.0'
 ROOT_CLASS_NAME = 'PluginPackage'
@@ -137,7 +135,9 @@ def _range_from_quantity(slot_name: str, quantity: Quantity) -> str:
     return range_name
 
 
-def _render_slot(slot_name: str, *, range_name: str, required: bool, multivalued: bool) -> dict:
+def _render_slot(
+    slot_name: str, *, range_name: str, required: bool, multivalued: bool
+) -> dict:
     slot: dict = {
         'required': bool(required),
     }

@@ -27,6 +27,7 @@ license = { file = "LICENSE" }
 dependencies = [
     "nomad-lab>=1.4.1",
     "pyyaml",
+    "tomli; python_version < '3.11'",
 ]
 
 [project.urls]
