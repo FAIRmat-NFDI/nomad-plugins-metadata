@@ -1,13 +1,13 @@
 # nomad-plugins-metadata
 
-Canonical schema + tooling package for generating, validating, and merging NOMAD plugin metadata.
+NOMAD-first schema + tooling package for generating, validating, and merging NOMAD plugin metadata.
 
 ## What this package provides
 
-- Canonical metadata schema:
-  - `src/nomad_plugins_metadata/schema_packages/nomad_plugin_metadata.yaml`
-- NOMAD metainfo adapter classes:
+- Canonical NOMAD metainfo schema:
   - `src/nomad_plugins_metadata/schema_packages/schema_package.py`
+- Generated LinkML interoperability export:
+  - `src/nomad_plugins_metadata/schema_packages/nomad_plugin_metadata.yaml`
 - Mapping docs:
   - `src/nomad_plugins_metadata/schema_packages/datatractor_mapping.md`
   - `src/nomad_plugins_metadata/adapters/nomad_mapping.md`
@@ -33,6 +33,8 @@ Canonical schema + tooling package for generating, validating, and merging NOMAD
 
 ## Schema validation
 
+- Export LinkML schema from NOMAD metainfo source:
+  - `uv run python scripts/export_linkml_schema.py`
 - Validate schema and examples:
   - `uv run python scripts/validate_schema_assets.py`
 - Changelog for schema evolution:
@@ -40,7 +42,7 @@ Canonical schema + tooling package for generating, validating, and merging NOMAD
 
 ## Generate Reference Docs
 
-Reference pages are generated from source-of-truth code and LinkML schema.
+Reference pages are generated from source-of-truth NOMAD metainfo + generated LinkML schema.
 
 - Generate/update reference docs:
   - `uv run python scripts/generate_reference_docs.py`

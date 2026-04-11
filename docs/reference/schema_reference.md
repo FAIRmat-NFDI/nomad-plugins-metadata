@@ -1,13 +1,16 @@
 # Schema Reference
 
-Source of truth:
+Source of truth (runtime schema):
+- `src/nomad_plugins_metadata/schema_packages/schema_package.py`
+
+Generated interoperability export (used below):
 - `src/nomad_plugins_metadata/schema_packages/nomad_plugin_metadata.yaml`
 
 ## Root Fields (`PluginPackage`)
 
 | Field | Range | Required | Multi | Enum Values | Description |
 |---|---|---|---|---|---|
-| `id` | `string` | `True` | `False` |  | Stable machine identifier. |
+| `id` | `string` | `True` | `False` |  |  |
 | `metadata_schema_version` | `string` | `True` | `False` |  | Version of this metadata schema used for this document. |
 | `name` | `string` | `True` | `False` |  |  |
 | `description` | `string` | `False` | `False` |  |  |
@@ -24,26 +27,26 @@ Source of truth:
 | `created` | `datetime` | `False` | `False` |  |  |
 | `last_updated` | `datetime` | `False` | `False` |  |  |
 | `archived` | `boolean` | `False` | `False` |  |  |
+| `repository_default_branch` | `string` | `False` | `False` |  |  |
+| `supported_filetypes` | `string` | `False` | `True` |  | Datatractor-compatible list of supported filetype IDs. |
+| `maturity` | `MaturityLevel` | `True` | `False` | alpha, beta, stable, archived |  |
 | `maintainers` | `Maintainer` | `False` | `True` |  |  |
 | `authors` | `Maintainer` | `False` | `True` |  |  |
-| `repository_default_branch` | `string` | `False` | `False` |  |  |
 | `entry_points` | `EntryPoint` | `False` | `True` |  |  |
-| `supported_filetypes` | `string` | `False` | `True` |  | Datatractor-compatible list of supported filetype IDs. |
 | `capabilities` | `PluginCapability` | `False` | `True` |  |  |
 | `file_format_support` | `FileFormatSupport` | `False` | `True` |  |  |
 | `schema_dependencies` | `SchemaDependency` | `False` | `True` |  |  |
 | `suggested_usages` | `SuggestedUsage` | `False` | `True` |  |  |
 | `deployment` | `DeploymentInfo` | `False` | `False` |  |  |
 | `release_context` | `ReleaseContext` | `False` | `False` |  |  |
-| `maturity` | `MaturityLevel` | `True` | `False` | alpha, beta, stable, archived |  |
 | `metadata_provenance` | `MetadataProvenance` | `False` | `True` |  |  |
 
 ## Full Schema-Shaped YAML Template
 
-Generated from the LinkML schema (all fields included), with per-field comments:
+Generated from the exported LinkML schema (all fields included), with per-field comments:
 
 ```yaml
-# string; required; Stable machine identifier.
+# string; required
 id: null
 # string; required; Version of this metadata schema used for this document.
 metadata_schema_version: null
@@ -77,6 +80,12 @@ created: null
 last_updated: null
 # boolean; optional
 archived: null
+# string; optional
+repository_default_branch: null
+# list[string]; optional; Datatractor-compatible list of supported filetype IDs.
+supported_filetypes: []
+# MaturityLevel; enum: alpha, beta, stable, archived; required
+maturity: null
 # list[Maintainer]; optional
 maintainers:
   -
@@ -99,12 +108,10 @@ authors:
     affiliation: null
     # string; optional
     role: null
-# string; optional
-repository_default_branch: null
 # list[EntryPoint]; optional
 entry_points:
   -
-    # string; required; Stable machine identifier.
+    # string; required
     id: null
     # string; required; Python entry point group name.
     entry_point_group: null
@@ -114,12 +121,10 @@ entry_points:
     python_object: null
     # CapabilityType; enum: parser, schema, app, normalizer, example_upload, api, north_tool, tool; required
     capability_type: null
-# list[string]; optional; Datatractor-compatible list of supported filetype IDs.
-supported_filetypes: []
 # list[PluginCapability]; optional
 capabilities:
   -
-    # string; required; Stable machine identifier.
+    # string; required
     id: null
     # CapabilityType; enum: parser, schema, app, normalizer, example_upload, api, north_tool, tool; required
     capability_type: null
@@ -156,10 +161,14 @@ capabilities:
 # list[FileFormatSupport]; optional
 file_format_support:
   -
-    # string; required; Stable machine identifier.
+    # string; required
     id: null
     # string; required
     label: null
+    # string; optional; Capability identifier that provides this format support.
+    capability_id: null
+    # string; optional; General producer/code family for ambiguous formats (e.g. .out).
+    producer: null
     # list[string]; optional
     extensions: []
     # list[string]; optional
@@ -186,7 +195,7 @@ schema_dependencies:
 # list[SuggestedUsage]; optional
 suggested_usages:
   -
-    # string; required; Stable machine identifier.
+    # string; required
     id: null
     # string; required
     title: null
@@ -218,8 +227,6 @@ release_context:
   release_tag: null
   # string; optional
   release_commit_sha: null
-# MaturityLevel; enum: alpha, beta, stable, archived; required
-maturity: null
 # list[MetadataProvenance]; optional
 metadata_provenance:
   -

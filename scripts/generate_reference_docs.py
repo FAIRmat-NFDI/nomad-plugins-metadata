@@ -1,15 +1,22 @@
 from __future__ import annotations
 
 import inspect
+import sys
 from pathlib import Path
 from typing import Any
 
-from nomad_plugins_metadata.extractor import cli as cli_module
-from nomad_plugins_metadata.extractor import extract as extract_module
-from nomad_plugins_metadata.extractor import merge as merge_module
-from nomad_plugins_metadata.schema_packages.schema_validation import load_schema
-
 ROOT = Path(__file__).resolve().parents[1]
+SRC = ROOT / 'src'
+if str(SRC) not in sys.path:
+    sys.path.insert(0, str(SRC))
+
+from nomad_plugins_metadata.extractor import cli as cli_module  # noqa: E402
+from nomad_plugins_metadata.extractor import extract as extract_module  # noqa: E402
+from nomad_plugins_metadata.extractor import merge as merge_module  # noqa: E402
+from nomad_plugins_metadata.schema_packages.schema_validation import (  # noqa: E402
+    load_schema,
+)
+
 DOCS_REF = ROOT / 'docs' / 'reference'
 CLI_REF_PATH = DOCS_REF / 'cli_reference.md'
 SCHEMA_REF_PATH = DOCS_REF / 'schema_reference.md'
@@ -169,7 +176,10 @@ def _render_schema_reference() -> str:
     lines: list[str] = [
         '# Schema Reference',
         '',
-        'Source of truth:',
+        'Source of truth (runtime schema):',
+        f"- `{(ROOT / 'src/nomad_plugins_metadata/schema_packages/schema_package.py').relative_to(ROOT)}`",
+        '',
+        'Generated interoperability export (used below):',
         f"- `{(ROOT / 'src/nomad_plugins_metadata/schema_packages/nomad_plugin_metadata.yaml').relative_to(ROOT)}`",
         '',
         '## Root Fields (`PluginPackage`)',
@@ -196,7 +206,7 @@ def _render_schema_reference() -> str:
             '',
             '## Full Schema-Shaped YAML Template',
             '',
-            'Generated from the LinkML schema (all fields included), with per-field comments:',
+            'Generated from the exported LinkML schema (all fields included), with per-field comments:',
             '',
             '```yaml',
         ]

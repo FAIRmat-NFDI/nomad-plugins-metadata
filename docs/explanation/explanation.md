@@ -2,12 +2,12 @@
 
 ## Design choices
 
-### 1. Canonical schema + adapter split
+### 1. Canonical NOMAD schema + LinkML export
 
-The canonical plugin metadata contract is defined in LinkML.
-NOMAD metainfo classes mirror this model for runtime integration, searchability, and archive persistence.
+NOMAD metainfo classes are the active source of truth for runtime integration, searchability, and archive persistence.
+LinkML is exported automatically from this NOMAD schema for interoperability, validation, and docs.
 
-This keeps semantic ownership in one canonical schema while preserving compatibility with existing NOMAD infrastructure.
+This keeps semantic ownership with the active runtime model while preserving compatibility with DataTractor-style contracts.
 
 ### 2. Plugin-owned extraction
 

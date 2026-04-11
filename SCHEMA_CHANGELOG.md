@@ -6,8 +6,12 @@
 - `release_context` fields in canonical schema and metainfo adapter (`release_tag`, `release_commit_sha`).
 - Release-aware extractor options: `--release-tag`, `--release-sha`.
 - Technical metadata extraction from installed `nomad.plugin` entry points (parser matcher fields, compression support, capability metadata).
+- Automated LinkML export from NOMAD metainfo source (`scripts/export_linkml_schema.py`).
+- Drift checks ensuring committed LinkML export matches NOMAD metainfo source in tests/validation.
+- DataTractor compatibility tests for core shared fields and `supported_filetypes` shape.
 
 ### Changed
+- Source-of-truth orientation changed: NOMAD metainfo schema is canonical; LinkML is generated interoperability export.
 - Reusable extraction workflow supports release-driven rolling PR mode with standard PR body and diff summary.
 - Release caller template now triggers on `release.published` (+ `workflow_dispatch`) and creates/updates a metadata PR.
 - Canonical repository field renamed from `source_repository` to `upstream_repository`.
