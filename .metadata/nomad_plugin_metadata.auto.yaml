@@ -1,0 +1,105 @@
+id: nomad-plugins-metadata
+metadata_schema_version: 1.0.0
+name: nomad-plugins-metadata
+description: Canonical metadata schema and tooling for NOMAD plugins
+license: LICENSE
+upstream_repository: https://github.com/FAIRmat-NFDI/nomad-plugins-metadata
+documentation: https://fairmat-nfdi.github.io/nomad-plugins-metadata/
+homepage: https://github.com/FAIRmat-NFDI/nomad-plugins-metadata
+maintainers:
+- name: Joseph Rudzinski
+  email: joseph.rudzinski@physik.hu-berlin.de
+authors:
+- name: Joseph Rudzinski
+  email: joseph.rudzinski@physik.hu-berlin.de
+entry_points:
+- id: nomad.plugin:schema_package_entry_point
+  entry_point_group: nomad.plugin
+  entry_point_name: schema_package_entry_point
+  python_object: nomad_plugins_metadata.schema_packages:schema_package_entry_point
+  capability_type: schema
+capabilities:
+- id: schema_package_entry_point
+  capability_type: schema
+  title: schema_package_entry_point
+schema_dependencies:
+- dependency_type: python_package
+  package_name: nomad-lab
+  version_range: '>=1.4.1'
+  optional: false
+  purpose: runtime
+- dependency_type: python_package
+  package_name: pyyaml
+  version_range: ''
+  optional: false
+  purpose: runtime
+- dependency_type: python_package
+  package_name: tomli
+  version_range: ; python_version < '3.11'
+  optional: false
+  purpose: runtime
+- dependency_type: python_package
+  package_name: ruff
+  version_range: ''
+  optional: true
+  purpose: optional
+- dependency_type: python_package
+  package_name: pytest
+  version_range: ''
+  optional: true
+  purpose: optional
+- dependency_type: python_package
+  package_name: pyyaml
+  version_range: ''
+  optional: true
+  purpose: optional
+- dependency_type: python_package
+  package_name: linkml
+  version_range: ''
+  optional: true
+  purpose: optional
+- dependency_type: python_package
+  package_name: structlog
+  version_range: ''
+  optional: true
+  purpose: optional
+- dependency_type: python_package
+  package_name: mkdocs
+  version_range: ''
+  optional: true
+  purpose: optional
+- dependency_type: python_package
+  package_name: mkdocs-material
+  version_range: ==8.1.1
+  optional: true
+  purpose: optional
+- dependency_type: python_package
+  package_name: pymdown-extensions
+  version_range: ''
+  optional: true
+  purpose: optional
+- dependency_type: python_package
+  package_name: mkdocs-click
+  version_range: ''
+  optional: true
+  purpose: optional
+- dependency_type: python_package
+  package_name: pytest-asyncio
+  version_range: ''
+  optional: true
+  purpose: optional
+metadata_provenance:
+- source: pyproject
+  extraction_method: deterministic
+  generated_at: '2026-04-11T19:38:06.679395+00:00'
+  generator_version: null
+- source: plugin_entry_points
+  extraction_method: deterministic
+  generated_at: '2026-04-11T19:38:06.679435+00:00'
+  generator_version: null
+stars: 0
+owner: FAIRmat-NFDI
+owner_type: Organization
+created: '2026-03-05T11:39:28Z'
+last_updated: '2026-04-11T19:19:05Z'
+archived: false
