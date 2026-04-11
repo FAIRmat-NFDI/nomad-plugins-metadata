@@ -64,25 +64,26 @@ SLOT_URIS = {
     'homepage': 'schema_org:url',
 }
 
-REQUIRED_SLOTS = {
-    'id',
-    'name',
-    'metadata_schema_version',
-    'upstream_repository',
-    'entry_point_group',
-    'entry_point_name',
-    'python_object',
-    'capability_type',
-    'title',
-    'label',
-    'dependency_type',
-    'package_name',
-    'user_intent',
-    'domain_category',
-    'maturity',
-    'source',
-    'extraction_method',
-    'generated_at',
+REQUIRED_SLOTS_BY_CLASS = {
+    'PluginMetadata': {
+        'id',
+        'metadata_schema_version',
+        'name',
+        'upstream_repository',
+        'maturity',
+    },
+    'EntryPoint': {
+        'id',
+        'entry_point_group',
+        'entry_point_name',
+        'python_object',
+        'capability_type',
+    },
+    'PluginCapability': {'id', 'capability_type', 'title'},
+    'FileFormatSupport': {'id', 'label'},
+    'SchemaDependency': {'dependency_type', 'package_name'},
+    'SuggestedUsage': {'id', 'title', 'user_intent', 'domain_category', 'maturity'},
+    'MetadataProvenance': {'source', 'extraction_method', 'generated_at'},
 }
 
 ENUM_VALUES = {
@@ -157,6 +158,8 @@ def _render_slot(
 def generate_linkml_schema() -> dict:
     classes: dict = {}
     slots: dict = {}
+    slot_to_classes: dict[str, set[str]] = {}
+    slot_required_by_class: dict[str, set[str]] = {}
 
     for class_name in CLASS_ORDER:
         cls = getattr(sp, class_name)
@@ -176,12 +179,18 @@ def generate_linkml_schema() -> dict:
             if isinstance(attr_value, Quantity):
                 class_slots.append(attr_name)
                 range_name = _range_from_quantity(attr_name, attr_value)
+                required_in_class = attr_name in REQUIRED_SLOTS_BY_CLASS.get(class_name, set())
                 slots[attr_name] = _render_slot(
                     attr_name,
                     range_name=range_name,
-                    required=attr_name in REQUIRED_SLOTS,
+                    required=required_in_class,
                     multivalued=_is_list_quantity(attr_value),
                 )
+                slot_to_classes.setdefault(attr_name, set()).add(linkml_class_name)
+                if required_in_class:
+                    slot_required_by_class.setdefault(attr_name, set()).add(
+                        linkml_class_name
+                    )
                 continue
 
             if isinstance(attr_value, SubSection):
@@ -193,17 +202,36 @@ def generate_linkml_schema() -> dict:
                     or 'string'
                 )
                 repeats = bool(getattr(attr_value, 'repeats', False))
+                required_in_class = attr_name in REQUIRED_SLOTS_BY_CLASS.get(class_name, set())
                 slots[attr_name] = _render_slot(
                     attr_name,
                     range_name=_linkml_class_name(section_name),
-                    required=attr_name in REQUIRED_SLOTS,
+                    required=required_in_class,
                     multivalued=repeats,
                 )
                 if repeats:
                     slots[attr_name]['inlined_as_list'] = True
+                slot_to_classes.setdefault(attr_name, set()).add(linkml_class_name)
+                if required_in_class:
+                    slot_required_by_class.setdefault(attr_name, set()).add(
+                        linkml_class_name
+                    )
 
         class_payload['slots'] = class_slots
         classes[linkml_class_name] = class_payload
+
+    # Avoid over-constraining shared slots globally; put class-specific requiredness
+    # into slot_usage when a slot is required only in a subset of classes.
+    for slot_name, owner_classes in slot_to_classes.items():
+        required_classes = slot_required_by_class.get(slot_name, set())
+        globally_required = required_classes == owner_classes and bool(owner_classes)
+        slots[slot_name]['required'] = globally_required
+        if globally_required:
+            continue
+        for class_name in sorted(required_classes):
+            class_payload = classes[class_name]
+            slot_usage = class_payload.setdefault('slot_usage', {})
+            slot_usage[slot_name] = {'required': True}
 
     enums = {
         enum_name: {'permissible_values': {value: {} for value in values}}

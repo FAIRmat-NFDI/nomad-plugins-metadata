@@ -53,6 +53,9 @@ classes:
     - deployment
     - release_context
     - metadata_provenance
+    slot_usage:
+      name:
+        required: true
   Maintainer:
     description: Maintainer or ownership contact for this plugin.
     slots:
@@ -150,7 +153,7 @@ slots:
     required: true
     description: Version of this metadata schema used for this document.
   name:
-    required: true
+    required: false
     slot_uri: schema_org:name
   description:
     required: false
