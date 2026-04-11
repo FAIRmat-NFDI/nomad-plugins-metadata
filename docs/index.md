@@ -1,6 +1,6 @@
 # `nomad-plugins-metadata`
 
-Canonical schema and tooling package for generating, validating, and merging NOMAD plugin metadata.
+NOMAD-first schema and tooling package for generating, validating, and merging NOMAD plugin metadata.
 
 ## What this package is for
 
@@ -25,8 +25,8 @@ non-empty values from `.metadata/nomad_plugin_metadata.manual.yaml` > `.metadata
 
 ## Core capabilities
 
-- Canonical LinkML schema definition.
-- NOMAD metainfo adapter classes.
+- Canonical NOMAD metainfo schema definition.
+- Automated LinkML export for interoperability and validation.
 - Metadata extraction CLI for plugin repositories.
 - Deterministic merge contract: manual metadata overrides generated metadata.
 - Override report generation for fields blocked by manual edits.
@@ -34,8 +34,8 @@ non-empty values from `.metadata/nomad_plugin_metadata.manual.yaml` > `.metadata
 
 ## Tooling artifacts
 
-- Schema: `src/nomad_plugins_metadata/schema_packages/nomad_plugin_metadata.yaml`
-- Metainfo adapter: `src/nomad_plugins_metadata/schema_packages/schema_package.py`
+- Metainfo schema source: `src/nomad_plugins_metadata/schema_packages/schema_package.py`
+- Generated LinkML export: `src/nomad_plugins_metadata/schema_packages/nomad_plugin_metadata.yaml`
 - Datatractor mapping: `src/nomad_plugins_metadata/schema_packages/datatractor_mapping.md`
 - NOMAD adapter mapping: `src/nomad_plugins_metadata/adapters/nomad_mapping.md`
 - Examples: `src/nomad_plugins_metadata/examples/`

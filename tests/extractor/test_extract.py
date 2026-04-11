@@ -103,14 +103,20 @@ def test_extracts_installed_entry_point_parser_metadata(
     assert parser_details['compression_support'] == ['gz', 'xz']
     assert parser_details['parser_level'] == parser_level
     assert parser_details['parser_aliases'] == ['fake', 'fake-parser']
-    assert parser_details['mainfile_contents_dict'] == '{"__has_all_keys": ["time", "value"]}'
+    assert (
+        parser_details['mainfile_contents_dict']
+        == '{"__has_all_keys": ["time", "value"]}'
+    )
     assert parser_details['mainfile_binary_header'] == '435356'
     assert parser_details['mainfile_binary_header_re'] == '4353562e2a'
     assert parser_details['mainfile_alternative'] is False
     assert 'auxiliary.json' in parser_details['auxiliary_file_patterns']
     assert '.json' in generated['supported_filetypes']
     assert any(
-        entry.get('id') == 'json' and '.json' in entry.get('extensions', [])
+        entry.get('id') == 'json'
+        and '.json' in entry.get('extensions', [])
+        and entry.get('capability_id') == 'parsers/fake-parser'
+        and entry.get('producer') == 'fake-parser'
         for entry in generated['file_format_support']
     )
 
@@ -403,6 +409,8 @@ def test_file_format_support_falls_back_to_specific_mime(
     )
     assert generated['file_format_support'][0]['mime_types'] == ['application/x-custom']
     assert generated['file_format_support'][0]['id'] == 'application-x-custom'
+    assert generated['file_format_support'][0]['capability_id'] == 'parsers/mime-only'
+    assert generated['file_format_support'][0]['producer'] == 'mimeonly-parser'
 
 
 def test_parser_detection_fallback_without_entry_point_type(

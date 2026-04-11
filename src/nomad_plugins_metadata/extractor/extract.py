@@ -9,10 +9,14 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import urlparse
 from urllib.request import Request, urlopen
 
-import tomllib
 from packaging.version import InvalidVersion, Version
 
 from nomad_plugins_metadata.schema_packages.schema_validation import load_schema
+
+try:
+    import tomllib
+except ModuleNotFoundError:  # pragma: no cover - py310 fallback
+    import tomli as tomllib
 
 try:
     import yaml
@@ -30,6 +34,13 @@ def _read_pyproject(pyproject_path: Path) -> dict:
 def _schema_version() -> str:
     schema = load_schema()
     return str(schema.get('version', '1.0.0'))
+
+
+def _generator_version() -> str:
+    try:
+        return metadata.version('nomad-plugins-metadata')
+    except Exception:  # pragma: no cover - fallback for editable/dev edge cases
+        return '0+unknown'
 
 
 def _owners_to_maintainers(project: dict) -> list[dict]:
@@ -159,6 +170,33 @@ def _guess_capability_type(entry_point_name: str, python_object: str) -> str:
         if marker in text:
             return capability
     return 'tool'
+
+
+def _derive_producer(
+    entry_point_name: str, python_object: str, loaded: object | None
+) -> str:
+    def _normalize(value: str) -> str:
+        return re.sub(r'[^a-z0-9]+', '-', value.strip().lower()).strip('-')
+
+    parser_name = str(getattr(loaded, 'name', '') or '').strip().lower()
+    if parser_name:
+        if '/' in parser_name:
+            return _normalize(parser_name.rsplit('/', 1)[-1])
+        return _normalize(parser_name)
+
+    normalized_ep = (entry_point_name or '').strip().lower()
+    if normalized_ep:
+        for suffix in ('_parser', '_schema_package', '_schema'):
+            if normalized_ep.endswith(suffix):
+                return _normalize(normalized_ep[: -len(suffix)])
+        return _normalize(normalized_ep)
+
+    object_name = python_object.rsplit(':', maxsplit=1)[-1]
+    object_name = object_name.strip().lower()
+    for suffix in ('_parser', '_schema_package', '_schema'):
+        if object_name.endswith(suffix):
+            return _normalize(object_name[: -len(suffix)])
+    return _normalize(object_name)
 
 
 def _extract_extensions_from_name_regex(name_regex: str) -> list[str]:
@@ -368,7 +406,9 @@ def _github_telemetry(repository_url: str) -> dict:
     payload = _fetch_github_repo_metadata(repository_url)
     if payload is None:
         return {}
-    owner_data = payload.get('owner', {}) if isinstance(payload.get('owner'), dict) else {}
+    owner_data = (
+        payload.get('owner', {}) if isinstance(payload.get('owner'), dict) else {}
+    )
     telemetry = {
         'stars': payload.get('stargazers_count'),
         'owner': owner_data.get('login'),
@@ -455,9 +495,9 @@ def _build_entry_points_and_capabilities(
     project: dict,
     repo_path: Path,
 ) -> tuple[list[dict], list[dict], list[str], list[dict]]:
-    pyproject_entry_points = (
-        (project.get('entry-points', {}) or {}).get('nomad.plugin', {}) or {}
-    )
+    pyproject_entry_points = (project.get('entry-points', {}) or {}).get(
+        'nomad.plugin', {}
+    ) or {}
     package_name = str(project.get('name', repo_path.name))
     target_packages = {
         _normalize_package_name(package_name),
@@ -476,6 +516,7 @@ def _build_entry_points_and_capabilities(
         capability_type = _entry_point_type_to_capability(entry_point_type)
         if entry_point_type is None or capability_type == entry_point_type:
             capability_type = _guess_capability_type(ep_name, str(python_object))
+        producer = _derive_producer(ep_name, str(python_object), loaded)
 
         entry_points.append(
             {
@@ -487,10 +528,11 @@ def _build_entry_points_and_capabilities(
             }
         )
 
+        capability_id = str(getattr(loaded, 'id', None) or ep_name)
         capability = {
-            'id': str(getattr(loaded, 'id', ep_name)),
+            'id': capability_id,
             'capability_type': capability_type,
-            'title': str(getattr(loaded, 'name', ep_name)),
+            'title': str(getattr(loaded, 'name', None) or ep_name),
             'summary': str(getattr(loaded, 'description', '') or ''),
         }
 
@@ -534,9 +576,7 @@ def _build_entry_points_and_capabilities(
                 str(getattr(loaded, 'mainfile_name_re', '') or '')
             )
             aux_patterns = list(parser_details.get('auxiliary_file_patterns', []))
-            extensions.extend(
-                _extract_extensions_from_auxiliary_patterns(aux_patterns)
-            )
+            extensions.extend(_extract_extensions_from_auxiliary_patterns(aux_patterns))
             mime = str(getattr(loaded, 'mainfile_mime_re', '') or '')
             for ext in extensions:
                 if ext in supported_filetypes:
@@ -546,6 +586,8 @@ def _build_entry_points_and_capabilities(
                     {
                         'id': ext.lstrip('.'),
                         'label': ext,
+                        'capability_id': capability_id,
+                        'producer': producer,
                         'extensions': [ext],
                         'mime_types': [mime] if mime else [],
                     }
@@ -558,13 +600,17 @@ def _build_entry_points_and_capabilities(
                     {
                         'id': format_id,
                         'label': mime,
+                        'capability_id': capability_id,
+                        'producer': producer,
                         'extensions': [],
                         'mime_types': [mime],
                     }
                 )
 
         capability = {
-            key: value for key, value in capability.items() if value not in ('', [], None)
+            key: value
+            for key, value in capability.items()
+            if value not in ('', [], None)
         }
         capabilities.append(capability)
 
@@ -645,6 +691,7 @@ def build_generated_metadata_with_release_context(
     pyproject_authors = _pyproject_authors(project)
     maintainers = _owners_to_maintainers(project)
     authors = cff_authors or pyproject_authors
+    generator_version = _generator_version()
 
     metadata = {
         'id': package_name,
@@ -669,13 +716,13 @@ def build_generated_metadata_with_release_context(
                 'source': 'pyproject',
                 'extraction_method': 'deterministic',
                 'generated_at': datetime.now(timezone.utc).isoformat(),
-                'generator_version': '0.1.0',
+                'generator_version': generator_version,
             },
             {
                 'source': 'plugin_entry_points',
                 'extraction_method': 'deterministic',
                 'generated_at': datetime.now(timezone.utc).isoformat(),
-                'generator_version': '0.1.0',
+                'generator_version': generator_version,
             },
         ],
     }
@@ -690,7 +737,7 @@ def build_generated_metadata_with_release_context(
                 'source': 'citation_cff',
                 'extraction_method': 'deterministic',
                 'generated_at': datetime.now(timezone.utc).isoformat(),
-                'generator_version': '0.1.0',
+                'generator_version': generator_version,
             }
         )
     clean_release_tag = (release_tag or '').strip()

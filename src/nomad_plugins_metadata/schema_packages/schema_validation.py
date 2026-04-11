@@ -5,6 +5,8 @@ from importlib.resources import as_file, files
 
 import yaml
 
+from nomad_plugins_metadata.schema_packages.linkml_export import is_export_current
+
 SCHEMA_RESOURCE = files('nomad_plugins_metadata.schema_packages').joinpath(
     'nomad_plugin_metadata.yaml'
 )
@@ -31,6 +33,11 @@ def load_schema() -> dict:
 
 
 def validate_schema_assets(run_linkml_validation: bool = True) -> None:
+    if not is_export_current():
+        raise RuntimeError(
+            'LinkML schema is stale. Run: `uv run python scripts/export_linkml_schema.py`.'
+        )
+
     schema = load_schema()
 
     schema_version = schema.get('version')

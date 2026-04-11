@@ -122,6 +122,10 @@ file_format_support:
     id: null
     # str display label, e.g. ".csv"
     label: null
+    # str capability reference (links to capabilities[].id), e.g. "vasp_parser"
+    capability_id: null
+    # str producer/code family for ambiguous extensions, e.g. "vasp", "quantumespresso"
+    producer: null
     # list[str] extensions including dot, e.g. [".csv", ".txt"]
     extensions: []
     # list[str], e.g. ["text/csv"]

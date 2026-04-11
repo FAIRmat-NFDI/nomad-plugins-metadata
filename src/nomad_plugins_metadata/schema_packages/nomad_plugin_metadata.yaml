@@ -1,4 +1,4 @@
----
+# AUTO-GENERATED FROM schema_package.py. DO NOT EDIT DIRECTLY.
 title: NOMAD Plugin Metadata Schema
 name: nomad_plugin_metadata
 version: 1.0.0
@@ -10,448 +10,372 @@ prefixes:
   nomadpm: https://fairmat-nfdi.github.io/nomad-plugins-metadata/schema/
 default_prefix: nomadpm
 emit_prefixes:
-  - nomadpm
+- nomadpm
 imports:
-  - linkml:types
+- linkml:types
 default_range: string
-description: >-
-  Canonical, versioned metadata contract for NOMAD plugins.
-  This schema is designed as a datatractor-compatible extension and is intended
-  to be the source of truth for plugin metadata exchanged between plugin
-  repositories, crawler ingestion, and documentation registry rendering.
-
+description: Generated from NOMAD metainfo classes in schema_package.py. This LinkML
+  export is the interoperability artifact for validation/docs.
 classes:
   PluginPackage:
     tree_root: true
-    description: >-
-      Top-level metadata object for a single NOMAD plugin package.
     close_mappings:
-      - schema_org:SoftwareApplication
+    - schema_org:SoftwareApplication
+    description: Top-level metadata object for a single NOMAD plugin package.
     slots:
-      - id
-      - metadata_schema_version
-      - name
-      - description
-      - plugin_version
-      - subject
-      - license
-      - upstream_repository
-      - documentation
-      - homepage
-      - issue_tracker
-      - owner
-      - owner_type
-      - stars
-      - created
-      - last_updated
-      - archived
-      - maintainers
-      - authors
-      - repository_default_branch
-      - entry_points
-      - supported_filetypes
-      - capabilities
-      - file_format_support
-      - schema_dependencies
-      - suggested_usages
-      - deployment
-      - release_context
-      - maturity
-      - metadata_provenance
-
+    - id
+    - metadata_schema_version
+    - name
+    - description
+    - plugin_version
+    - subject
+    - license
+    - upstream_repository
+    - documentation
+    - homepage
+    - issue_tracker
+    - owner
+    - owner_type
+    - stars
+    - created
+    - last_updated
+    - archived
+    - repository_default_branch
+    - supported_filetypes
+    - maturity
+    - maintainers
+    - authors
+    - entry_points
+    - capabilities
+    - file_format_support
+    - schema_dependencies
+    - suggested_usages
+    - deployment
+    - release_context
+    - metadata_provenance
+    slot_usage:
+      name:
+        required: true
   Maintainer:
     description: Maintainer or ownership contact for this plugin.
     slots:
-      - name
-      - email
-      - affiliation
-      - role
-
+    - name
+    - email
+    - affiliation
+    - role
   EntryPoint:
     description: A registered NOMAD plugin entry point.
     slots:
-      - id
-      - entry_point_group
-      - entry_point_name
-      - python_object
-      - capability_type
-
+    - id
+    - entry_point_group
+    - entry_point_name
+    - python_object
+    - capability_type
   PluginCapability:
     description: Declares one high-level capability implemented by the plugin.
     slots:
-      - id
-      - capability_type
-      - title
-      - summary
-      - parser_details
-
+    - id
+    - capability_type
+    - title
+    - summary
+    - parser_details
   ParserCapabilityDetails:
     description: Structured parser metadata used for parser discoverability.
     slots:
-      - parser_name
-      - parser_level
-      - parser_aliases
-      - mainfile_name_re
-      - mainfile_contents_re
-      - mainfile_contents_dict
-      - mainfile_mime_re
-      - mainfile_binary_header
-      - mainfile_binary_header_re
-      - mainfile_alternative
-      - compression_support
-      - auxiliary_file_patterns
-
+    - parser_name
+    - parser_level
+    - parser_aliases
+    - mainfile_name_re
+    - mainfile_contents_re
+    - mainfile_contents_dict
+    - mainfile_mime_re
+    - mainfile_binary_header
+    - mainfile_binary_header_re
+    - mainfile_alternative
+    - compression_support
+    - auxiliary_file_patterns
   FileFormatSupport:
     description: File format support details for a plugin capability.
     slots:
-      - id
-      - label
-      - extensions
-      - mime_types
-      - standard
-      - instrument_context
-      - notes
-
+    - id
+    - label
+    - capability_id
+    - producer
+    - extensions
+    - mime_types
+    - standard
+    - instrument_context
+    - notes
   SchemaDependency:
     description: Declares dependency on plugin/schema packages.
     slots:
-      - dependency_type
-      - package_name
-      - version_range
-      - optional
-      - purpose
-
+    - dependency_type
+    - package_name
+    - version_range
+    - optional
+    - purpose
   SuggestedUsage:
     description: Registry-facing usage suggestion for filtering and discovery.
     slots:
-      - id
-      - title
-      - user_intent
-      - domain_category
-      - technique
-      - audience
-      - maturity
-      - tags
-
+    - id
+    - title
+    - user_intent
+    - domain_category
+    - technique
+    - audience
+    - maturity
+    - tags
   DeploymentInfo:
     description: Deployment and distribution status for this plugin.
     slots:
-      - on_central
-      - on_example_oasis
-      - on_pypi
-      - pypi_package
-
+    - on_central
+    - on_example_oasis
+    - on_pypi
+    - pypi_package
   ReleaseContext:
     description: Release linkage for generated/effective metadata snapshots.
     slots:
-      - release_tag
-      - release_commit_sha
-
+    - release_tag
+    - release_commit_sha
   MetadataProvenance:
     description: How metadata was produced.
     slots:
-      - source
-      - extraction_method
-      - generated_at
-      - generator_version
-
+    - source
+    - extraction_method
+    - generated_at
+    - generator_version
 slots:
   id:
-    identifier: true
     required: true
+    identifier: true
     slot_uri: schema_org:identifier
-    description: Stable machine identifier.
-
   metadata_schema_version:
     required: true
     description: Version of this metadata schema used for this document.
-
   name:
-    required: true
+    required: false
     slot_uri: schema_org:name
-
   description:
     required: false
     slot_uri: schema_org:description
-
   plugin_version:
     required: false
     description: Plugin package version.
-
   subject:
-    multivalued: true
     required: false
+    multivalued: true
     slot_uri: dc_terms:subject
     description: Domain subjects or topical keywords.
-
   license:
     required: false
     slot_uri: schema_org:license
-
   upstream_repository:
     required: true
     slot_uri: schema_org:codeRepository
-
   documentation:
     required: false
     slot_uri: schema_org:url
-
   homepage:
     required: false
     slot_uri: schema_org:url
-
   issue_tracker:
     required: false
-
-  maintainers:
-    multivalued: true
-    inlined_as_list: true
-    range: Maintainer
-
-  authors:
-    multivalued: true
-    inlined_as_list: true
-    range: Maintainer
-
   owner:
     required: false
-
   owner_type:
     required: false
-
   stars:
     required: false
     range: integer
-
   created:
     required: false
     range: datetime
-
   last_updated:
     required: false
     range: datetime
-
   archived:
     required: false
     range: boolean
-
-  affiliation:
-    required: false
-
-  role:
-    required: false
-
-  email:
-    required: false
-
   repository_default_branch:
     required: false
-
-  entry_points:
-    multivalued: true
-    inlined_as_list: true
-    range: EntryPoint
-
-  entry_point_group:
-    required: true
-    description: Python entry point group name.
-
-  entry_point_name:
-    required: true
-    description: Entry point identifier within the group.
-
-  python_object:
-    required: true
-    description: Import path for entry point object.
-
-  capability_type:
-    required: true
-    range: CapabilityType
-
-  title:
-    required: true
-
-  summary:
-    required: false
-
-  capabilities:
-    multivalued: true
-    inlined_as_list: true
-    range: PluginCapability
-
-  parser_details:
-    required: false
-    range: ParserCapabilityDetails
-
-  parser_name:
-    required: false
-
-  parser_level:
-    required: false
-    range: integer
-
-  parser_aliases:
-    multivalued: true
-    required: false
-
-  mainfile_name_re:
-    required: false
-
-  mainfile_contents_re:
-    required: false
-
-  mainfile_contents_dict:
-    required: false
-
-  mainfile_mime_re:
-    required: false
-
-  mainfile_binary_header:
-    required: false
-
-  mainfile_binary_header_re:
-    required: false
-
-  mainfile_alternative:
-    required: false
-    range: boolean
-
-  compression_support:
-    multivalued: true
-    required: false
-    range: CompressionType
-
-  auxiliary_file_patterns:
-    multivalued: true
-    required: false
-
   supported_filetypes:
-    multivalued: true
     required: false
+    multivalued: true
     description: Datatractor-compatible list of supported filetype IDs.
-
-  file_format_support:
-    multivalued: true
-    inlined_as_list: true
-    range: FileFormatSupport
-
-  label:
-    required: true
-
-  extensions:
-    multivalued: true
-    required: false
-
-  mime_types:
-    multivalued: true
-    required: false
-
-  standard:
-    required: false
-
-  instrument_context:
-    required: false
-
-  notes:
-    required: false
-
-  schema_dependencies:
-    multivalued: true
-    inlined_as_list: true
-    range: SchemaDependency
-
-  dependency_type:
-    required: true
-    range: DependencyType
-
-  package_name:
-    required: true
-
-  version_range:
-    required: false
-
-  optional:
-    required: false
-    range: boolean
-
-  purpose:
-    required: false
-
-  suggested_usages:
-    multivalued: true
-    inlined_as_list: true
-    range: SuggestedUsage
-
-  user_intent:
-    required: true
-
-  domain_category:
-    required: true
-    range: DomainCategory
-
-  technique:
-    required: false
-
-  audience:
-    required: false
-
   maturity:
     required: true
     range: MaturityLevel
-
-  tags:
-    multivalued: true
+  maintainers:
     required: false
-
+    multivalued: true
+    range: Maintainer
+    inlined_as_list: true
+  authors:
+    required: false
+    multivalued: true
+    range: Maintainer
+    inlined_as_list: true
+  entry_points:
+    required: false
+    multivalued: true
+    range: EntryPoint
+    inlined_as_list: true
+  capabilities:
+    required: false
+    multivalued: true
+    range: PluginCapability
+    inlined_as_list: true
+  file_format_support:
+    required: false
+    multivalued: true
+    range: FileFormatSupport
+    inlined_as_list: true
+  schema_dependencies:
+    required: false
+    multivalued: true
+    range: SchemaDependency
+    inlined_as_list: true
+  suggested_usages:
+    required: false
+    multivalued: true
+    range: SuggestedUsage
+    inlined_as_list: true
   deployment:
     required: false
     range: DeploymentInfo
-
   release_context:
     required: false
     range: ReleaseContext
-
-  release_tag:
+  metadata_provenance:
     required: false
-
-  release_commit_sha:
+    multivalued: true
+    range: MetadataProvenance
+    inlined_as_list: true
+  email:
     required: false
-
+  affiliation:
+    required: false
+  role:
+    required: false
+  entry_point_group:
+    required: true
+    description: Python entry point group name.
+  entry_point_name:
+    required: true
+    description: Entry point identifier within the group.
+  python_object:
+    required: true
+    description: Import path for entry point object.
+  capability_type:
+    required: true
+    range: CapabilityType
+  title:
+    required: true
+  summary:
+    required: false
+  parser_details:
+    required: false
+    range: ParserCapabilityDetails
+  parser_name:
+    required: false
+  parser_level:
+    required: false
+    range: integer
+  parser_aliases:
+    required: false
+    multivalued: true
+  mainfile_name_re:
+    required: false
+  mainfile_contents_re:
+    required: false
+  mainfile_contents_dict:
+    required: false
+  mainfile_mime_re:
+    required: false
+  mainfile_binary_header:
+    required: false
+  mainfile_binary_header_re:
+    required: false
+  mainfile_alternative:
+    required: false
+    range: boolean
+  compression_support:
+    required: false
+    multivalued: true
+    range: CompressionType
+  auxiliary_file_patterns:
+    required: false
+    multivalued: true
+  label:
+    required: true
+  capability_id:
+    required: false
+    description: Capability identifier that provides this format support.
+  producer:
+    required: false
+    description: General producer/code family for ambiguous formats (e.g. .out).
+  extensions:
+    required: false
+    multivalued: true
+  mime_types:
+    required: false
+    multivalued: true
+  standard:
+    required: false
+  instrument_context:
+    required: false
+  notes:
+    required: false
+  dependency_type:
+    required: true
+    range: DependencyType
+  package_name:
+    required: true
+  version_range:
+    required: false
+  optional:
+    required: false
+    range: boolean
+  purpose:
+    required: false
+  user_intent:
+    required: true
+  domain_category:
+    required: true
+    range: DomainCategory
+  technique:
+    required: false
+  audience:
+    required: false
+  tags:
+    required: false
+    multivalued: true
   on_central:
     required: false
     range: boolean
-
   on_example_oasis:
     required: false
     range: boolean
-
   on_pypi:
     required: false
     range: boolean
-
   pypi_package:
     required: false
-
-  metadata_provenance:
-    multivalued: true
-    inlined_as_list: true
-    range: MetadataProvenance
-
+  release_tag:
+    required: false
+  release_commit_sha:
+    required: false
   source:
     required: true
     range: MetadataSource
-
   extraction_method:
     required: true
     range: ExtractionMethod
-
   generated_at:
     required: true
     range: datetime
-
   generator_version:
     required: false
-
 enums:
   CapabilityType:
     permissible_values:
@@ -463,7 +387,6 @@ enums:
       api: {}
       north_tool: {}
       tool: {}
-
   DomainCategory:
     permissible_values:
       simulations: {}
@@ -472,19 +395,16 @@ enums:
       cross-domain: {}
       workflow: {}
       infrastructure: {}
-
   MaturityLevel:
     permissible_values:
       alpha: {}
       beta: {}
       stable: {}
       archived: {}
-
   DependencyType:
     permissible_values:
       nomad_plugin: {}
       python_package: {}
-
   MetadataSource:
     permissible_values:
       manual_override: {}
@@ -493,13 +413,11 @@ enums:
       citation_cff: {}
       repository_api: {}
       crawler_fallback: {}
-
   ExtractionMethod:
     permissible_values:
       deterministic: {}
       heuristic: {}
       manual: {}
-
   CompressionType:
     permissible_values:
       gz: {}

@@ -1,19 +1,30 @@
-from nomad_plugins_metadata.schema_packages.schema_package import (
-    DOMAIN_CATEGORIES,
-    MATURITY_LEVELS,
+from nomad_plugins_metadata.schema_packages import schema_package as sp
+from nomad_plugins_metadata.schema_packages.linkml_export import (
+    generate_linkml_schema,
+    is_export_current,
 )
 from nomad_plugins_metadata.schema_packages.schema_validation import load_schema
 
 
-def test_domain_category_enum_consistency():
-    schema = load_schema()
-    linkml_values = set(schema['enums']['DomainCategory']['permissible_values'].keys())
-    metainfo_values = set(DOMAIN_CATEGORIES)
-    assert metainfo_values == linkml_values
+def test_linkml_export_is_current():
+    assert is_export_current()
 
 
-def test_maturity_enum_consistency():
+def test_generated_schema_matches_committed_schema():
+    assert generate_linkml_schema() == load_schema()
+
+
+def test_enum_consistency_between_nomad_and_linkml():
     schema = load_schema()
-    linkml_values = set(schema['enums']['MaturityLevel']['permissible_values'].keys())
-    metainfo_values = set(MATURITY_LEVELS)
-    assert metainfo_values == linkml_values
+    expected = {
+        'CapabilityType': set(sp.CAPABILITY_TYPES),
+        'DomainCategory': set(sp.DOMAIN_CATEGORIES),
+        'MaturityLevel': set(sp.MATURITY_LEVELS),
+        'DependencyType': set(sp.DEPENDENCY_TYPES),
+        'MetadataSource': set(sp.METADATA_SOURCES),
+        'ExtractionMethod': set(sp.EXTRACTION_METHODS),
+        'CompressionType': set(sp.COMPRESSION_TYPES),
+    }
+    for enum_name, enum_values in expected.items():
+        exported_values = set(schema['enums'][enum_name]['permissible_values'].keys())
+        assert exported_values == enum_values
