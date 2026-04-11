@@ -513,7 +513,7 @@
                 
 
 <h1 id="nomad-plugins-metadata"><code>nomad-plugins-metadata</code><a class="headerlink" href="#nomad-plugins-metadata" title="Permanent link">&para;</a></h1>
-<p>Canonical schema and tooling package for generating, validating, and merging NOMAD plugin metadata.</p>
+<p>NOMAD-first schema and tooling package for generating, validating, and merging NOMAD plugin metadata.</p>
 <h2 id="what-this-package-is-for">What this package is for<a class="headerlink" href="#what-this-package-is-for" title="Permanent link">&para;</a></h2>
 <p><code>nomad-plugins-metadata</code> is the shared foundation for plugin metadata across:</p>
 <ul>
@@ -533,8 +533,8 @@
 <p>non-empty values from <code>.metadata/nomad_plugin_metadata.manual.yaml</code> &gt; <code>.metadata/nomad_plugin_metadata.auto.yaml</code></p>
 <h2 id="core-capabilities">Core capabilities<a class="headerlink" href="#core-capabilities" title="Permanent link">&para;</a></h2>
 <ul>
-<li>Canonical LinkML schema definition.</li>
-<li>NOMAD metainfo adapter classes.</li>
+<li>Canonical NOMAD metainfo schema definition.</li>
+<li>Automated LinkML export for interoperability and validation.</li>
 <li>Metadata extraction CLI for plugin repositories.</li>
 <li>Deterministic merge contract: manual metadata overrides generated metadata.</li>
 <li>Override report generation for fields blocked by manual edits.</li>
@@ -542,8 +542,8 @@
 </ul>
 <h2 id="tooling-artifacts">Tooling artifacts<a class="headerlink" href="#tooling-artifacts" title="Permanent link">&para;</a></h2>
 <ul>
-<li>Schema: <code>src/nomad_plugins_metadata/schema_packages/nomad_plugin_metadata.yaml</code></li>
-<li>Metainfo adapter: <code>src/nomad_plugins_metadata/schema_packages/schema_package.py</code></li>
+<li>Metainfo schema source: <code>src/nomad_plugins_metadata/schema_packages/schema_package.py</code></li>
+<li>Generated LinkML export: <code>src/nomad_plugins_metadata/schema_packages/nomad_plugin_metadata.yaml</code></li>
 <li>Datatractor mapping: <code>src/nomad_plugins_metadata/schema_packages/datatractor_mapping.md</code></li>
 <li>NOMAD adapter mapping: <code>src/nomad_plugins_metadata/adapters/nomad_mapping.md</code></li>
 <li>Examples: <code>src/nomad_plugins_metadata/examples/</code></li>

@@ -342,8 +342,8 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#1-canonical-schema-adapter-split" class="md-nav__link">
-    1. Canonical schema + adapter split
+  <a href="#1-canonical-nomad-schema-linkml-export" class="md-nav__link">
+    1. Canonical NOMAD schema + LinkML export
   </a>
   
 </li>
@@ -500,8 +500,8 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#1-canonical-schema-adapter-split" class="md-nav__link">
-    1. Canonical schema + adapter split
+  <a href="#1-canonical-nomad-schema-linkml-export" class="md-nav__link">
+    1. Canonical NOMAD schema + LinkML export
   </a>
   
 </li>
@@ -568,10 +568,10 @@
 
 <h1 id="explanation">Explanation<a class="headerlink" href="#explanation" title="Permanent link">&para;</a></h1>
 <h2 id="design-choices">Design choices<a class="headerlink" href="#design-choices" title="Permanent link">&para;</a></h2>
-<h3 id="1-canonical-schema-adapter-split">1. Canonical schema + adapter split<a class="headerlink" href="#1-canonical-schema-adapter-split" title="Permanent link">&para;</a></h3>
-<p>The canonical plugin metadata contract is defined in LinkML.
-NOMAD metainfo classes mirror this model for runtime integration, searchability, and archive persistence.</p>
-<p>This keeps semantic ownership in one canonical schema while preserving compatibility with existing NOMAD infrastructure.</p>
+<h3 id="1-canonical-nomad-schema-linkml-export">1. Canonical NOMAD schema + LinkML export<a class="headerlink" href="#1-canonical-nomad-schema-linkml-export" title="Permanent link">&para;</a></h3>
+<p>NOMAD metainfo classes are the active source of truth for runtime integration, searchability, and archive persistence.
+LinkML is exported automatically from this NOMAD schema for interoperability, validation, and docs.</p>
+<p>This keeps semantic ownership with the active runtime model while preserving compatibility with DataTractor-style contracts.</p>
 <h3 id="2-plugin-owned-extraction">2. Plugin-owned extraction<a class="headerlink" href="#2-plugin-owned-extraction" title="Permanent link">&para;</a></h3>
 <p>Metadata extraction is executed in each plugin repository CI rather than centrally in crawler CI.</p>
 <p>Why:</p>
