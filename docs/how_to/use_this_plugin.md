@@ -54,3 +54,6 @@ This refreshes generated artifacts and updates the effective root file:
 For release-driven automation (workflow templates + maintainer PR cycle), see:
 
 - `docs/how_to/apply_to_plugin_repo.md`
+
+For contributors changing the schema model in this repository, follow the
+schema contributor workflow in `README.md` ("Contributor workflow (schema changes)").

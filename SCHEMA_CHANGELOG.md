@@ -29,6 +29,12 @@
   - else `stable` for plugin versions `>=1.0.0`
   - manual metadata still overrides auto values.
 
+## 0.1.1 - 2026-04-11
+
+### Changed
+- Package version bumped to `0.1.1` to mark the NOMAD-first source-of-truth transition.
+- Extractor `metadata_provenance[*].generator_version` now resolves dynamically from installed package version.
+
 ## 1.0.0 - 2026-03-05
 
 Initial baseline for canonical plugin metadata schema and metainfo adapter.

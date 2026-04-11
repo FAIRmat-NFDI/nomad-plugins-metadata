@@ -36,6 +36,13 @@ def _schema_version() -> str:
     return str(schema.get('version', '1.0.0'))
 
 
+def _generator_version() -> str:
+    try:
+        return metadata.version('nomad-plugins-metadata')
+    except Exception:  # pragma: no cover - fallback for editable/dev edge cases
+        return '0+unknown'
+
+
 def _owners_to_maintainers(project: dict) -> list[dict]:
     maintainers = []
     for item in project.get('maintainers', []) or []:
@@ -684,6 +691,7 @@ def build_generated_metadata_with_release_context(
     pyproject_authors = _pyproject_authors(project)
     maintainers = _owners_to_maintainers(project)
     authors = cff_authors or pyproject_authors
+    generator_version = _generator_version()
 
     metadata = {
         'id': package_name,
@@ -708,13 +716,13 @@ def build_generated_metadata_with_release_context(
                 'source': 'pyproject',
                 'extraction_method': 'deterministic',
                 'generated_at': datetime.now(timezone.utc).isoformat(),
-                'generator_version': '0.1.0',
+                'generator_version': generator_version,
             },
             {
                 'source': 'plugin_entry_points',
                 'extraction_method': 'deterministic',
                 'generated_at': datetime.now(timezone.utc).isoformat(),
-                'generator_version': '0.1.0',
+                'generator_version': generator_version,
             },
         ],
     }
@@ -729,7 +737,7 @@ def build_generated_metadata_with_release_context(
                 'source': 'citation_cff',
                 'extraction_method': 'deterministic',
                 'generated_at': datetime.now(timezone.utc).isoformat(),
-                'generator_version': '0.1.0',
+                'generator_version': generator_version,
             }
         )
     clean_release_tag = (release_tag or '').strip()

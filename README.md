@@ -174,7 +174,7 @@ jobs:
       contents: write
       pull-requests: write
     with:
-      package_spec: nomad-plugins-metadata==0.1.0
+      package_spec: nomad-plugins-metadata==0.1.1
       check_only: false
       auto_commit: false
       create_pr: true
@@ -226,6 +226,23 @@ Install the `nomad-lab` package:
 ```sh
 uv pip install -e '.[dev]'
 ```
+
+### Contributor workflow (schema changes)
+
+Use this sequence when changing the schema contract.
+
+1. Edit the NOMAD source schema only:
+   - `src/nomad_plugins_metadata/schema_packages/schema_package.py`
+   - Do not edit `src/nomad_plugins_metadata/schema_packages/nomad_plugin_metadata.yaml` manually.
+2. Regenerate LinkML export:
+   - `uv run python scripts/export_linkml_schema.py`
+3. Run schema-focused checks:
+   - `uv run pytest -q tests/schema_packages/test_schema_contract_consistency.py tests/schema_packages/test_datatractor_compatibility.py tests/schema_packages/test_schema_assets.py`
+4. Regenerate reference docs:
+   - `uv run python scripts/generate_reference_docs.py`
+5. Run full pre-PR checks:
+   - `uv run pytest -sv`
+   - `uv run ruff check .`
 
 ### Run the tests
 
