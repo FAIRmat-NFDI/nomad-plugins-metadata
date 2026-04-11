@@ -37,9 +37,6 @@ NOMAD-first schema + tooling package for generating, validating, and merging NOM
   - `uv run python scripts/export_linkml_schema.py`
 - Validate schema and examples:
   - `uv run python scripts/validate_schema_assets.py`
-- Changelog for schema evolution:
-  - `SCHEMA_CHANGELOG.md`
-
 ## Generate Reference Docs
 
 Reference pages are generated from source-of-truth NOMAD metainfo + generated LinkML schema.
