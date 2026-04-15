@@ -94,6 +94,7 @@ class FileFormatSupport(ArchiveSection):
 class SchemaDependency(ArchiveSection):
     dependency_type = Quantity(type=MEnum(*DEPENDENCY_TYPES))
     package_name = Quantity(type=str)
+    location = Quantity(type=str)
     version_range = Quantity(type=str)
     optional = Quantity(type=bool)
     purpose = Quantity(type=str)

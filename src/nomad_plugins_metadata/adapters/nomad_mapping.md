@@ -18,6 +18,7 @@ This document defines how canonical LinkML metadata maps to the transitional `no
 | `deployment.on_central` | `Plugin.on_central` | Direct copy. |
 | `deployment.on_example_oasis` | `Plugin.on_example_oasis` | Direct copy. |
 | `deployment.on_pypi` | `Plugin.on_pypi` | Direct copy. |
+| `schema_dependencies[].location` | `Plugin.plugin_dependencies[].location` | Legacy-equivalent dependency link field used for cross-reference resolution. |
 | `capabilities[]` | `Plugin.parser` / `Plugin.schema` / `Plugin.app` subsections | Mapped by `capability_type`. |
 | `capabilities[].parser_details.mainfile_*` | parser matcher quantities | Direct copy from parser capability. |
 | `supported_filetypes[]` | parser supported types / registry tags | Preserve IDs; no translation. |
@@ -31,6 +32,11 @@ This document defines how canonical LinkML metadata maps to the transitional `no
 1. Canonical auto metadata (`.metadata/nomad_plugin_metadata.auto.yaml`)
 2. Canonical manual override (`.metadata/nomad_plugin_metadata.manual.yaml`)
 3. Legacy crawler fallback (`pyproject.toml`, repository API)
+
+## Dependency location precedence
+1. Direct URL requirement in dependency specifier (`name @ https://...`).
+2. Optional canonical plugin index (`--plugins-index-path`) mapping package name to location.
+3. PyPI fallback URL (`https://pypi.org/project/<name>/`) when package exists on PyPI.
 
 ## Query compatibility during migration
 1. Keep existing adapter schema identity query paths active.

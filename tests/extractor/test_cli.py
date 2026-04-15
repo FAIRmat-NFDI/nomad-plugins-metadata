@@ -1,4 +1,5 @@
 from pathlib import Path
+from unittest.mock import patch
 
 import yaml
 
@@ -101,3 +102,37 @@ def test_run_extract_creates_manual_template_if_missing(tmp_path: Path):
     assert 'suggested_usages' in manual_data
     assert 'file_format_support' in manual_data
     assert 'name' not in manual_data
+
+
+def test_run_extract_passes_plugins_index_path(tmp_path: Path):
+    repo = tmp_path / 'repo'
+    repo.mkdir()
+    (repo / 'pyproject.toml').write_text(
+        '\n'.join(['[project]', 'name = "example-plugin"']),
+        encoding='utf-8',
+    )
+
+    manual_path = repo / '.metadata/nomad_plugin_metadata.manual.yaml'
+    auto_path = repo / '.metadata/nomad_plugin_metadata.auto.yaml'
+    effective_path = repo / 'nomad_plugin_metadata.yaml'
+    report_path = repo / '.metadata/plugin-metadata.override-report.yaml'
+    plugins_index_path = repo / '.metadata/plugins-index.yaml'
+    plugins_index_path.parent.mkdir(parents=True, exist_ok=True)
+    plugins_index_path.write_text('{}', encoding='utf-8')
+
+    with patch(
+        'nomad_plugins_metadata.extractor.cli.build_generated_metadata_with_release_context'
+    ) as mocked_build:
+        mocked_build.return_value = {'id': 'example-plugin', 'name': 'example-plugin'}
+        run_extract(
+            repo,
+            ExtractRunConfig(
+                manual_path=manual_path,
+                auto_path=auto_path,
+                effective_path=effective_path,
+                report_path=report_path,
+                plugins_index_path=plugins_index_path,
+            ),
+        )
+
+    assert mocked_build.call_args.kwargs['plugins_index_path'] == plugins_index_path
