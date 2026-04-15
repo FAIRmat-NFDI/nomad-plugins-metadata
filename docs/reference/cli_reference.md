@@ -17,6 +17,7 @@ nomad-plugin-metadata extract [options]
 | `--report-path` | `Path` | `.metadata/plugin-metadata.override-report.yaml` |  |
 | `--release-tag` | `str` | `` | Release tag to embed in generated/effective metadata. |
 | `--release-sha` | `str` | `` | Release commit SHA to embed in generated/effective metadata. |
+| `--plugins-index-path` | `Path` | `None` | Optional YAML/JSON mapping of package name -> canonical dependency location. |
 | `--create-manual-template-if-missing, --no-create-manual-template-if-missing` | `bool flag` | `True` | Create .metadata/nomad_plugin_metadata.manual.yaml template when manual file is missing. |
 
 ## API (Docstrings)

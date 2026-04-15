@@ -107,6 +107,13 @@ URL autofill behavior:
   - otherwise fallback to `CITATION.cff` `url`
   - otherwise fallback to resolved `upstream_repository`
 
+Dependency `location` values (in `schema_dependencies[]`) can optionally be enriched
+with `--plugins-index-path` during extraction. For full precedence and accepted index
+formats, see:
+
+- `docs/reference/cli_reference.md`
+- `src/nomad_plugins_metadata/adapters/nomad_mapping.md`
+
 Default outputs:
 
 - `.metadata/nomad_plugin_metadata.auto.yaml` (machine-generated baseline)
