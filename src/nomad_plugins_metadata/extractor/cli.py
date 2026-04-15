@@ -22,6 +22,7 @@ class ExtractRunConfig:
     report_path: Path
     release_tag: str | None = None
     release_sha: str | None = None
+    plugins_index_path: Path | None = None
     create_manual_template_if_missing: bool = True
 
 
@@ -154,6 +155,7 @@ def run_extract(repo_path: Path, config: ExtractRunConfig) -> None:
         repo_path=repo_path,
         release_tag=config.release_tag,
         release_sha=config.release_sha,
+        plugins_index_path=config.plugins_index_path,
     )
     if not config.manual_path.exists() and config.create_manual_template_if_missing:
         _write_manual_template(config.manual_path)
@@ -212,6 +214,12 @@ def build_parser() -> argparse.ArgumentParser:
         help='Release commit SHA to embed in generated/effective metadata.',
     )
     extract.add_argument(
+        '--plugins-index-path',
+        type=Path,
+        default=None,
+        help='Optional YAML/JSON mapping of package name -> canonical dependency location.',
+    )
+    extract.add_argument(
         '--create-manual-template-if-missing',
         action=argparse.BooleanOptionalAction,
         default=True,
@@ -234,6 +242,7 @@ def main() -> None:
                 report_path=args.report_path,
                 release_tag=args.release_tag or None,
                 release_sha=args.release_sha or None,
+                plugins_index_path=args.plugins_index_path,
                 create_manual_template_if_missing=args.create_manual_template_if_missing,
             ),
         )

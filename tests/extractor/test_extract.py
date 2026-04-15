@@ -555,3 +555,51 @@ def test_dependency_location_uses_direct_url_then_pypi_fallback(
     deps = {item['package_name']: item for item in generated['schema_dependencies']}
     assert deps['direct-dep']['location'] == 'https://github.com/example/direct-dep'
     assert deps['pypi-dep']['location'] == 'https://pypi.org/project/pypi-dep/'
+
+
+def test_dependency_location_prefers_index_over_pypi_fallback(
+    tmp_path: Path, monkeypatch
+) -> None:
+    repo = tmp_path / 'repo'
+    repo.mkdir()
+    (repo / 'pyproject.toml').write_text(
+        '\n'.join(
+            [
+                '[project]',
+                'name = "example-plugin"',
+                'version = "1.0.0"',
+                'dependencies = ["utility-pkg>=1.0"]',
+            ]
+        ),
+        encoding='utf-8',
+    )
+    index_path = repo / 'plugins-index.yaml'
+    index_path.write_text(
+        '\n'.join(
+            [
+                'utility-pkg:',
+                '  upstream_repository: https://github.com/example/utility-pkg',
+            ]
+        ),
+        encoding='utf-8',
+    )
+    monkeypatch.setattr(
+        'nomad_plugins_metadata.extractor.extract._fetch_github_repo_metadata',
+        lambda repository_url: None,
+    )
+    monkeypatch.setattr(
+        'nomad_plugins_metadata.extractor.extract._package_exists_on_pypi',
+        lambda package_name: True,
+    )
+
+    generated = build_generated_metadata_with_release_context(
+        repo_path=repo,
+        release_tag=None,
+        release_sha=None,
+        plugins_index_path=index_path,
+    )
+    deps = {item['package_name']: item for item in generated['schema_dependencies']}
+    assert (
+        deps['utility-pkg']['location']
+        == 'https://github.com/example/utility-pkg'
+    )

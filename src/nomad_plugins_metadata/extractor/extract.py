@@ -262,6 +262,83 @@ def _deployment_flags(package_name: str) -> dict:
     return {key: value for key, value in deployment.items() if value not in ('', None)}
 
 
+def _parse_plugins_index_payload(
+    plugins_index_path: Path, content: str
+) -> dict | list | None:
+    suffix = plugins_index_path.suffix.lower()
+    if suffix == '.json':
+        try:
+            parsed = json.loads(content)
+        except json.JSONDecodeError:
+            return None
+    else:
+        if yaml is None:
+            return None
+        try:
+            parsed = yaml.safe_load(content)
+        except Exception:
+            return None
+
+    if isinstance(parsed, (dict, list)):
+        return parsed
+    return None
+
+
+def _location_from_index_entry(entry: dict) -> str:
+    for key in ('location', 'upstream_repository', 'repository'):
+        value = entry.get(key)
+        if isinstance(value, str) and value.strip():
+            return value.strip()
+    return ''
+
+
+def _index_from_mapping(payload: dict) -> dict[str, str]:
+    index: dict[str, str] = {}
+    for raw_name, raw_value in payload.items():
+        key = _normalize_package_name(str(raw_name))
+        if not key:
+            continue
+        if isinstance(raw_value, str) and raw_value.strip():
+            index[key] = raw_value.strip()
+            continue
+        if isinstance(raw_value, dict):
+            location = _location_from_index_entry(raw_value)
+            if location:
+                index[key] = location
+    return index
+
+
+def _index_from_list(payload: list) -> dict[str, str]:
+    index: dict[str, str] = {}
+    for item in payload:
+        if not isinstance(item, dict):
+            continue
+        name = str(item.get('id', '') or item.get('name', '')).strip()
+        key = _normalize_package_name(name)
+        if not key:
+            continue
+        location = _location_from_index_entry(item)
+        if location:
+            index[key] = location
+    return index
+
+
+def _load_plugins_index(plugins_index_path: Path | None) -> dict[str, str]:
+    if plugins_index_path is None or not plugins_index_path.exists():
+        return {}
+    try:
+        content = plugins_index_path.read_text(encoding='utf-8')
+    except Exception:
+        return {}
+
+    payload = _parse_plugins_index_payload(plugins_index_path, content)
+    if payload is None:
+        return {}
+    if isinstance(payload, dict):
+        return _index_from_mapping(payload)
+    return _index_from_list(payload)
+
+
 def _guess_capability_type(entry_point_name: str, python_object: str) -> str:
     text = f'{entry_point_name} {python_object}'.lower()
     for marker, capability in (
@@ -385,7 +462,9 @@ def _extract_extensions_from_auxiliary_patterns(patterns: list[str]) -> list[str
     return extensions
 
 
-def _extract_schema_dependencies(pyproject: dict) -> list[dict]:
+def _extract_schema_dependencies(
+    pyproject: dict, dependency_locations: dict[str, str]
+) -> list[dict]:
     project = pyproject.get('project', {}) or {}
     dependencies = []
 
@@ -408,6 +487,9 @@ def _extract_schema_dependencies(pyproject: dict) -> list[dict]:
             name = match.group(1)
             version_range = match.group(2).strip()
 
+        indexed_location = dependency_locations.get(_normalize_package_name(name), '')
+        if not location and indexed_location:
+            location = indexed_location
         if not location and _package_exists_on_pypi(name):
             location = f'https://pypi.org/project/{name}/'
 
@@ -748,6 +830,7 @@ def build_generated_metadata_with_release_context(
     repo_path: Path,
     release_tag: str | None,
     release_sha: str | None,
+    plugins_index_path: Path | None = None,
 ) -> dict:
     """Generate baseline metadata from repo-local and discoverable plugin sources.
 
@@ -764,7 +847,8 @@ def build_generated_metadata_with_release_context(
     entry_points, capabilities, supported_filetypes, file_format_support = (
         _build_entry_points_and_capabilities(project, repo_path)
     )
-    schema_dependencies = _extract_schema_dependencies(pyproject)
+    dependency_locations = _load_plugins_index(plugins_index_path)
+    schema_dependencies = _extract_schema_dependencies(pyproject, dependency_locations)
 
     license_value = ''
     license_data = project.get('license')
