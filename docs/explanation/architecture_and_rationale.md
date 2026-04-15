@@ -1,4 +1,4 @@
-# Explanation
+# Architecture and Rationale
 
 ## Design choices
 
@@ -11,11 +11,10 @@ This keeps semantic ownership with the active runtime model while preserving com
 
 ### 2. Plugin-owned extraction
 
-Metadata extraction is executed in each plugin repository CI rather than centrally in crawler CI.
+Metadata generation is intended to run in each plugin repository CI and/or local development workflow.
 
 Why:
 
-- no need to install every plugin in a central pipeline,
 - plugin maintainers can add plugin-specific extraction hooks,
 - extraction behavior is versioned with plugin code.
 
@@ -57,7 +56,9 @@ This gives maintainers visibility into stale generated signals without blocking 
 On release publication, the reusable workflow can regenerate metadata and open/update a rolling PR.
 This keeps metadata updates reviewable, links metadata snapshots to release tag + commit SHA, and avoids direct writes to `main`.
 
-## Migration strategy
+## Scope
 
-`nomad-plugins` internal schema is treated as a transitional adapter.
-The target state is canonical metadata-first ingestion and eventual adapter phase-out after compatibility gates are met.
+This package defines the metadata schema, extraction, merge behavior, and generated interoperability artifacts.
+Integration details in other repositories are intentionally out of scope here.
+
+For field-by-field intent, see `explanation/field_semantics.md`.

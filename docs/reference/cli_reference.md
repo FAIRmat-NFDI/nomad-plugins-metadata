@@ -10,14 +10,14 @@ nomad-plugin-metadata extract [options]
 
 | Option | Type | Default | Description |
 |---|---|---|---|
-| `--repo-path` | `Path` | `.` |  |
-| `--manual-path` | `Path` | `.metadata/nomad_plugin_metadata.manual.yaml` |  |
-| `--auto-path` | `Path` | `.metadata/nomad_plugin_metadata.auto.yaml` |  |
-| `--effective-path` | `Path` | `nomad_plugin_metadata.yaml` |  |
-| `--report-path` | `Path` | `.metadata/plugin-metadata.override-report.yaml` |  |
+| `--repo-path` | `Path` | `.` | Repository root to inspect for pyproject, metadata files, and optional CITATION.cff. |
+| `--manual-path` | `Path` | `.metadata/nomad_plugin_metadata.manual.yaml` | Path to maintainer-owned manual overrides template/input. |
+| `--auto-path` | `Path` | `.metadata/nomad_plugin_metadata.auto.yaml` | Path for machine-generated baseline metadata output. |
+| `--effective-path` | `Path` | `nomad_plugin_metadata.yaml` | Path for merged effective metadata consumed by downstream tools. |
+| `--report-path` | `Path` | `.metadata/plugin-metadata.override-report.yaml` | Path for merge report describing generated/manual value precedence decisions. |
 | `--release-tag` | `str` | `` | Release tag to embed in generated/effective metadata. |
 | `--release-sha` | `str` | `` | Release commit SHA to embed in generated/effective metadata. |
-| `--plugins-index-path` | `Path` | `None` | Optional YAML/JSON mapping of package name -> canonical dependency location. |
+| `--plugins-index-path` | `Path` | `` | Optional YAML/JSON mapping of package name -> canonical dependency location. |
 | `--create-manual-template-if-missing, --no-create-manual-template-if-missing` | `bool flag` | `True` | Create .metadata/nomad_plugin_metadata.manual.yaml template when manual file is missing. |
 
 ## API (Docstrings)

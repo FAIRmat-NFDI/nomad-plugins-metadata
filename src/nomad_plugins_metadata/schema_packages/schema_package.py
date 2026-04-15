@@ -35,7 +35,7 @@ METADATA_SOURCES = (
     'pyproject',
     'citation_cff',
     'repository_api',
-    'crawler_fallback',
+    'extraction_fallback',
 )
 EXTRACTION_METHODS = ('deterministic', 'heuristic', 'manual')
 COMPRESSION_TYPES = ('gz', 'bz2', 'xz', 'zip', 'tar')
