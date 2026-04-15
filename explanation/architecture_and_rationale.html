@@ -17,7 +17,7 @@
     
     
       
-        <title>Explanation - nomad-plugins-metadata</title>
+        <title>Architecture and Rationale - nomad-plugins-metadata</title>
       
     
     
@@ -68,7 +68,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#explanation" class="md-skip">
+        <a href="#architecture-and-rationale" class="md-skip">
           Skip to content
         </a>
       
@@ -100,7 +100,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Explanation
+              Architecture and Rationale
             
           </span>
         </div>
@@ -301,6 +301,34 @@
     
   
   
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3">
+          Explanation
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Explanation" data-md-level="1">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          Explanation
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+    
+  
+  
     <li class="md-nav__item md-nav__item--active">
       
       <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
@@ -310,12 +338,12 @@
       
       
         <label class="md-nav__link md-nav__link--active" for="__toc">
-          Explanation
+          Architecture and Rationale
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <a href="explanation.html" class="md-nav__link md-nav__link--active">
-        Explanation
+      <a href="architecture_and_rationale.html" class="md-nav__link md-nav__link--active">
+        Architecture and Rationale
       </a>
       
         
@@ -389,8 +417,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#migration-strategy" class="md-nav__link">
-    Migration strategy
+  <a href="#scope" class="md-nav__link">
+    Scope
   </a>
   
 </li>
@@ -399,6 +427,27 @@
   
 </nav>
       
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="field_semantics.html" class="md-nav__link">
+        Field Semantics
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
     </li>
   
 
@@ -547,8 +596,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#migration-strategy" class="md-nav__link">
-    Migration strategy
+  <a href="#scope" class="md-nav__link">
+    Scope
   </a>
   
 </li>
@@ -566,17 +615,16 @@
               
                 
 
-<h1 id="explanation">Explanation<a class="headerlink" href="#explanation" title="Permanent link">&para;</a></h1>
+<h1 id="architecture-and-rationale">Architecture and Rationale<a class="headerlink" href="#architecture-and-rationale" title="Permanent link">&para;</a></h1>
 <h2 id="design-choices">Design choices<a class="headerlink" href="#design-choices" title="Permanent link">&para;</a></h2>
 <h3 id="1-canonical-nomad-schema-linkml-export">1. Canonical NOMAD schema + LinkML export<a class="headerlink" href="#1-canonical-nomad-schema-linkml-export" title="Permanent link">&para;</a></h3>
 <p>NOMAD metainfo classes are the active source of truth for runtime integration, searchability, and archive persistence.
 LinkML is exported automatically from this NOMAD schema for interoperability, validation, and docs.</p>
 <p>This keeps semantic ownership with the active runtime model while preserving compatibility with DataTractor-style contracts.</p>
 <h3 id="2-plugin-owned-extraction">2. Plugin-owned extraction<a class="headerlink" href="#2-plugin-owned-extraction" title="Permanent link">&para;</a></h3>
-<p>Metadata extraction is executed in each plugin repository CI rather than centrally in crawler CI.</p>
+<p>Metadata generation is intended to run in each plugin repository CI and/or local development workflow.</p>
 <p>Why:</p>
 <ul>
-<li>no need to install every plugin in a central pipeline,</li>
 <li>plugin maintainers can add plugin-specific extraction hooks,</li>
 <li>extraction behavior is versioned with plugin code.</li>
 </ul>
@@ -611,9 +659,10 @@ ignoring empty values from the manual template.</p>
 <h3 id="5-release-driven-pr-workflow">5. Release-driven PR workflow<a class="headerlink" href="#5-release-driven-pr-workflow" title="Permanent link">&para;</a></h3>
 <p>On release publication, the reusable workflow can regenerate metadata and open/update a rolling PR.
 This keeps metadata updates reviewable, links metadata snapshots to release tag + commit SHA, and avoids direct writes to <code>main</code>.</p>
-<h2 id="migration-strategy">Migration strategy<a class="headerlink" href="#migration-strategy" title="Permanent link">&para;</a></h2>
-<p><code>nomad-plugins</code> internal schema is treated as a transitional adapter.
-The target state is canonical metadata-first ingestion and eventual adapter phase-out after compatibility gates are met.</p>
+<h2 id="scope">Scope<a class="headerlink" href="#scope" title="Permanent link">&para;</a></h2>
+<p>This package defines the metadata schema, extraction, merge behavior, and generated interoperability artifacts.
+Integration details in other repositories are intentionally out of scope here.</p>
+<p>For field-by-field intent, see <code>explanation/field_semantics.md</code>.</p>
 
               
             </article>
@@ -643,13 +692,13 @@ The target state is canonical metadata-first ingestion and eventual adapter phas
       
       
         
-        <a href="../reference/cli_reference.html" class="md-footer__link md-footer__link--next" aria-label="Next: CLI and API" rel="next">
+        <a href="field_semantics.html" class="md-footer__link md-footer__link--next" aria-label="Next: Field Semantics" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              CLI and API
+              Field Semantics
             </div>
           </div>
           <div class="md-footer__button md-icon">

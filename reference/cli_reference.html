@@ -299,10 +299,57 @@
   
   
   
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3">
+          Explanation
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Explanation" data-md-level="1">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          Explanation
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
     <li class="md-nav__item">
-      <a href="../explanation/explanation.html" class="md-nav__link">
-        Explanation
+      <a href="../explanation/architecture_and_rationale.html" class="md-nav__link">
+        Architecture and Rationale
       </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../explanation/field_semantics.html" class="md-nav__link">
+        Field Semantics
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
     </li>
   
 
@@ -601,31 +648,31 @@
 <td><code>--repo-path</code></td>
 <td><code>Path</code></td>
 <td><code>.</code></td>
-<td></td>
+<td>Repository root to inspect for pyproject, metadata files, and optional CITATION.cff.</td>
 </tr>
 <tr>
 <td><code>--manual-path</code></td>
 <td><code>Path</code></td>
 <td><code>.metadata/nomad_plugin_metadata.manual.yaml</code></td>
-<td></td>
+<td>Path to maintainer-owned manual overrides template/input.</td>
 </tr>
 <tr>
 <td><code>--auto-path</code></td>
 <td><code>Path</code></td>
 <td><code>.metadata/nomad_plugin_metadata.auto.yaml</code></td>
-<td></td>
+<td>Path for machine-generated baseline metadata output.</td>
 </tr>
 <tr>
 <td><code>--effective-path</code></td>
 <td><code>Path</code></td>
 <td><code>nomad_plugin_metadata.yaml</code></td>
-<td></td>
+<td>Path for merged effective metadata consumed by downstream tools.</td>
 </tr>
 <tr>
 <td><code>--report-path</code></td>
 <td><code>Path</code></td>
 <td><code>.metadata/plugin-metadata.override-report.yaml</code></td>
-<td></td>
+<td>Path for merge report describing generated/manual value precedence decisions.</td>
 </tr>
 <tr>
 <td><code>--release-tag</code></td>
@@ -642,7 +689,7 @@
 <tr>
 <td><code>--plugins-index-path</code></td>
 <td><code>Path</code></td>
-<td><code>None</code></td>
+<td>``</td>
 <td>Optional YAML/JSON mapping of package name -&gt; canonical dependency location.</td>
 </tr>
 <tr>
@@ -689,7 +736,7 @@ non-empty manual values override generated values.</p>
     <nav class="md-footer__inner md-grid" aria-label="Footer">
       
         
-        <a href="../explanation/explanation.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: Explanation" rel="prev">
+        <a href="../explanation/field_semantics.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: Field Semantics" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
           </div>
@@ -698,7 +745,7 @@ non-empty manual values override generated values.</p>
               <span class="md-footer__direction">
                 Previous
               </span>
-              Explanation
+              Field Semantics
             </div>
           </div>
         </a>

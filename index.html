@@ -368,10 +368,57 @@
   
   
   
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3">
+          Explanation
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Explanation" data-md-level="1">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          Explanation
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
     <li class="md-nav__item">
-      <a href="explanation/explanation.html" class="md-nav__link">
-        Explanation
+      <a href="explanation/architecture_and_rationale.html" class="md-nav__link">
+        Architecture and Rationale
       </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="explanation/field_semantics.html" class="md-nav__link">
+        Field Semantics
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
     </li>
   
 
@@ -515,13 +562,13 @@
 <h1 id="nomad-plugins-metadata"><code>nomad-plugins-metadata</code><a class="headerlink" href="#nomad-plugins-metadata" title="Permanent link">&para;</a></h1>
 <p>NOMAD-first schema and tooling package for generating, validating, and merging NOMAD plugin metadata.</p>
 <h2 id="what-this-package-is-for">What this package is for<a class="headerlink" href="#what-this-package-is-for" title="Permanent link">&para;</a></h2>
-<p><code>nomad-plugins-metadata</code> is the shared foundation for plugin metadata across:</p>
+<p><code>nomad-plugins-metadata</code> provides:</p>
 <ul>
-<li>plugin repositories (metadata authoring + automated extraction),</li>
-<li><code>nomad-plugins</code> ingestion (transitional adapter mapping),</li>
-<li><code>nomad-docs</code> registry rendering and filtering.</li>
+<li>a canonical metadata schema,</li>
+<li>extraction and merge tooling for plugin repositories,</li>
+<li>reproducible metadata artifacts for downstream consumers.</li>
 </ul>
-<p>The package standardizes both metadata structure and automation behavior so plugin metadata is reproducible across repositories.</p>
+<p>The package standardizes both metadata structure and automation behavior so plugin metadata is consistent across repositories.</p>
 <h2 id="metadata-model-at-a-glance">Metadata model at a glance<a class="headerlink" href="#metadata-model-at-a-glance" title="Permanent link">&para;</a></h2>
 <ul>
 <li>Manual metadata: <code>.metadata/nomad_plugin_metadata.manual.yaml</code></li>
@@ -553,7 +600,8 @@
 <li>See <a href="how_to/install_this_plugin.html">How-to: Install This Plugin</a>.</li>
 <li>See <a href="how_to/use_this_plugin.html">How-to: Use This Plugin</a>.</li>
 <li>See <a href="how_to/apply_to_plugin_repo.html">How-to: Apply To Plugin Repo</a>.</li>
-<li>See <a href="explanation/explanation.html">Explanation</a> for architecture rationale.</li>
+<li>See <a href="explanation/architecture_and_rationale.html">Architecture and Rationale</a>.</li>
+<li>See <a href="explanation/field_semantics.html">Field Semantics</a> for quantity meanings and intent.</li>
 <li>See <a href="reference/cli_reference.html">Reference: CLI and API</a>.</li>
 <li>See <a href="reference/schema_reference.html">Reference: Schema</a>.</li>
 </ul>
