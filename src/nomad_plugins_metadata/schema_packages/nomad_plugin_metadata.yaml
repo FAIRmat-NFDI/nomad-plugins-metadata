@@ -150,15 +150,18 @@ slots:
     required: true
     identifier: true
     slot_uri: schema_org:identifier
+    description: Stable identifier for this metadata object or subsection instance.
   metadata_schema_version:
     required: true
     description: Version of this metadata schema used for this document.
   name:
     required: false
     slot_uri: schema_org:name
+    description: Human-readable name of the plugin package or person.
   description:
     required: false
     slot_uri: schema_org:description
+    description: Short summary description of the plugin package.
   plugin_version:
     required: false
     description: Plugin package version.
@@ -170,35 +173,47 @@ slots:
   license:
     required: false
     slot_uri: schema_org:license
+    description: Declared software license for the plugin package.
   upstream_repository:
     required: true
     slot_uri: schema_org:codeRepository
+    description: Canonical source repository URL for the plugin package.
   documentation:
     required: false
     slot_uri: schema_org:url
+    description: Primary user/developer documentation URL for the plugin package.
   homepage:
     required: false
     slot_uri: schema_org:url
+    description: Homepage URL for the plugin package or project.
   issue_tracker:
     required: false
+    description: Issue tracker URL for reporting bugs and feature requests.
   owner:
     required: false
+    description: Repository owner or organization name.
   owner_type:
     required: false
+    description: Owner classification, e.g. Organization or User.
   stars:
     required: false
     range: integer
+    description: GitHub star count at extraction time.
   created:
     required: false
     range: datetime
+    description: Repository creation timestamp.
   last_updated:
     required: false
     range: datetime
+    description: Last repository update timestamp.
   archived:
     required: false
     range: boolean
+    description: Whether the upstream repository is archived.
   repository_default_branch:
     required: false
+    description: Default branch name used by the source repository.
   supported_filetypes:
     required: false
     multivalued: true
@@ -206,58 +221,72 @@ slots:
   maturity:
     required: true
     range: MaturityLevel
+    description: Overall maturity classification of the plugin package.
   maintainers:
     required: false
     multivalued: true
     range: Maintainer
+    description: Maintainer contacts responsible for plugin operation and support.
     inlined_as_list: true
   authors:
     required: false
     multivalued: true
     range: Maintainer
+    description: Author credits for the plugin package.
     inlined_as_list: true
   entry_points:
     required: false
     multivalued: true
     range: EntryPoint
+    description: Registered NOMAD entry points exposed by the plugin package.
     inlined_as_list: true
   capabilities:
     required: false
     multivalued: true
     range: PluginCapability
+    description: High-level capabilities implemented by this plugin package.
     inlined_as_list: true
   file_format_support:
     required: false
     multivalued: true
     range: FileFormatSupport
+    description: Detailed file-format compatibility records for this plugin.
     inlined_as_list: true
   schema_dependencies:
     required: false
     multivalued: true
     range: SchemaDependency
+    description: Dependencies required by the plugin package or schema behavior.
     inlined_as_list: true
   suggested_usages:
     required: false
     multivalued: true
     range: SuggestedUsage
+    description: Curated suggested usage records for discovery and filtering.
     inlined_as_list: true
   deployment:
     required: false
     range: DeploymentInfo
+    description: Deployment and distribution status for this plugin package.
   release_context:
     required: false
     range: ReleaseContext
+    description: Release linkage metadata for this generated snapshot.
   metadata_provenance:
     required: false
     multivalued: true
     range: MetadataProvenance
+    description: Provenance records describing how metadata values were produced.
     inlined_as_list: true
   email:
     required: false
+    description: Email address for a maintainer/author contact.
   affiliation:
     required: false
+    description: Organization or affiliation for a maintainer/author.
   role:
     required: false
+    description: Role label for a maintainer/author in plugin lifecycle.
   entry_point_group:
     required: true
     description: Python entry point group name.
@@ -270,45 +299,62 @@ slots:
   capability_type:
     required: true
     range: CapabilityType
+    description: Capability category for an entry point or capability record.
   title:
     required: true
+    description: Display title for a capability or suggested usage.
   summary:
     required: false
+    description: Optional short summary for a capability.
   parser_details:
     required: false
     range: ParserCapabilityDetails
+    description: Structured parser matcher details for parser capabilities.
   parser_name:
     required: false
+    description: Canonical parser name used in NOMAD parser registration.
   parser_level:
     required: false
     range: integer
+    description: Parser priority/level used in parser dispatch ordering.
   parser_aliases:
     required: false
     multivalued: true
+    description: Alternative parser aliases accepted by NOMAD.
   mainfile_name_re:
     required: false
+    description: Regex matching candidate mainfile names.
   mainfile_contents_re:
     required: false
+    description: Regex matching candidate mainfile text contents.
   mainfile_contents_dict:
     required: false
+    description: Serialized dictionary matcher for structured mainfile content checks.
   mainfile_mime_re:
     required: false
+    description: Regex matching MIME types for candidate mainfiles.
   mainfile_binary_header:
     required: false
+    description: Binary header signature used to identify mainfiles.
   mainfile_binary_header_re:
     required: false
+    description: Regex-style binary header matcher used to identify mainfiles.
   mainfile_alternative:
     required: false
     range: boolean
+    description: Whether this parser matcher is marked as an alternative matcher.
   compression_support:
     required: false
     multivalued: true
     range: CompressionType
+    description: Supported compressed container formats for parser input files.
   auxiliary_file_patterns:
     required: false
     multivalued: true
+    description: Auxiliary file name patterns expected by this parser.
   label:
     required: true
+    description: Human-readable label for a file format or subsection record.
   capability_id:
     required: false
     description: Capability identifier that provides this format support.
@@ -318,67 +364,94 @@ slots:
   extensions:
     required: false
     multivalued: true
+    description: Known filename extensions for this file format.
   mime_types:
     required: false
     multivalued: true
+    description: Known MIME types associated with this file format.
   standard:
     required: false
+    description: Named file/data standard represented by this format.
   instrument_context:
     required: false
+    description: Instrument or workflow context where the format is used.
   notes:
     required: false
+    description: Free-text notes about caveats, scope, or interpretation.
   dependency_type:
     required: true
     range: DependencyType
+    description: Dependency classification (NOMAD plugin vs generic Python package).
   package_name:
     required: true
+    description: Dependency package name.
   location:
     required: false
+    description: Canonical dependency location URL (repository, package index, or
+      direct URL).
   version_range:
     required: false
+    description: Version constraint specifier for the dependency.
   optional:
     required: false
     range: boolean
+    description: Whether this dependency is optional.
   purpose:
     required: false
+    description: Intended dependency purpose, e.g. runtime or optional feature.
   user_intent:
     required: true
+    description: User goal addressed by the suggested usage.
   domain_category:
     required: true
     range: DomainCategory
+    description: Domain classification used for usage-level discovery filters.
   technique:
     required: false
+    description: Technique or method keyword associated with this usage.
   audience:
     required: false
+    description: Target audience level for this suggested usage.
   tags:
     required: false
     multivalued: true
+    description: Additional search/filter tags for the suggested usage.
   on_central:
     required: false
     range: boolean
+    description: Whether plugin is available on central NOMAD deployment.
   on_example_oasis:
     required: false
     range: boolean
+    description: Whether plugin is available on NOMAD example oasis deployment.
   on_pypi:
     required: false
     range: boolean
+    description: Whether plugin package is published on PyPI.
   pypi_package:
     required: false
+    description: Published PyPI package name, if available.
   release_tag:
     required: false
+    description: Release tag associated with this metadata snapshot.
   release_commit_sha:
     required: false
+    description: Commit SHA associated with this metadata snapshot.
   source:
     required: true
     range: MetadataSource
+    description: Declared metadata source for this provenance record.
   extraction_method:
     required: true
     range: ExtractionMethod
+    description: Extraction strategy used for this provenance record.
   generated_at:
     required: true
     range: datetime
+    description: Timestamp when this provenance record was generated.
   generator_version:
     required: false
+    description: Version of the extractor/generator that produced this record.
 enums:
   CapabilityType:
     permissible_values:
@@ -415,7 +488,7 @@ enums:
       pyproject: {}
       citation_cff: {}
       repository_api: {}
-      crawler_fallback: {}
+      extraction_fallback: {}
   ExtractionMethod:
     permissible_values:
       deterministic: {}

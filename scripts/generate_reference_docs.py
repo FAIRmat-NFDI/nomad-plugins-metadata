@@ -115,6 +115,57 @@ def _slot_comment(slot_name: str, slot: dict[str, Any], enums: dict[str, Any]) -
     return '; '.join(bits)
 
 
+def _required_in_class(schema: dict[str, Any], class_name: str, slot_name: str) -> bool:
+    slot = schema['slots'].get(slot_name, {})
+    slot_required = bool(slot.get('required', False))
+    usage_required = bool(
+        schema['classes']
+        .get(class_name, {})
+        .get('slot_usage', {})
+        .get(slot_name, {})
+        .get('required', False)
+    )
+    return slot_required or usage_required
+
+
+def _render_class_fields_table(
+    *,
+    lines: list[str],
+    schema: dict[str, Any],
+    class_name: str,
+    title: str,
+) -> None:
+    classes = schema.get('classes', {})
+    slots = schema.get('slots', {})
+    enums = schema.get('enums', {})
+    class_slots = classes.get(class_name, {}).get('slots', [])
+    if not class_slots:
+        return
+
+    lines.extend(
+        [
+            f'## {title} (`{class_name}`)',
+            '',
+            '| Field | Range | Required | Multi | Enum Values | Description |',
+            '|---|---|---|---|---|---|',
+        ]
+    )
+
+    for slot_name in class_slots:
+        slot = slots.get(slot_name, {})
+        range_name = slot.get('range', 'string')
+        required = _required_in_class(schema, class_name, slot_name)
+        multi = bool(slot.get('multivalued', False))
+        enum_values = ''
+        if range_name in enums:
+            enum_values = ', '.join(enums[range_name]['permissible_values'].keys())
+        desc = (slot.get('description', '') or '').replace('\n', ' ').strip()
+        lines.append(
+            f'| `{slot_name}` | `{range_name}` | `{required}` | `{multi}` | {enum_values} | {desc} |'
+        )
+    lines.append('')
+
+
 def _render_annotated_yaml_for_class(
     class_name: str,
     schema: dict[str, Any],
@@ -166,13 +217,9 @@ def _render_annotated_yaml_for_class(
 
 def _render_schema_reference() -> str:
     schema = load_schema()
-    classes = schema.get('classes', {})
-    slots = schema.get('slots', {})
     enums = schema.get('enums', {})
 
     root_class = 'PluginPackage'
-    root_slots = classes[root_class].get('slots', [])
-
     lines: list[str] = [
         '# Schema Reference',
         '',
@@ -182,24 +229,76 @@ def _render_schema_reference() -> str:
         'Generated interoperability export (used below):',
         f'- `{(ROOT / "src/nomad_plugins_metadata/schema_packages/nomad_plugin_metadata.yaml").relative_to(ROOT)}`',
         '',
-        '## Root Fields (`PluginPackage`)',
+        'This page is generated from the exported LinkML schema and should not be edited manually.',
         '',
-        '| Field | Range | Required | Multi | Enum Values | Description |',
-        '|---|---|---|---|---|---|',
     ]
 
-    for slot_name in root_slots:
-        slot = slots.get(slot_name, {})
-        range_name = slot.get('range', 'string')
-        required = bool(slot.get('required', False))
-        multi = bool(slot.get('multivalued', False))
-        enum_values = ''
-        if range_name in enums:
-            enum_values = ', '.join(enums[range_name]['permissible_values'].keys())
-        desc = (slot.get('description', '') or '').replace('\n', ' ').strip()
-        lines.append(
-            f'| `{slot_name}` | `{range_name}` | `{required}` | `{multi}` | {enum_values} | {desc} |'
-        )
+    _render_class_fields_table(
+        lines=lines,
+        schema=schema,
+        class_name='PluginPackage',
+        title='Root Fields',
+    )
+    _render_class_fields_table(
+        lines=lines,
+        schema=schema,
+        class_name='Maintainer',
+        title='Maintainer Fields',
+    )
+    _render_class_fields_table(
+        lines=lines,
+        schema=schema,
+        class_name='EntryPoint',
+        title='Entry Point Fields',
+    )
+    _render_class_fields_table(
+        lines=lines,
+        schema=schema,
+        class_name='PluginCapability',
+        title='Capability Fields',
+    )
+    _render_class_fields_table(
+        lines=lines,
+        schema=schema,
+        class_name='ParserCapabilityDetails',
+        title='Parser Capability Details Fields',
+    )
+    _render_class_fields_table(
+        lines=lines,
+        schema=schema,
+        class_name='FileFormatSupport',
+        title='File Format Support Fields',
+    )
+    _render_class_fields_table(
+        lines=lines,
+        schema=schema,
+        class_name='SchemaDependency',
+        title='Schema Dependency Fields',
+    )
+    _render_class_fields_table(
+        lines=lines,
+        schema=schema,
+        class_name='SuggestedUsage',
+        title='Suggested Usage Fields',
+    )
+    _render_class_fields_table(
+        lines=lines,
+        schema=schema,
+        class_name='DeploymentInfo',
+        title='Deployment Fields',
+    )
+    _render_class_fields_table(
+        lines=lines,
+        schema=schema,
+        class_name='ReleaseContext',
+        title='Release Context Fields',
+    )
+    _render_class_fields_table(
+        lines=lines,
+        schema=schema,
+        class_name='MetadataProvenance',
+        title='Metadata Provenance Fields',
+    )
 
     lines.extend(
         [

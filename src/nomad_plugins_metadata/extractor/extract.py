@@ -930,7 +930,7 @@ def build_generated_metadata_with_release_context(
                 'generator_version': generator_version,
             },
             {
-                'source': 'crawler_fallback',
+                'source': 'extraction_fallback',
                 'extraction_method': 'heuristic',
                 'generated_at': datetime.now(timezone.utc).isoformat(),
                 'generator_version': generator_version,

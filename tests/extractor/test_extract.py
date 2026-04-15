@@ -599,7 +599,4 @@ def test_dependency_location_prefers_index_over_pypi_fallback(
         plugins_index_path=index_path,
     )
     deps = {item['package_name']: item for item in generated['schema_dependencies']}
-    assert (
-        deps['utility-pkg']['location']
-        == 'https://github.com/example/utility-pkg'
-    )
+    assert deps['utility-pkg']['location'] == 'https://github.com/example/utility-pkg'

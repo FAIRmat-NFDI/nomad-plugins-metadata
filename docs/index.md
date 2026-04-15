@@ -4,13 +4,13 @@ NOMAD-first schema and tooling package for generating, validating, and merging N
 
 ## What this package is for
 
-`nomad-plugins-metadata` is the shared foundation for plugin metadata across:
+`nomad-plugins-metadata` provides:
 
-- plugin repositories (metadata authoring + automated extraction),
-- `nomad-plugins` ingestion (transitional adapter mapping),
-- `nomad-docs` registry rendering and filtering.
+- a canonical metadata schema,
+- extraction and merge tooling for plugin repositories,
+- reproducible metadata artifacts for downstream consumers.
 
-The package standardizes both metadata structure and automation behavior so plugin metadata is reproducible across repositories.
+The package standardizes both metadata structure and automation behavior so plugin metadata is consistent across repositories.
 
 ## Metadata model at a glance
 
@@ -45,6 +45,7 @@ non-empty values from `.metadata/nomad_plugin_metadata.manual.yaml` > `.metadata
 - See [How-to: Install This Plugin](how_to/install_this_plugin.md).
 - See [How-to: Use This Plugin](how_to/use_this_plugin.md).
 - See [How-to: Apply To Plugin Repo](how_to/apply_to_plugin_repo.md).
-- See [Explanation](explanation/explanation.md) for architecture rationale.
+- See [Architecture and Rationale](explanation/architecture_and_rationale.md).
+- See [Field Semantics](explanation/field_semantics.md) for quantity meanings and intent.
 - See [Reference: CLI and API](reference/cli_reference.md).
 - See [Reference: Schema](reference/schema_reference.md).

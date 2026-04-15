@@ -180,26 +180,35 @@ def build_parser() -> argparse.ArgumentParser:
     extract = subparsers.add_parser(
         'extract', help='Generate metadata files for a repo.'
     )
-    extract.add_argument('--repo-path', type=Path, default=Path('.'))
+    extract.add_argument(
+        '--repo-path',
+        type=Path,
+        default=Path('.'),
+        help='Repository root to inspect for pyproject, metadata files, and optional CITATION.cff.',
+    )
     extract.add_argument(
         '--manual-path',
         type=Path,
         default=Path('.metadata/nomad_plugin_metadata.manual.yaml'),
+        help='Path to maintainer-owned manual overrides template/input.',
     )
     extract.add_argument(
         '--auto-path',
         type=Path,
         default=Path('.metadata/nomad_plugin_metadata.auto.yaml'),
+        help='Path for machine-generated baseline metadata output.',
     )
     extract.add_argument(
         '--effective-path',
         type=Path,
         default=Path('nomad_plugin_metadata.yaml'),
+        help='Path for merged effective metadata consumed by downstream tools.',
     )
     extract.add_argument(
         '--report-path',
         type=Path,
         default=Path('.metadata/plugin-metadata.override-report.yaml'),
+        help='Path for merge report describing generated/manual value precedence decisions.',
     )
     extract.add_argument(
         '--release-tag',
