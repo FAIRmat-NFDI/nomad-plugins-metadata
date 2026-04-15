@@ -21,88 +21,114 @@ entry_points:
 capabilities:
 - id: schema_package_entry_point
   capability_type: schema
-  title: schema_package_entry_point
+  title: PluginMetadata
+  summary: Schema package for canonical NOMAD plugin metadata.
 schema_dependencies:
 - dependency_type: python_package
   package_name: nomad-lab
+  location: https://pypi.org/project/nomad-lab/
   version_range: '>=1.4.1'
   optional: false
   purpose: runtime
 - dependency_type: python_package
   package_name: pyyaml
+  location: https://pypi.org/project/pyyaml/
   version_range: ''
   optional: false
   purpose: runtime
 - dependency_type: python_package
   package_name: tomli
-  version_range: ; python_version < '3.11'
+  location: https://pypi.org/project/tomli/
+  version_range: ''
   optional: false
   purpose: runtime
 - dependency_type: python_package
   package_name: ruff
+  location: https://pypi.org/project/ruff/
   version_range: ''
   optional: true
   purpose: optional
 - dependency_type: python_package
   package_name: pytest
+  location: https://pypi.org/project/pytest/
   version_range: ''
   optional: true
   purpose: optional
 - dependency_type: python_package
   package_name: pyyaml
+  location: https://pypi.org/project/pyyaml/
   version_range: ''
   optional: true
   purpose: optional
 - dependency_type: python_package
   package_name: linkml
+  location: https://pypi.org/project/linkml/
   version_range: ''
   optional: true
   purpose: optional
 - dependency_type: python_package
   package_name: structlog
+  location: https://pypi.org/project/structlog/
   version_range: ''
   optional: true
   purpose: optional
 - dependency_type: python_package
   package_name: mkdocs
+  location: https://pypi.org/project/mkdocs/
   version_range: ''
   optional: true
   purpose: optional
 - dependency_type: python_package
   package_name: mkdocs-material
+  location: https://pypi.org/project/mkdocs-material/
   version_range: ==8.1.1
   optional: true
   purpose: optional
 - dependency_type: python_package
   package_name: pymdown-extensions
+  location: https://pypi.org/project/pymdown-extensions/
   version_range: ''
   optional: true
   purpose: optional
 - dependency_type: python_package
   package_name: mkdocs-click
+  location: https://pypi.org/project/mkdocs-click/
   version_range: ''
   optional: true
   purpose: optional
 - dependency_type: python_package
   package_name: pytest-asyncio
+  location: https://pypi.org/project/pytest-asyncio/
   version_range: ''
   optional: true
   purpose: optional
+deployment:
+  on_central: false
+  on_example_oasis: false
+  on_pypi: false
+  pypi_package: nomad-plugins-metadata
 metadata_provenance:
 - source: pyproject
   extraction_method: deterministic
-  generated_at: '2026-04-11T19:38:06.679395+00:00'
-  generator_version: null
+  generated_at: '2026-04-15T09:31:44.453132+00:00'
+  generator_version: 0.8.0
 - source: plugin_entry_points
   extraction_method: deterministic
-  generated_at: '2026-04-11T19:38:06.679435+00:00'
-  generator_version: null
+  generated_at: '2026-04-15T09:31:44.453153+00:00'
+  generator_version: 0.8.0
+- source: crawler_fallback
+  extraction_method: heuristic
+  generated_at: '2026-04-15T09:31:44.453157+00:00'
+  generator_version: 0.8.0
 stars: 0
 owner: FAIRmat-NFDI
 owner_type: Organization
 created: '2026-03-05T11:39:28Z'
-last_updated: '2026-04-11T19:19:05Z'
+last_updated: '2026-04-15T09:27:36Z'
 archived: false
+release_context:
+  release_tag: v0.8.0
+  release_commit_sha: dc6bb30aca0804f3d21f58cc0c8bbf494fa6c966
 subject:
 - infrastructure
 - metadata
@@ -110,11 +136,6 @@ subject:
 - plugin-development
 maturity: beta
 repository_default_branch: main
-deployment:
-  on_central: false
-  on_example_oasis: false
-  on_pypi: false
-  pypi_package: nomad-plugins-metadata
 suggested_usages:
 - id: generate-plugin-metadata
   title: Generate plugin metadata artifacts
