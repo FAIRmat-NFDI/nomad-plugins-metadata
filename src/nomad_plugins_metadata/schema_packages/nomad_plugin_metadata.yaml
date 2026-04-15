@@ -111,6 +111,7 @@ classes:
     slots:
     - dependency_type
     - package_name
+    - location
     - version_range
     - optional
     - purpose
@@ -331,6 +332,8 @@ slots:
     range: DependencyType
   package_name:
     required: true
+  location:
+    required: false
   version_range:
     required: false
   optional:
