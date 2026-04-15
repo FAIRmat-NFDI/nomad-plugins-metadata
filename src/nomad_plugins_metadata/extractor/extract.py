@@ -9,6 +9,7 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import urlparse
 from urllib.request import Request, urlopen
 
+from packaging.requirements import InvalidRequirement, Requirement
 from packaging.version import InvalidVersion, Version
 
 from nomad_plugins_metadata.schema_packages.schema_validation import load_schema
@@ -22,6 +23,15 @@ try:
     import yaml
 except Exception:  # pragma: no cover - optional dependency fallback
     yaml = None
+
+DEPLOYMENT_INFO_URLS = {
+    'central': 'https://nomad-lab.eu/prod/v1/api/v1/info',
+    'example_oasis': 'https://nomad-lab.eu/prod/v1/oasis/api/v1/info',
+}
+DEPLOYMENT_PYPROJECT_URLS = {
+    'central': 'https://gitlab.mpcdf.mpg.de/nomad-lab/nomad-distro/-/raw/main/pyproject.toml',
+    'example_oasis': 'https://gitlab.mpcdf.mpg.de/nomad-lab/nomad-distro/-/raw/test-oasis/pyproject.toml',
+}
 
 
 def _read_pyproject(pyproject_path: Path) -> dict:
@@ -156,6 +166,102 @@ def _normalize_package_name(name: str) -> str:
     return re.sub(r'[-_.]+', '-', name).lower().strip()
 
 
+def _package_exists_on_pypi(package_name: str) -> bool:
+    candidate = (package_name or '').strip()
+    if not candidate:
+        return False
+    request = Request(
+        f'https://pypi.org/pypi/{candidate}/json',
+        method='HEAD',
+        headers={'User-Agent': 'nomad-plugins-metadata-extractor'},
+    )
+    try:
+        with urlopen(request, timeout=5):  # noqa: S310
+            return True
+    except (HTTPError, URLError, TimeoutError, ValueError):
+        return False
+
+
+def _fetch_text(url: str) -> str | None:
+    request = Request(url, headers={'User-Agent': 'nomad-plugins-metadata-extractor'})
+    try:
+        with urlopen(request, timeout=5) as response:  # noqa: S310
+            return response.read().decode('utf-8')
+    except (HTTPError, URLError, TimeoutError, UnicodeDecodeError, ValueError):
+        return None
+
+
+def _fetch_nomad_deployment_plugins_from_pyproject(pyproject_url: str) -> set[str]:
+    text = _fetch_text(pyproject_url)
+    if not text:
+        return set()
+    try:
+        pyproject = tomllib.loads(text)
+    except tomllib.TOMLDecodeError:
+        return set()
+    plugins = (
+        pyproject.get('project', {}).get('optional-dependencies', {}).get('plugins', [])
+    )
+    normalized = {_normalize_package_name(str(dep)) for dep in plugins}
+    return {name for name in normalized if name}
+
+
+def _fetch_nomad_deployment_plugins_from_info(info_url: str) -> set[str]:
+    text = _fetch_text(info_url)
+    if not text:
+        return set()
+    try:
+        payload = json.loads(text)
+    except json.JSONDecodeError:
+        return set()
+    if not isinstance(payload, dict):
+        return set()
+
+    plugin_packages = payload.get('plugin_packages', [])
+    package_names = {
+        _normalize_package_name(str(plugin_package.get('name', '')))
+        for plugin_package in plugin_packages
+        if isinstance(plugin_package, dict)
+    }
+    plugin_entry_points = payload.get('plugin_entry_points', [])
+    entry_point_packages = {
+        _normalize_package_name(str(entry_point.get('python_package', '')))
+        for entry_point in plugin_entry_points
+        if isinstance(entry_point, dict)
+    }
+    return {name for name in package_names.union(entry_point_packages) if name}
+
+
+def _resolve_deployed_plugin_packages(*, info_url: str, pyproject_url: str) -> set[str]:
+    deployed_plugins = _fetch_nomad_deployment_plugins_from_info(info_url)
+    if deployed_plugins:
+        return deployed_plugins
+    deployed_plugins = _fetch_nomad_deployment_plugins_from_pyproject(pyproject_url)
+    if deployed_plugins:
+        return deployed_plugins
+    return set()
+
+
+def _deployment_flags(package_name: str) -> dict:
+    normalized_name = _normalize_package_name(package_name)
+    on_pypi = _package_exists_on_pypi(package_name)
+    on_central = normalized_name in _resolve_deployed_plugin_packages(
+        info_url=DEPLOYMENT_INFO_URLS['central'],
+        pyproject_url=DEPLOYMENT_PYPROJECT_URLS['central'],
+    )
+    on_example_oasis = normalized_name in _resolve_deployed_plugin_packages(
+        info_url=DEPLOYMENT_INFO_URLS['example_oasis'],
+        pyproject_url=DEPLOYMENT_PYPROJECT_URLS['example_oasis'],
+    )
+    deployment = {
+        'on_central': on_central,
+        'on_example_oasis': on_example_oasis,
+        'on_pypi': on_pypi,
+        'pypi_package': package_name if on_pypi else '',
+    }
+    return {key: value for key, value in deployment.items() if value not in ('', None)}
+
+
 def _guess_capability_type(entry_point_name: str, python_object: str) -> str:
     text = f'{entry_point_name} {python_object}'.lower()
     for marker, capability in (
@@ -287,15 +393,29 @@ def _extract_schema_dependencies(pyproject: dict) -> list[dict]:
         dep = dep_string.strip()
         if not dep:
             return
-        match = re.match(r'^\s*([A-Za-z0-9_.-]+)\s*(.*)$', dep)
-        if not match:
-            return
-        name = match.group(1)
-        version_range = match.group(2).strip()
+        name = ''
+        version_range = ''
+        location = ''
+        try:
+            requirement = Requirement(dep)
+            name = requirement.name
+            version_range = str(requirement.specifier)
+            location = str(requirement.url or '').strip()
+        except InvalidRequirement:
+            match = re.match(r'^\s*([A-Za-z0-9_.-]+)\s*(.*)$', dep)
+            if not match:
+                return
+            name = match.group(1)
+            version_range = match.group(2).strip()
+
+        if not location and _package_exists_on_pypi(name):
+            location = f'https://pypi.org/project/{name}/'
+
         dependencies.append(
             {
                 'dependency_type': 'python_package',
                 'package_name': name,
+                'location': location,
                 'version_range': version_range or '',
                 'optional': optional,
                 'purpose': 'runtime' if not optional else 'optional',
@@ -711,6 +831,7 @@ def build_generated_metadata_with_release_context(
         'supported_filetypes': supported_filetypes,
         'file_format_support': file_format_support,
         'schema_dependencies': schema_dependencies,
+        'deployment': _deployment_flags(str(package_name)),
         'metadata_provenance': [
             {
                 'source': 'pyproject',
@@ -721,6 +842,12 @@ def build_generated_metadata_with_release_context(
             {
                 'source': 'plugin_entry_points',
                 'extraction_method': 'deterministic',
+                'generated_at': datetime.now(timezone.utc).isoformat(),
+                'generator_version': generator_version,
+            },
+            {
+                'source': 'crawler_fallback',
+                'extraction_method': 'heuristic',
                 'generated_at': datetime.now(timezone.utc).isoformat(),
                 'generator_version': generator_version,
             },
